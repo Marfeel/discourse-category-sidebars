@@ -83,7 +83,7 @@ createWidget("details-sidebar", {
             if (currentSidebarItem.closest("details")) {
               currentSidebarItem.closest("details").setAttribute("open", "");
             }
-            console.log('active');
+            console.log('active mutation');
           }
         }
       });
