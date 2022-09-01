@@ -64,8 +64,7 @@ createWidget("details-sidebar", {
       "slug"
     );
 
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
+    window.addEventListener("load", () => {
         const currentSidebarItem = document.querySelector(
           "li a[href*='" + currentRouteParams.id + "']"
         );
@@ -75,16 +74,6 @@ createWidget("details-sidebar", {
             currentSidebarItem.closest("details").setAttribute("open", "");
           }
         }
-
-        this.scheduleRerender();
-      });
-    });
-
-    // Start observing the target node for configured mutations
-    observer.observe(document.querySelector(".category-sidebar"), {
-      attributes: true,
-      childList: true,
-      subtree: true,
     });
 
     if (setups["all"] && !isDetailTopic) {
