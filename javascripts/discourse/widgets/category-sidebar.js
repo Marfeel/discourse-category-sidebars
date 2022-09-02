@@ -116,6 +116,7 @@ createWidget("category-sidebar", {
           if (detailsSlug && setupsDetails[detailsSlug]) {
             return createDetailsSidebar.call(this, detailsSlug, false);
           } else if (detailsCurrentCategoryId && setupsByCategoryId[detailsCurrentCategoryId]) {
+            console.log('category');
             return createDetailsSidebar.call(this, detailsCurrentCategoryId, true);
           }
         }
