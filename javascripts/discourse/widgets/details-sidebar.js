@@ -1,6 +1,5 @@
 import { getOwner } from "discourse-common/lib/get-owner";
 import { ajax } from "discourse/lib/ajax";
-import { cleanDOM } from "discourse/lib/clean-dom";
 import PostCooked from "discourse/widgets/post-cooked";
 import RawHtml from "discourse/widgets/raw-html";
 import { createWidget } from "discourse/widgets/widget";
@@ -73,10 +72,6 @@ createWidget("details-sidebar", {
     const isDetailTopic = currentRouteParams.hasOwnProperty(
       "slug"
     );
-
-    router.on("routeDidChange", () => {
-      cleanDOM(this);
-    });
 
     let prevURL = "";
 
