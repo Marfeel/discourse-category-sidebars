@@ -29,7 +29,7 @@ function createSidebar(taxonomy, isCategory) {
   }
 
   return new RawHtml({
-    html: `<div class="category-sidebar-contents category-sidebar-${taxanomy}">${this.state.posts}</div>`
+    html: `<div class="category-sidebar-contents category-sidebar-${taxonomy}">${this.state.posts}</div>`
   });
 }
 
