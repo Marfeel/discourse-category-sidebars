@@ -88,8 +88,8 @@ createWidget("details-sidebar", {
         if (activeItem) {
           activeItem.classList.remove("active");
           const parent = activeItem.closest("details");
-          const grandParent = parent ? parent.closest("details") : null;
-          const greatGrandParent = grandParent ? grandParent.closest("details") : null;
+          const grandParent = parent ? parent.parentNode : null;
+          const greatGrandParent = grandParent ? grandParent.parentNode : null;
 
           if (parent && !grandParent) {
             parent.open = false;
@@ -110,8 +110,8 @@ createWidget("details-sidebar", {
         if (currentSidebarItem) {
           currentSidebarItem.classList.add("active");
           const parent = currentSidebarItem.closest("details");
-          const grandParent = parent ? parent.closest("details") : null;
-          const greatGrandParent = grandParent ? grandParent.closest("details") : null;
+          const grandParent = parent ? parent.parentNode : null;
+          const greatGrandParent = grandParent ? grandParent.parentNode : null;
 
           if (parent && !grandParent) {
             parent.open = true;
