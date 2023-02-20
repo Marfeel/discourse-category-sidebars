@@ -173,7 +173,7 @@
           font-weight: 500;
         }
         > ul {
-          > ul {
+          li > ul {
             a.active::after {
               left: -8px;
             }
@@ -182,6 +182,14 @@
         > details {
           padding-left: 8px;
           position: relative;
+          > details {
+            padding-left: 8px;
+            li > ul {
+              a.active::after {
+                left: -16px;
+              }
+            }
+          }
           &::before {
             content: "";
             position: absolute;
@@ -193,11 +201,6 @@
           }
           a.active::after {
             left: -8px;
-          }
-          > ul > ul {
-            a.active::after {
-              left: -16px;
-            }
           }
         }
       }
