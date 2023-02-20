@@ -28,19 +28,6 @@ function createSidebar(taxonomy, isCategory) {
     return;
   }
 
-  const sidebar = document.querySelector(".sidebar-sections");
-  const hasSidebar = sidebar && document.querySelector(".cooked");
-
-  if (sidebar && !hasSidebar) {
-    const wrapper = document.createElement("div");
-
-    wrapper.className = "cooked";
-    wrapper.innerHTML = this.state.posts[0].attrs.cooked;
-
-    sidebar.appendChild(wrapper);
-  }
-
-
   return new RawHtml({
     html: `<div class="category-sidebar-contents category-sidebar-${taxonomy} cooked">${this.state.posts[0].attrs.cooked}</div>`
   });
@@ -98,6 +85,21 @@ createWidget("details-sidebar", {
         const rt = getOwner(this).lookup("router:main");
         const currentRT = rt.currentRoute.parent.params;
         const activeItem = document.querySelector("li a.active");
+
+        const sidebar = document.querySelector(".sidebar-sections");
+        const customSidebar = document.querySelector(".sidebar-sections .customSidebar");
+
+        if (sidebar && !customSidebar) {
+          const wrapper = document.createElement("div");
+
+          wrapper.className = "cooked customSidebar";
+          wrapper.innerHTML = this.state.posts[0].attrs.cooked;
+
+          sidebar.appendChild(wrapper);
+        }
+        if (sidebar && customSidebar) {
+          customSidebar.innerHTML = this.state.posts[0].attrs.cooked;
+        }
 
         if (activeItem) {
           activeItem.classList.remove("active");
