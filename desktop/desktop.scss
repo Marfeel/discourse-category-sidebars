@@ -186,7 +186,7 @@
             padding-left: 8px;
             li > ul {
               a.active::after {
-                left: -16px;
+                left: -24px;
               }
             }
           }
@@ -200,7 +200,7 @@
             background: #dee6ea;
           }
           a.active::after {
-            left: -8px;
+            left: -16px;
           }
         }
       }
