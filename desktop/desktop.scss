@@ -120,11 +120,21 @@
     }
     a {
       color: var(--primary);
-      &:hover, &.active {
-        color: var(--tertiary);
-      }
       &.active {
         font-weight: 600;
+        &::after {
+          background: var(--tertiary);
+          width: 2px;
+        }
+      }
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 1px;
+        background: #DEE6EA;
       }
     }
     .cooked {
@@ -146,29 +156,110 @@
     .cooked > details, li {
       padding-left: 8px;
     }
+    .cooked {
+      ul li {
+        position: relative;
+        a {
+          &::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 1px;
+            background: rgba(var(--primary-rgb),.35);
+          }
+          &.active {
+            &::before {
+              background: var(--tertiary);
+              width: 2px;
+            }
+          }
+        }
+      }
+      > ul {
+        position: relative;
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: 1px;
+          background: rgba(var(--primary-rgb),.35);
+        }
+      }
+      > details {
+        padding-left: 0;
+        > summary {
+          font-weight: 500;
+        }
+        > details, > ul {
+          position: relative;
+          &::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 1px;
+            background: rgba(var(--primary-rgb),.35);
+          }
+        }
+      }
+      > details > ul > li a {
+        &::after {
+            left: -28px;
+        }
+      }
+      > ul {
+        > li {
+          a {
+            border-left: 1px solid rgba(var(--primary-rgb),.35);
+            &.active {
+              border-left: 2px solid var(--tertiary);
+            }
+            &::after {
+                left: 0;
+                top: 0;
+            }
+          }
+        }
+      }
+    }
+    li { position: relative; }
+    a {
+
+    }
     details {
       > summary {
         display: flex;
         align-items: center;
         gap: 8px;
         padding-block: 3px;
-        font-weight: 500;
         font-size: var(--base-font-size);
         &::before {
+          content: none;
+        }
+        &::after {
           content: "";
           border: solid rgba(var(--primary-rgb),.35);
           border-width: 0 3px 3px 0;
           width: 0.4rem;
           height: 0.4rem;
           border-radius: 2.5px;
-          transform: rotate(-45deg);
+          transform: rotate(45deg);
+          margin-top: -5px;
         }
       }
       &[open] > summary {
         &::before {
+          content: none;
+        }
+        &::after {
           content: "";
-          transform: rotate(45deg);
-          margin-top: -5px;
+          transform: rotate(225deg);
+          margin-top: 5px;
         }
       }
     }

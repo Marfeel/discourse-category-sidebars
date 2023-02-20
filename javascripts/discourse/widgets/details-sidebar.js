@@ -1,6 +1,7 @@
 import { getOwner } from "discourse-common/lib/get-owner";
 import { ajax } from "discourse/lib/ajax";
 import PostCooked from "discourse/widgets/post-cooked";
+import DecoratorHelper from "discourse/widgets/decorator-helper";
 import RawHtml from "discourse/widgets/raw-html";
 import { createWidget } from "discourse/widgets/widget";
 
@@ -86,8 +87,19 @@ createWidget("details-sidebar", {
 
         if (activeItem) {
           activeItem.classList.remove("active");
-          if (activeItem.closest("details")) {
-            activeItem.closest("details").open = false;
+          const parent = activeItem.closest("details");
+          const grandParent = parent ? parent.closest("details") : null;
+          const greatGrandParent = grandParent ? grandParent.closest("details") : null;
+
+          if (parent && !grandParent) {
+            parent.open = false;
+          } else if (parent && grandParent) {
+            parent.open = false;
+            grandParent.open = false;
+          } else if (parent && grandParent && greatGrandParent) {
+            parent.open = false;
+            grandParent.open = false;
+            greatGrandParent.open = false;
           }
         }
         const currentSidebarItem = document.querySelector(
@@ -95,8 +107,19 @@ createWidget("details-sidebar", {
         );
         if (currentSidebarItem) {
           currentSidebarItem.classList.add("active");
-          if (currentSidebarItem.closest("details")) {
-            currentSidebarItem.closest("details").setAttribute("open", "");
+          const parent = currentSidebarItem.closest("details");
+          const grandParent = parent ? parent.closest("details") : null;
+          const greatGrandParent = grandParent ? grandParent.closest("details") : null;
+
+          if (parent && !grandParent) {
+            parent.open = true;
+          } else if (parent && grandParent) {
+            parent.open = true;
+            grandParent.open = true;
+          } else if (parent && grandParent && greatGrandParent) {
+            parent.open = true;
+            grandParent.open = true;
+            greatGrandParent.open = true;
           }
         }
       }
@@ -134,9 +157,14 @@ createWidget("details-sidebar", {
   getPost(id) {
     if (!postCache[id]) {
       ajax(`/t/${id}.json`).then((response) => {
+        this.model = response.post_stream.posts[0];
+        this.model.topic = response;
+
         postCache[id] = new PostCooked({
           cooked: response.post_stream.posts[0].cooked,
-        });
+        },
+        new DecoratorHelper(this),
+        this.currentUser);
         this.scheduleRerender();
       });
     }
