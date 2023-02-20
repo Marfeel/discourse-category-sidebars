@@ -52,8 +52,9 @@ createWidget("details-sidebar", {
     let headerHeight =
       document.getElementsByClassName("d-header-wrap")[0].offsetHeight || 0;
     let sidebarTop = headerHeight + 20 + "px";
+    let hasSidebarPage = document.getElementsByClassName("has-sidebar-page")[0] || 0;
     let sidebarMaxHeight = "calc(100vh - " + (headerHeight + 40) + "px)";
-    if (sidebarWrapper) {
+    if (sidebarWrapper && !hasSidebarPage) {
       sidebarWrapper.style.maxHeight = sidebarMaxHeight;
       sidebarWrapper.style.top = settings.stick_on_scroll ? sidebarTop : undefined;
       sidebarWrapper.style.position = settings.stick_on_scroll ? "sticky" : "";
