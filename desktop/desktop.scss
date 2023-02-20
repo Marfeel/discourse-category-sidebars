@@ -184,6 +184,9 @@
           position: relative;
           > details {
             padding-left: 8px;
+            a.active::after {
+              left: -16px;
+            }
             li > ul {
               a.active::after {
                 left: -24px;
@@ -200,7 +203,7 @@
             background: #dee6ea;
           }
           a.active::after {
-            left: -16px;
+            left: -8px;
           }
         }
       }
