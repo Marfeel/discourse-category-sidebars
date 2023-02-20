@@ -155,7 +155,7 @@
       padding-left: 8px;
     }
     .cooked {
-      > ul {
+      > ul, > details > ul {
         position: relative;
         &::before {
           content: "";
@@ -171,9 +171,6 @@
         padding-left: 0;
         > summary {
           font-weight: 500;
-        }
-        > ul {
-          position: relative;
         }
         > details {
           padding-left: 8px;
