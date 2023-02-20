@@ -155,9 +155,6 @@
       padding-left: 8px;
     }
     .cooked {
-      ul li {
-        position: relative;
-      }
       > ul {
         position: relative;
         &::before {
@@ -175,7 +172,10 @@
         > summary {
           font-weight: 500;
         }
-        > details, > ul {
+        > ul {
+          position: relative;
+        }
+        > details {
           padding-left: 8px;
           position: relative;
           &::before {
@@ -189,26 +189,8 @@
           }
         }
       }
-      > details > ul > li a {
-        &::after {
-            left: -28px;
-        }
-      }
-      > ul {
-        > li {
-          a {
-            &::after {
-                left: 0;
-                top: 0;
-            }
-          }
-        }
-      }
     }
     li { position: relative; }
-    a {
-
-    }
     details {
       > summary {
         display: flex;
