@@ -172,6 +172,13 @@
         > summary {
           font-weight: 500;
         }
+        > ul {
+          > ul {
+            a.active::after {
+              left: -8px;
+            }
+          }
+        }
         > details {
           padding-left: 8px;
           position: relative;
@@ -183,6 +190,14 @@
             height: 100%;
             width: 1px;
             background: #dee6ea;
+          }
+          a.active::after {
+            left: -8px;
+          }
+          > ul > ul {
+            a.active::after {
+              left: -16px;
+            }
           }
         }
       }
