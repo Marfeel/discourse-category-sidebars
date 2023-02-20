@@ -93,10 +93,12 @@ createWidget("details-sidebar", {
 
           if (parent && !grandParent) {
             parent.open = false;
-          } else if (parent && grandParent) {
+          }
+          if (parent && grandParent) {
             parent.open = false;
             grandParent.open = false;
-          } else if (parent && grandParent && greatGrandParent) {
+          }
+          if (parent && grandParent && greatGrandParent) {
             parent.open = false;
             grandParent.open = false;
             greatGrandParent.open = false;
@@ -113,10 +115,12 @@ createWidget("details-sidebar", {
 
           if (parent && !grandParent) {
             parent.open = true;
-          } else if (parent && grandParent) {
+          }
+          if (parent && grandParent) {
             parent.open = true;
             grandParent.open = true;
-          } else if (parent && grandParent && greatGrandParent) {
+          }
+          if (parent && grandParent && greatGrandParent) {
             parent.open = true;
             grandParent.open = true;
             greatGrandParent.open = true;
