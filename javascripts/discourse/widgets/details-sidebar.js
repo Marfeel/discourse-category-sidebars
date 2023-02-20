@@ -1,7 +1,7 @@
 import { getOwner } from "discourse-common/lib/get-owner";
 import { ajax } from "discourse/lib/ajax";
-import PostCooked from "discourse/widgets/post-cooked";
 import DecoratorHelper from "discourse/widgets/decorator-helper";
+import PostCooked from "discourse/widgets/post-cooked";
 import RawHtml from "discourse/widgets/raw-html";
 import { createWidget } from "discourse/widgets/widget";
 
@@ -27,6 +27,19 @@ function createSidebar(taxonomy, isCategory) {
   if (!this.state.posts || !this.state.posts[0]?.attrs?.cooked) {
     return;
   }
+
+  const sidebar = document.querySelector(".sidebar-sections");
+  const hasSidebar = sidebar && document.querySelector(".cooked");
+
+  if (sidebar && !hasSidebar) {
+    const wrapper = document.createElement("div");
+
+    wrapper.className = "cooked";
+    wrapper.innerHTML = this.state.posts[0].attrs.cooked;
+
+    sidebar.appendChild(wrapper);
+  }
+
 
   return new RawHtml({
     html: `<div class="category-sidebar-contents category-sidebar-${taxonomy} cooked">${this.state.posts[0].attrs.cooked}</div>`

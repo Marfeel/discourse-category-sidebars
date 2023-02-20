@@ -1,14 +1,14 @@
-// .custom-sidebar {
-//   .contents > .topic-list {
-//     // Don't show the sidebar
-//     > div {
-//       display: none;
-//     }
-//   }
-//   .regular.with-sidebar.left .details-sidebar {
-//     display: none;
-//   }
-// }
+.custom-sidebar {
+  .contents > .topic-list {
+    // Don't show the sidebar
+    > div {
+      display: none;
+    }
+  }
+  .regular.with-sidebar.left .details-sidebar {
+    display: none;
+  }
+}
 // @media screen and (min-width: 767px) {
 //   // Show the sidebar at 767px
 //   .custom-sidebar {
