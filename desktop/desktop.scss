@@ -125,18 +125,14 @@
       &.active {
         font-weight: 600;
         &::after {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
           background: var(--tertiary);
           width: 2px;
         }
-      }
-      &::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 100%;
-        width: 1px;
-        background: #DEE6EA;
       }
     }
     .cooked {
