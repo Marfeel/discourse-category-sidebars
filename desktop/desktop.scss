@@ -184,6 +184,9 @@
     .cooked > ul {
       padding-left: 0;
     }
+    .cooked > details,.cooked li {
+      padding-inline: 8px;
+    }
     .cooked {
       > ul, > details > ul {
         position: relative;
