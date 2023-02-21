@@ -87,12 +87,12 @@ createWidget("details-sidebar", {
         const activeItem = document.querySelector("li a.active");
 
         const sidebar = document.querySelector(".sidebar-sections");
-        const customSidebar = document.querySelector(".sidebar-sections .customSidebar");
+        const customSidebar = document.querySelector(".sidebar-sections .cooked");
 
         if (sidebar && !customSidebar && this.state?.posts && this.state.posts[0]?.attrs?.cooked) {
           const wrapper = document.createElement("div");
 
-          wrapper.className = "cooked customSidebar";
+          wrapper.className = "cooked";
           wrapper.innerHTML = this.state.posts[0].attrs.cooked;
 
           sidebar.append(wrapper);
