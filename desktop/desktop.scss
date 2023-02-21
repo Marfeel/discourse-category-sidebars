@@ -146,6 +146,11 @@
         a.active::after {
           left: -8px;
         }
+        li > ul {
+          a.active::after {
+            left: -16px;
+          }
+        }
       }
     }
   }
