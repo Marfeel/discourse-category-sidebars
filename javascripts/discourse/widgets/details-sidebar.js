@@ -102,7 +102,6 @@ createWidget("details-sidebar", {
           sidebar.innerHTML += wrapper.outerHTML;
         }
         if (sidebar && customSidebar && this.state?.posts && this.state.posts[0]?.attrs?.cooked) {
-          customSidebar.innerHTML = "";
           customSidebar.innerHTML = this.state.posts[0].attrs.cooked;
         }
 
