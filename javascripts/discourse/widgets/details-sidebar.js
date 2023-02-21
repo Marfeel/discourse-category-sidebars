@@ -89,17 +89,16 @@ createWidget("details-sidebar", {
         const sidebar = document.querySelector(".sidebar-sections");
         const customSidebar = document.querySelector(".sidebar-sections .cooked");
 
-        customSidebar.remove();
-
         if (sidebar && !customSidebar && this.state?.posts && this.state.posts[0]?.attrs?.cooked) {
           const wrapper = document.createElement("div");
 
           wrapper.className = "cooked";
           wrapper.innerHTML = this.state.posts[0].attrs.cooked;
 
-          sidebar.append(wrapper);
+          sidebar.innerHTML += wrapper.outerHTML;
         }
         if (sidebar && customSidebar && this.state?.posts && this.state.posts[0]?.attrs?.cooked) {
+          customSidebar.innerHTML = "";
           customSidebar.innerHTML = this.state.posts[0].attrs.cooked;
         }
 
