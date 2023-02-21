@@ -11,6 +11,9 @@
 }
 
 .sidebar-sections {
+  .sidebar-wrapper & {
+      padding: 30px 30px 0;
+  }
   .cooked {
     ul {
       margin-left: 0;
@@ -103,6 +106,7 @@
     }
     > details {
       padding-left: 0;
+      margin-bottom: 10px;
       > summary {
         font-weight: 500;
       }
