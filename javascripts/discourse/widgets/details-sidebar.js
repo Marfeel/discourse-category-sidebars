@@ -89,13 +89,13 @@ createWidget("details-sidebar", {
         const sidebar = document.querySelector(".sidebar-sections");
         const customSidebar = document.querySelector(".sidebar-sections .customSidebar");
 
-        if (sidebar && !customSidebar && this.state?.posts) {
+        if (sidebar && !customSidebar && this.state?.posts && this.state.posts[0]?.attrs?.cooked) {
           const wrapper = document.createElement("div");
 
           wrapper.className = "cooked customSidebar";
           wrapper.innerHTML = this.state.posts[0].attrs.cooked;
 
-          sidebar.appendChild(wrapper);
+          sidebar.append(wrapper);
         }
         if (sidebar && customSidebar && this.state?.posts) {
           customSidebar.innerHTML = this.state.posts[0].attrs.cooked;
