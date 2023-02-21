@@ -89,6 +89,10 @@ createWidget("details-sidebar", {
         const sidebar = document.querySelector(".sidebar-sections");
         const customSidebar = document.querySelector(".sidebar-sections .cooked");
 
+        if (customSidebar) {
+          customSidebar.remove();
+        }
+
         if (sidebar && !customSidebar && this.state?.posts && this.state.posts[0]?.attrs?.cooked) {
           const wrapper = document.createElement("div");
 
