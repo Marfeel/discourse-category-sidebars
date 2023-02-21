@@ -109,13 +109,7 @@
   //   }
   // }
   // Styles collapsable
-  &.has-sidebar-page {
-    .category-sidebar, .sidebar-sections {
-      padding: 20px 20px 0;
-    }
-  }
   .category-sidebar, .sidebar-sections {
-    padding: 20px 20px 0;
     .cooked {
       ul {
         margin-left: 0;
@@ -189,9 +183,6 @@
     }
     .cooked > ul {
       padding-left: 0;
-    }
-    .cooked > details, li {
-      padding-left: 8px;
     }
     .cooked {
       > ul, > details > ul {
