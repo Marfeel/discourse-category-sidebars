@@ -84,7 +84,7 @@ createWidget("details-sidebar", {
         this.scheduleRerender();
         const rt = getOwner(this).lookup("router:main");
         const currentRT = rt.currentRoute.parent.params;
-        const activeItem = document.querySelector("li a.active");
+        const activeItem = document.querySelector("li a.active:not(.sidebar-section-link)");
 
         const sidebar = document.querySelector(".sidebar-sections");
         const customSidebar = document.querySelector(".sidebar-sections .cooked");
@@ -125,7 +125,7 @@ createWidget("details-sidebar", {
           }
         }
         const currentSidebarItem = document.querySelector(
-          "li a[href*='" + currentRT.id + "']:not(.active)"
+          "li a[href*='" + currentRT.id + "']:not(.active):not(.sidebar-section-link)"
         );
         if (currentSidebarItem) {
           currentSidebarItem.classList.add("active");
