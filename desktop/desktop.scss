@@ -1,10 +1,4 @@
 .custom-sidebar {
-  .contents > .topic-list {
-    // Don't show the sidebar
-    > div {
-      display: none;
-    }
-  }
   .regular.with-sidebar.left .details-sidebar {
     display: none;
   }
