@@ -1,9 +1,9 @@
-import { getOwner } from "discourse-common/lib/get-owner";
 import { ajax } from "discourse/lib/ajax";
 import DecoratorHelper from "discourse/widgets/decorator-helper";
 import PostCooked from "discourse/widgets/post-cooked";
 import RawHtml from "discourse/widgets/raw-html";
 import { createWidget } from "discourse/widgets/widget";
+import { getOwner } from "discourse-common/lib/get-owner";
 
 function defaultSettings() {
   return {};
@@ -137,7 +137,7 @@ createWidget("details-sidebar", {
     if (setups["all"] && !isDetailTopic) {
       return createSidebar.call(this, "all");
     } else if (isDetailTopic) {
-      const detailsSlug = currentRouteParams.slug
+      const detailsSlug = currentRouteParams.slug;
 
       if (detailsSlug && setups[detailsSlug]) {
         return createSidebar.call(this, detailsSlug, false);
