@@ -35,8 +35,7 @@ export default class CategorySidebar extends Component {
           <div
             class="category-sidebar-contents"
             data-category-sidebar={{this.category.slug}}
-            {{didInsert this.updateActiveLinks}}
-            {{didUpdate this.updateActiveLinks this.router.currentRoute}}
+            {{didInsert this.setupObserver}}
           >
             <div class="cooked">
               {{#unless this.loading}}
@@ -163,6 +162,24 @@ export default class CategorySidebar extends Component {
     }
 
     return this.sidebarContent;
+  }
+
+  @action
+  setupObserver(element) {
+    this.element = element;
+    this.observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === "childList") {
+          this.updateActiveLinks(this.element);
+        }
+      });
+    });
+
+    this.observer.observe(this.element, {
+      childList: true,
+      subtree: true,
+    });
+
   }
 
   @action
