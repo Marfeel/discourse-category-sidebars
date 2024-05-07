@@ -3,6 +3,7 @@ import { tracked } from "@glimmer/tracking";
 import { concat } from "@ember/helper";
 import { action } from "@ember/object";
 import didInsert from "@ember/render-modifiers/modifiers/did-insert";
+import didUpdate from "@ember/render-modifiers/modifiers/did-update";
 import { schedule } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import { htmlSafe } from "@ember/template";
@@ -19,8 +20,6 @@ export default class CategorySidebar extends Component {
   @tracked loading = true;
   @tracked lastFetchedCategory = null;
 
-  sidebarObserver = null;
-
   constructor() {
     super(...arguments);
     this.router.on("routeDidChange", () => {
@@ -32,7 +31,12 @@ export default class CategorySidebar extends Component {
     {{#if this.matchedSetting}}
       {{bodyClass "custom-sidebar"}}
       {{bodyClass (concat "sidebar-" settings.sidebar_side)}}
-      <div class="category-sidebar" {{didInsert this.fetchPostContent}}>
+      <div
+        class="category-sidebar"
+        {{didInsert this.fetchPostContent}}
+        {{didUpdate this.fetchPostContent this.category}}
+        {{didUpdate this.scheduleUpdateActiveLinks this.router.currentRoute}}
+      >
         <div class="sticky-sidebar">
           <div
             class="category-sidebar-contents"
@@ -190,7 +194,7 @@ export default class CategorySidebar extends Component {
     }
 
     const currentSidebarItem = element.querySelector(
-      `li > a[href*='${currentPath}']:not(.active):not(.sidebar-section-link)`
+      `li > a[href*='/${currentPath}']:not(.active):not(.sidebar-section-link)`
     );
 
     if (currentSidebarItem) {
