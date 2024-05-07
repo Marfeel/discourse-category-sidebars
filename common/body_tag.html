@@ -1,0 +1,62 @@
+<script>
+    let prevURL = "";
+
+    const observer = new MutationObserver(() => {
+      if (location.href !== prevURL && /\/t\//.test(location.href)) {
+        prevURL = location.href;
+        this.scheduleRerender();
+        const rt = getOwner(this).lookup("router:main");
+        const currentRT = rt.currentRoute.parent.params;
+        const activeItem = document.querySelector(
+          "li a.active:not(.sidebar-section-link)"
+        );
+
+        if (activeItem) {
+          activeItem.classList.remove("active");
+          const parent = activeItem.closest("details");
+          const grandParent = parent ? parent.parentNode : null;
+          const greatGrandParent = grandParent ? grandParent.parentNode : null;
+
+          if (parent && !grandParent) {
+            parent.open = false;
+          }
+          if (parent && grandParent) {
+            parent.open = false;
+            grandParent.open = false;
+          }
+          if (parent && grandParent && greatGrandParent) {
+            parent.open = false;
+            grandParent.open = false;
+            greatGrandParent.open = false;
+          }
+        }
+        const currentSidebarItem = document.querySelector(
+          "li a[href*='" +
+            currentRT.id +
+            "']:not(.active):not(.sidebar-section-link)"
+        );
+        if (currentSidebarItem) {
+          currentSidebarItem.classList.add("active");
+          const parent = currentSidebarItem.closest("details");
+          const grandParent = parent ? parent.parentNode : null;
+          const greatGrandParent = grandParent ? grandParent.parentNode : null;
+
+          if (parent && !grandParent) {
+            parent.open = true;
+          }
+          if (parent && grandParent) {
+            parent.open = true;
+            grandParent.open = true;
+          }
+          if (parent && grandParent && greatGrandParent) {
+            parent.open = true;
+            grandParent.open = true;
+            greatGrandParent.open = true;
+          }
+        }
+      }
+    });
+
+    const topicBody = document.getElementById("main-outlet");
+    observer.observe(topicBody, { childList: true, subtree: true });
+</script>
