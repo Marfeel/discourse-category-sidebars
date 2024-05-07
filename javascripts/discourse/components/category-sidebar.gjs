@@ -17,6 +17,7 @@ export default class CategorySidebar extends Component {
   @service site;
   @tracked sidebarContent;
   @tracked loading = true;
+  @tracked lastFetchedCategory = null;
 
   <template>
     {{#if this.matchedSetting}}
@@ -25,7 +26,7 @@ export default class CategorySidebar extends Component {
       <div
         class="category-sidebar"
         {{didInsert this.fetchPostContent}}
-        {{didUpdate this.fetchPostContent this.category}}
+        {{didUpdate this.fetchPostContent}}
       >
         <div class="sticky-sidebar">
           <div
@@ -73,10 +74,6 @@ export default class CategorySidebar extends Component {
     return this.router?.currentRoute?.parent?.attributes?.category_id;
   }
 
-  get categorySlug() {
-    return this.router?.currentRoute?.params?.slug;
-  }
-
   get categorySlugPathWithID() {
     return this.router?.currentRoute?.params?.category_slug_path_with_id;
   }
@@ -85,6 +82,10 @@ export default class CategorySidebar extends Component {
     return this.categorySlugPathWithID
       ? Category.findBySlugPathWithID(this.categorySlugPathWithID)
       : null;
+  }
+
+  get topicCategory() {
+    return this.categoryIdTopic ? Category.findById(this.categoryIdTopic) : null;
   }
 
   get matchedSetting() {
@@ -110,10 +111,9 @@ export default class CategorySidebar extends Component {
         return this.parsedSetting[parentCategorySlug];
       }
     } else if (this.categoryIdTopic) {
-      const topicCategory = Category.findById(this.categoryIdTopic);
-      const topicCategorySlug = topicCategory?.slug;
+      const topicCategorySlug = this.topicCategory?.slug;
       const parentTopicCategorySlug = Category.findById(
-        topicCategory?.parent_category_id
+        this.topicCategory?.parent_category_id
       )?.slug;
 
       if (topicCategorySlug && this.parsedSetting[topicCategorySlug]) {
@@ -132,7 +132,18 @@ export default class CategorySidebar extends Component {
 
   @action
   async fetchPostContent() {
+    const currentCategory = this.category || Category.findById(
+        this.topicCategory?.parent_category_id
+      );
+
+    // Check if the category has changed
+    if (this.lastFetchedCategory === currentCategory?.id) {
+      // If not, skip fetching
+      return;
+    }
+
     this.loading = true;
+    this.lastFetchedCategory = currentCategory?.id;
 
     try {
       if (this.matchedSetting) {
