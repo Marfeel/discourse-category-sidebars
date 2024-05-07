@@ -24,7 +24,9 @@ export default class CategorySidebar extends Component {
 
   constructor() {
     super(...arguments);
-    this.router.on("routeDidChange", this, this.handleRouteChange);
+    this.router.on("routeDidChange", () => {
+      this.handleRouteChange();
+    });
   }
 
   <template>
