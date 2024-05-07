@@ -19,7 +19,6 @@ export default class CategorySidebar extends Component {
   @tracked loading = true;
   @tracked lastFetchedCategory = null;
 
-  element = null;
   observer = null;
 
   constructor() {
@@ -173,24 +172,23 @@ export default class CategorySidebar extends Component {
 
   @action
   setupObserver(element) {
-    this.element = element;
     if (this.observer) {
-      this.observer.disconnect(); // Desconecta el observador anterior si existe
+      this.observer.disconnect();
     }
     this.observer = new MutationObserver(() => {
-      this.updateActiveLinks();
+      this.updateActiveLinks(element);
     });
 
-    this.observer.observe(this.element, {
+    this.observer.observe(element, {
       childList: true,
       subtree: true
     });
   }
 
   @action
-  updateActiveLinks() {
+  updateActiveLinks(element) {
     const currentPath = window.location.pathname;
-    const links = this.element.querySelectorAll('li a:not(.sidebar-section-link)');
+    const links = element.querySelectorAll('li a:not(.sidebar-section-link)');
     links.forEach(link => {
     const linkPath = new URL(link.href).pathname;
     if (linkPath === currentPath) {
