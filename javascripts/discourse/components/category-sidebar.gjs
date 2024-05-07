@@ -36,7 +36,7 @@ export default class CategorySidebar extends Component {
             class="category-sidebar-contents"
             data-category-sidebar={{this.category.slug}}
             {{didInsert this.updateActiveLinks}}
-            {{didUpdate this.updateActiveLinks @router.currentRoute}}
+            {{didUpdate this.updateActiveLinks this.router?.currentRoute}}
           >
             <div class="cooked">
               {{#unless this.loading}}
@@ -166,8 +166,9 @@ export default class CategorySidebar extends Component {
   }
 
   @action
-  updateActiveLinks() {
+  updateActiveLinks(element) {
     const activeItem = document.querySelector('li a.active:not(.sidebar-section-link)');
+    console.log(activeItem);
 
     if (activeItem) {
       activeItem.classList.remove("active");
