@@ -3,7 +3,6 @@ import { tracked } from "@glimmer/tracking";
 import { concat } from "@ember/helper";
 import { action } from "@ember/object";
 import didInsert from "@ember/render-modifiers/modifiers/did-insert";
-import didUpdate from "@ember/render-modifiers/modifiers/did-update";
 import { inject as service } from "@ember/service";
 import { htmlSafe } from "@ember/template";
 import ConditionalLoadingSpinner from "discourse/components/conditional-loading-spinner";
@@ -25,9 +24,7 @@ export default class CategorySidebar extends Component {
   constructor() {
     super(...arguments);
     this.router.on("routeDidChange", () => {
-      if (this.contentLoaded) {
-        this.updateActiveLinks();
-      }
+      this.fetchPostContent();
     });
   }
 
@@ -38,7 +35,7 @@ export default class CategorySidebar extends Component {
       <div
         class="category-sidebar"
         {{didInsert this.setupObserver}}
-        {{didUpdate this.fetchPostContent this.category}}
+        {{didInsert this.fetchPostContent}}
       >
         <div class="sticky-sidebar">
           <div
