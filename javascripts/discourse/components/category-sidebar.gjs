@@ -110,7 +110,23 @@ export default class CategorySidebar extends Component {
         return this.parsedSetting[parentCategorySlug];
       }
     } else if (this.categoryIdTopic) {
-      console.log("category id topic", this.categoryIdTopic, Category.findById(this.categoryIdTopic));
+      const topicCategory = Category.findById(this.categoryIdTopic);
+      const topicCategorySlug = topicCategory?.slug;
+      const parentTopicCategorySlug = Category.findById(
+        topicCategory?.parent_category_id
+      )?.slug;
+
+      if (topicCategorySlug && this.parsedSetting[topicCategorySlug]) {
+        return this.parsedSetting[topicCategorySlug];
+      }
+
+      if (
+        settings.inherit_parent_sidebar &&
+        parentTopicCategorySlug &&
+        this.parsedSetting[parentTopicCategorySlug]
+      ) {
+        return this.parsedSetting[parentTopicCategorySlug];
+      }
     }
   }
 
