@@ -1,0 +1,44 @@
+<script>
+    let prevURL = "";
+
+    const observer = new MutationObserver(() => {
+      if (location.href !== prevURL && /\/t\//.test(location.href)) {
+        console.log("URL changed");
+        prevURL = location.href;
+        const currentRT = window.location.pathname.split("/").pop();
+        const activeItem = document.querySelector(
+          "li a.active:not(.sidebar-section-link)"
+        );
+
+        if (activeItem) {
+          activeItem.classList.remove("active");
+          const parent = activeItem.closest("details");
+          
+          while (parent) {
+            if (parent.tagName === "DETAILS") {
+              parent.open = false;
+            }
+            parent = parent.parentElement.closest("details");
+          }
+        }
+        const currentSidebarItem = document.querySelector(
+          `.sidebar-sections li > a[href*='${currentRT}']:not(.active):not(.sidebar-section-link)`
+        );
+
+        if (currentSidebarItem) {
+            currentSidebarItem.classList.add("active");
+            let element = currentSidebarItem.closest("details");
+
+            while (element) {
+                if (element.tagName === 'DETAILS') {
+                element.open = true;
+                }
+                element = element.parentElement.closest("details");
+            }
+        }
+      }
+    });
+
+    const topicBody = document.getElementById("main-outlet");
+    observer.observe(topicBody, { childList: true, subtree: true });
+</script>

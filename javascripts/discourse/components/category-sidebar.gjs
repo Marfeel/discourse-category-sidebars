@@ -196,9 +196,13 @@ export default class CategorySidebar extends Component {
     const linkPath = new URL(link.href).pathname;
     if (linkPath === currentPath) {
       link.classList.add('active');
-      const detailsElement = link.closest('details');
-      if (detailsElement) {
-        detailsElement.setAttribute('open', '');
+      let detailsElement = link.closest('details');
+      while (detailsElement) {
+        if (detailsElement.tagName === 'DETAILS') {
+          detailsElement.setAttribute('open', '');
+        }
+
+        detailsElement = detailsElement.parentElement.closest('details');
       }
     } else {
       link.classList.remove('active');
