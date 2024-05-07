@@ -3,6 +3,7 @@ import { tracked } from "@glimmer/tracking";
 import { concat } from "@ember/helper";
 import { action } from "@ember/object";
 import didInsert from "@ember/render-modifiers/modifiers/did-insert";
+import { schedule } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import { htmlSafe } from "@ember/template";
 import ConditionalLoadingSpinner from "discourse/components/conditional-loading-spinner";
@@ -23,20 +24,14 @@ export default class CategorySidebar extends Component {
 
   constructor() {
     super(...arguments);
-    this.router.on("routeDidChange", () => {
-      this.fetchPostContent();
-    });
+    this.router.on("routeDidChange", this, this.handleRouteChange);
   }
 
   <template>
     {{#if this.matchedSetting}}
       {{bodyClass "custom-sidebar"}}
       {{bodyClass (concat "sidebar-" settings.sidebar_side)}}
-      <div
-        class="category-sidebar"
-        {{didInsert this.setupObserver}}
-        {{didInsert this.fetchPostContent}}
-      >
+      <div class="category-sidebar" {{didInsert this.fetchPostContent}}>
         <div class="sticky-sidebar">
           <div
             class="category-sidebar-contents"
@@ -160,7 +155,7 @@ export default class CategorySidebar extends Component {
       if (this.matchedSetting) {
         const response = await ajax(`/t/${this.matchedSetting.post}.json`);
         this.sidebarContent = response.post_stream.posts[0].cooked;
-        this.contentLoaded = true;
+        this.scheduleUpdateActiveLinks();
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -173,27 +168,8 @@ export default class CategorySidebar extends Component {
   }
 
   @action
-  setupObserver(element) {
-    if (this.sidebarObserver) {
-      this.sidebarObserver.disconnect();
-    }
-    this.sidebarObserver = new MutationObserver(() => {
-      if (this.contentLoaded) {
-        this.updateActiveLinks(element);
-      }
-    });
-
-    this.sidebarObserver.observe(element, {
-      childList: true,
-      subtree: true,
-    });
-  }
-
-  @action
-  updateActiveLinks(element) {
-    if (!element) {
-      return;
-    }
+  updateActiveLinks() {
+    let element = document.querySelector(".category-sidebar-contents");
     const currentPath = window.location.pathname.split("/").pop();
     const activeItem = element.querySelector(
       "li a.active:not(.sidebar-section-link)"
@@ -210,8 +186,9 @@ export default class CategorySidebar extends Component {
         parent = parent.parentElement.closest("details");
       }
     }
-    const currentSidebarItem = document.querySelector(
-      `.sidebar-sections li > a[href*='${currentPath}']:not(.active):not(.sidebar-section-link)`
+
+    const currentSidebarItem = element.querySelector(
+      `li > a[href*='${currentPath}']:not(.active):not(.sidebar-section-link)`
     );
 
     if (currentSidebarItem) {
@@ -227,11 +204,19 @@ export default class CategorySidebar extends Component {
     }
   }
 
+  @action
+  scheduleUpdateActiveLinks() {
+    schedule("afterRender", this, this.updateActiveLinks);
+  }
+
+  @action
+  handleRouteChange() {
+    this.fetchPostContent();
+    this.scheduleUpdateActiveLinks();
+  }
+
   willDestroy() {
     super.willDestroy();
-    if (this.sidebarObserver) {
-      this.sidebarObserver.disconnect();
-    }
-    this.router.off("routeDidChange", this.updateActiveLinks);
+    this.router.off("routeDidChange", this.handleRouteChange);
   }
 }
