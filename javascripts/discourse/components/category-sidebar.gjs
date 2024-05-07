@@ -19,11 +19,11 @@ export default class CategorySidebar extends Component {
   @tracked loading = true;
   @tracked lastFetchedCategory = null;
 
-  observer = null;
+  sidebarObserver = null;
 
   constructor() {
     super(...arguments);
-    this.router.on('routeDidChange', () => {
+    this.router.on("routeDidChange", () => {
       this.updateActiveLinks();
     });
   }
@@ -95,7 +95,9 @@ export default class CategorySidebar extends Component {
   }
 
   get topicCategory() {
-    return this.categoryIdTopic ? Category.findById(this.categoryIdTopic) : null;
+    return this.categoryIdTopic
+      ? Category.findById(this.categoryIdTopic)
+      : null;
   }
 
   get matchedSetting() {
@@ -142,9 +144,9 @@ export default class CategorySidebar extends Component {
 
   @action
   async fetchPostContent() {
-    const currentCategory = this.category || Category.findById(
-        this.topicCategory?.parent_category_id
-      );
+    const currentCategory =
+      this.category ||
+      Category.findById(this.topicCategory?.parent_category_id);
 
     // Check if the category has changed
     if (this.lastFetchedCategory === currentCategory?.id) {
@@ -172,16 +174,16 @@ export default class CategorySidebar extends Component {
 
   @action
   setupObserver(element) {
-    if (this.observer) {
+    if (this.sidebarObserver) {
       this.observer.disconnect();
     }
-    this.observer = new MutationObserver(() => {
+    this.sidebarObserver = new MutationObserver(() => {
       this.updateActiveLinks(element);
     });
 
-    this.observer.observe(element, {
+    this.sidebarObserver.observe(element, {
       childList: true,
-      subtree: true
+      subtree: true,
     });
   }
 
@@ -191,30 +193,32 @@ export default class CategorySidebar extends Component {
       return;
     }
     const currentPath = window.location.pathname;
-    const links = element?.querySelectorAll('li > a:not(.sidebar-section-link)');
-    links.forEach(link => {
-    const linkPath = new URL(link.href).pathname;
-    if (linkPath === currentPath) {
-      link.classList.add('active');
-      let detailsElement = link.closest('details');
-      while (detailsElement) {
-        if (detailsElement.tagName === 'DETAILS') {
-          detailsElement.setAttribute('open', '');
-        }
+    const links = element?.querySelectorAll(
+      "li > a:not(.sidebar-section-link)"
+    );
+    links.forEach((link) => {
+      const linkPath = new URL(link.href).pathname;
+      if (linkPath === currentPath) {
+        link.classList.add("active");
+        let detailsElement = link.closest("details");
+        while (detailsElement) {
+          if (detailsElement.tagName === "DETAILS") {
+            detailsElement.setAttribute("open", "");
+          }
 
-        detailsElement = detailsElement.parentElement.closest('details');
+          detailsElement = detailsElement.parentElement.closest("details");
+        }
+      } else {
+        link.classList.remove("active");
       }
-    } else {
-      link.classList.remove('active');
-    }
-  });
+    });
   }
 
   willDestroy() {
     super.willDestroy();
-    if (this.observer) {
-      this.observer.disconnect();
+    if (this.sidebarObserver) {
+      this.sidebarObserver.disconnect();
     }
-    this.router.off('routeDidChange', this.updateActiveLinks);
+    this.router.off("routeDidChange", this.updateActiveLinks);
   }
 }
