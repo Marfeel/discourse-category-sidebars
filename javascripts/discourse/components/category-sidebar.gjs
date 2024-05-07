@@ -167,8 +167,9 @@ export default class CategorySidebar extends Component {
 
   @action
   updateActiveLinks(element) {
+    this.element = element;
     const activeItem = document.querySelector('li a.active:not(.sidebar-section-link)');
-    console.log(activeItem);
+    console.log(activeItem, element, this.element);
 
     if (activeItem) {
       activeItem.classList.remove("active");
