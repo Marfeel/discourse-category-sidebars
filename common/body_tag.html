@@ -1,5 +1,5 @@
 <script>
-    let prevURL = "";
+    let prevURL = window.location.href;
 
     const observer = new MutationObserver(() => {
       if (location.href !== prevURL && /\/t\//.test(location.href)) {
