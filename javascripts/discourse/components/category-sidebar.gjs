@@ -201,7 +201,27 @@ export default class CategorySidebar extends Component {
       }
     }
 
-    console.log('activeLink', this.router.currentRoute);
+    const currentSidebarItem = this.element.querySelector(`li a[href*="${this.router?.currentRoute?.parent?.params?.id}"]`);
+
+    if (currentSidebarItem) {
+      currentSidebarItem.classList.add("active");
+      const parent = currentSidebarItem.closest("details");
+      const grandParent = parent ? parent.parentNode : null;
+      const greatGrandParent = grandParent ? grandParent.parentNode : null;
+
+      if (parent && !grandParent) {
+        parent.open = true;
+      }
+      if (parent && grandParent) {
+        parent.open = true;
+        grandParent.open = true;
+      }
+      if (parent && grandParent && greatGrandParent) {
+        parent.open = true;
+        grandParent.open = true;
+        greatGrandParent.open = true;
+      }
+    }
   }
 
   willDestroy() {
