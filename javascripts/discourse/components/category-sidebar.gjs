@@ -189,10 +189,10 @@ export default class CategorySidebar extends Component {
 
   @action
   updateActiveLinks() {
-    console.log('updateActiveLinks');
     const links = this.element.querySelectorAll('li a');
     links.forEach(link => {
       if (link.href === window.location.href) {
+        console.log('active link', link.href, window.location.href)
         link.classList.add('active');
         const detailsElement = link.closest('details');
         if (detailsElement) {
