@@ -192,7 +192,7 @@ export default class CategorySidebar extends Component {
     }
 
     const currentSidebarItem = element.querySelector(
-      `li > a[href*='/${currentPath}']:not(.active):not(.sidebar-section-link)`
+      `li > a[href*="/${currentPath}"]:not(.active):not(.sidebar-section-link)`
     );
     console.log("New Active Item:", currentSidebarItem); // Verifica el nuevo elemento a activar
 
