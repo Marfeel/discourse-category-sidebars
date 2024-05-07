@@ -19,6 +19,9 @@ export default class CategorySidebar extends Component {
   @tracked loading = true;
   @tracked lastFetchedCategory = null;
 
+  element = null;
+  observer = null;
+
   <template>
     {{#if this.matchedSetting}}
       {{bodyClass "custom-sidebar"}}
@@ -32,6 +35,7 @@ export default class CategorySidebar extends Component {
           <div
             class="category-sidebar-contents"
             data-category-sidebar={{this.category.slug}}
+            {{didInsert this.setupObserver}}
           >
             <div class="cooked">
               {{#unless this.loading}}
@@ -158,5 +162,52 @@ export default class CategorySidebar extends Component {
     }
 
     return this.sidebarContent;
+  }
+
+  @action
+  setupObserver(element) {
+    this.element = element;
+    this.observer = new MutationObserver(() => {
+      this.updateActiveLinks();
+    });
+
+    this.observer.observe(this.element, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  @action
+  updateActiveLinks() {
+    const activeItem = this.element.querySelector('li a.active:not(.sidebar-section-link)');
+
+    if (activeItem) {
+      activeItem.classList.remove("active");
+      const parent = activeItem.closest("details");
+      const grandParent = parent ? parent.parentNode : null;
+      const greatGrandParent = grandParent ? grandParent.parentNode : null;
+
+      if (parent && !grandParent) {
+        parent.open = false;
+      }
+      if (parent && grandParent) {
+        parent.open = false;
+        grandParent.open = false;
+      }
+      if (parent && grandParent && greatGrandParent) {
+        parent.open = false;
+        grandParent.open = false;
+        greatGrandParent.open = false;
+      }
+    }
+
+    console.log('activeLink', this.router.currentRoute);
+  }
+
+  willDestroy() {
+    super.willDestroy();
+    if (this.observer) {
+      this.observer.disconnect();
+    }
   }
 }
