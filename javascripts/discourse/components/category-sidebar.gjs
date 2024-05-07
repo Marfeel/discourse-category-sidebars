@@ -169,7 +169,6 @@ export default class CategorySidebar extends Component {
   updateActiveLinks(element) {
     this.element = element;
     const activeItem = this.element.querySelector('li a.active');
-    console.log(activeItem, element, this.element);
 
     if (activeItem) {
       activeItem.classList.remove("active");
@@ -192,6 +191,8 @@ export default class CategorySidebar extends Component {
     }
 
     const currentSidebarItem = this.element.querySelector(`li a[href*="${this.router?.currentRoute?.parent?.params?.id}"]`);
+
+    console.log('current', currentSidebarItem, this.router?.currentRoute?.parent?.params?.id, window.location.pathname);
 
     if (currentSidebarItem) {
       currentSidebarItem.classList.add("active");
