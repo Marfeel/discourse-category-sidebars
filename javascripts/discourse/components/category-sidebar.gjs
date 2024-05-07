@@ -35,10 +35,8 @@ export default class CategorySidebar extends Component {
           <div
             class="category-sidebar-contents"
             data-category-sidebar={{this.category.slug}}
-            {{#unless this.loading}}
-              {{didInsert this.updateActiveLinks}}
-              {{didUpdate this.updateActiveLinks this.router.currentRoute}}
-            {{/unless}}
+            {{didInsert this.updateActiveLinks}}
+            {{didUpdate this.updateActiveLinks this.router.currentRoute}}
           >
             <div class="cooked">
               {{#unless this.loading}}
