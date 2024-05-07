@@ -69,8 +69,8 @@ export default class CategorySidebar extends Component {
     return filteredTargets.includes(this.router.currentRouteName);
   }
 
-  get isDetailTopic() {
-    return this.router?.currentRoute?.params?.hasOwnProperty("slug");
+  get categoryIdTopic() {
+    return this.router?.currentRoute?.parent?.attributes?.category_id;
   }
 
   get categorySlug() {
@@ -88,7 +88,6 @@ export default class CategorySidebar extends Component {
   }
 
   get matchedSetting() {
-    console.log(this.categorySlugPathWithID, this.router?.currentRoute);
     if (this.parsedSetting["all"] && this.isTopRoute) {
       // if this is a top_menu route, use the "all" setting
       return this.parsedSetting["all"];
@@ -110,6 +109,8 @@ export default class CategorySidebar extends Component {
       ) {
         return this.parsedSetting[parentCategorySlug];
       }
+    } else if (this.categoryIdTopic) {
+      console.log("category id topic", this.categoryIdTopic, Category.findById(this.categoryIdTopic));
     }
   }
 
