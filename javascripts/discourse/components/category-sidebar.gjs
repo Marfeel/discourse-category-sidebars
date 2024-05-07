@@ -194,9 +194,12 @@ export default class CategorySidebar extends Component {
 
     const currentSidebarItem = this.element.querySelector(`li a[href*='${this.router?.currentRoute?.parent?.params?.id}']:not(.active):not(.sidebar-section-link)`);
 
-    console.log('currentSidebarItem', currentSidebarItem, this.site);
-
     if (currentSidebarItem) {
+      console.log('currentSidebarItem', currentSidebarItem);
+      const activeItem = this.element.querySelector('li a.active:not(.sidebar-section-link)');
+      if (activeItem) {
+        activeItem.classList.remove("active");
+      }
       currentSidebarItem.classList.add("active");
       const parent = currentSidebarItem.closest("details");
       const grandParent = parent ? parent.parentNode : null;
