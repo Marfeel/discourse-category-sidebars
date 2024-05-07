@@ -35,8 +35,6 @@ export default class CategorySidebar extends Component {
           <div
             class="category-sidebar-contents"
             data-category-sidebar={{this.category.slug}}
-            {{didInsert this.updateActiveLinks}}
-            {{didUpdate this.updateActiveLinks this.router.currentRoute}}
           >
             <div class="cooked">
               {{#unless this.loading}}
@@ -163,55 +161,5 @@ export default class CategorySidebar extends Component {
     }
 
     return this.sidebarContent;
-  }
-
-  @action
-  updateActiveLinks(element) {
-    this.element = element;
-    const activeItem = this.element.querySelector('li a.active:not(.sidebar-section-link)');
-
-    console.log('activeItem', activeItem);
-
-    if (activeItem) {
-      activeItem.classList.remove("active");
-      const parent = activeItem.closest("details");
-      const grandParent = parent ? parent.parentNode : null;
-      const greatGrandParent = grandParent ? grandParent.parentNode : null;
-
-      if (parent && !grandParent) {
-        parent.open = false;
-      }
-      if (parent && grandParent) {
-        parent.open = false;
-        grandParent.open = false;
-      }
-      if (parent && grandParent && greatGrandParent) {
-        parent.open = false;
-        grandParent.open = false;
-        greatGrandParent.open = false;
-      }
-    }
-
-    const currentSidebarItem = this.element.querySelector(`li a[href*='${this.router?.currentRoute?.parent?.params?.id}']:not(.active):not(.sidebar-section-link)`);
-
-    if (currentSidebarItem) {
-      currentSidebarItem.classList.add("active");
-      const parent = currentSidebarItem.closest("details");
-      const grandParent = parent ? parent.parentNode : null;
-      const greatGrandParent = grandParent ? grandParent.parentNode : null;
-
-      if (parent && !grandParent) {
-        parent.open = true;
-      }
-      if (parent && grandParent) {
-        parent.open = true;
-        grandParent.open = true;
-      }
-      if (parent && grandParent && greatGrandParent) {
-        parent.open = true;
-        grandParent.open = true;
-        greatGrandParent.open = true;
-      }
-    }
   }
 }
