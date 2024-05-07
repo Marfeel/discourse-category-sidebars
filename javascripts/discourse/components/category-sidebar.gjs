@@ -169,10 +169,15 @@ export default class CategorySidebar extends Component {
   @bind
   updateActiveLinks() {
     let element = document.querySelector(".category-sidebar-contents");
+    console.log("Element:", element); // Verifica que el elemento existe
+
     const currentPath = window.location.pathname.split("/").pop();
+    console.log("Current Path:", currentPath); // Verifica la ruta actual
+
     const activeItem = element.querySelector(
       "li a.active:not(.sidebar-section-link)"
     );
+    console.log("Active Item:", activeItem); // Verifica qué elemento estaba activo
 
     if (activeItem) {
       activeItem.classList.remove("active");
@@ -189,6 +194,7 @@ export default class CategorySidebar extends Component {
     const currentSidebarItem = element.querySelector(
       `li > a[href*='/${currentPath}']:not(.active):not(.sidebar-section-link)`
     );
+    console.log("New Active Item:", currentSidebarItem); // Verifica el nuevo elemento a activar
 
     if (currentSidebarItem) {
       currentSidebarItem.classList.add("active");
