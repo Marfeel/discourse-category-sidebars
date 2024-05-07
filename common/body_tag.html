@@ -39,5 +39,10 @@
       }
     });
 
-    sideObserver.observe(document.body, { childList: true, subtree: true });
+    const topicBody = document.querySelector("#main-outlet-wrapper");
+    sideObserver.observe(topicBody, { childList: true, subtree: true });
+
+    removeEventListener("beforeunload", () => {
+      sideObserver.disconnect();
+    });
 </script>
