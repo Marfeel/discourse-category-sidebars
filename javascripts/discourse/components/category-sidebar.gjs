@@ -22,6 +22,13 @@ export default class CategorySidebar extends Component {
   element = null;
   observer = null;
 
+  constructor() {
+    super(...arguments);
+    this.router.on('routeDidChange', () => {
+      this.updateActiveLinks();
+    });
+  }
+
   <template>
     {{#if this.matchedSetting}}
       {{bodyClass "custom-sidebar"}}
@@ -167,6 +174,9 @@ export default class CategorySidebar extends Component {
   @action
   setupObserver(element) {
     this.element = element;
+    if (this.observer) {
+      this.observer.disconnect(); // Desconecta el observador anterior si existe
+    }
     this.observer = new MutationObserver(() => {
       this.updateActiveLinks();
     });
@@ -199,5 +209,6 @@ export default class CategorySidebar extends Component {
     if (this.observer) {
       this.observer.disconnect();
     }
+    this.router.off('routeDidChange', this.updateActiveLinks);
   }
 }
