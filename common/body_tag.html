@@ -1,7 +1,7 @@
 <script>
     let prevURL = window.location.href;
 
-    const observer = new MutationObserver(() => {
+    const sideObserver = new MutationObserver(() => {
       if (location.href !== prevURL && /\/t\//.test(location.href)) {
         console.log("URL changed");
         prevURL = location.href;
@@ -40,5 +40,5 @@
     });
 
     const topicBody = document.getElementById("main-outlet");
-    observer.observe(topicBody, { childList: true, subtree: true });
+    sideObserver.observe(topicBody, { childList: true, subtree: true });
 </script>
