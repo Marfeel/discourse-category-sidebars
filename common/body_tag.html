@@ -39,6 +39,5 @@
       }
     });
 
-    const topicBody = document.getElementById("main-outlet");
-    sideObserver.observe(topicBody, { childList: true, subtree: true });
+    sideObserver.observe(document.body, { childList: true, subtree: true });
 </script>
