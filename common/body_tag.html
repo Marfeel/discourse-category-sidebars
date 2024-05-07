@@ -34,26 +34,16 @@
             "']:not(.active):not(.sidebar-section-link)"
         );
 
-        console.log(document.querySelector(".sidebar-sections li > a[href*='" + currentRT + "']"));
-
         if (currentSidebarItem) {
-          currentSidebarItem.classList.add("active");
-          const parent = currentSidebarItem.closest("details");
-          const grandParent = parent ? parent.parentNode : null;
-          const greatGrandParent = grandParent ? grandParent.parentNode : null;
+            currentSidebarItem.classList.add("active");
+            let element = currentSidebarItem.closest("details");
 
-          if (parent && !grandParent) {
-            parent.open = true;
-          }
-          if (parent && grandParent) {
-            parent.open = true;
-            grandParent.open = true;
-          }
-          if (parent && grandParent && greatGrandParent) {
-            parent.open = true;
-            grandParent.open = true;
-            greatGrandParent.open = true;
-          }
+            while (element) {
+                if (element.tagName === 'DETAILS') {
+                element.open = true;
+                }
+                element = element.parentElement.closest("details");
+            }
         }
       }
     });
