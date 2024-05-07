@@ -175,7 +175,7 @@ export default class CategorySidebar extends Component {
   @action
   setupObserver(element) {
     if (this.sidebarObserver) {
-      this.observer.disconnect();
+      this.sidebarObserver.disconnect();
     }
     this.sidebarObserver = new MutationObserver(() => {
       this.updateActiveLinks(element);
