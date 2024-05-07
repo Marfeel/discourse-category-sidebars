@@ -188,7 +188,7 @@ export default class CategorySidebar extends Component {
   @action
   updateActiveLinks(element) {
     const currentPath = window.location.pathname;
-    const links = element.querySelectorAll('li a:not(.sidebar-section-link)');
+    const links = element.querySelectorAll('li > a:not(.sidebar-section-link)');
     links.forEach(link => {
     const linkPath = new URL(link.href).pathname;
     if (linkPath === currentPath) {
