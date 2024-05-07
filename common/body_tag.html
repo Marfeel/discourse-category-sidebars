@@ -33,6 +33,8 @@
             currentRT +
             "']:not(.active):not(.sidebar-section-link)"
         );
+
+        console.log(currentSidebarItem);
         if (currentSidebarItem) {
           currentSidebarItem.classList.add("active");
           const parent = currentSidebarItem.closest("details");
@@ -55,6 +57,5 @@
       }
     });
 
-    const topicBody = document.getElementById("main-outlet");
-    observer.observe(topicBody, { childList: true, subtree: true });
+    observer.observe(document.body, { childList: true, subtree: true });
 </script>
