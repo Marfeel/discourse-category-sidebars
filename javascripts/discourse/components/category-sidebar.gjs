@@ -3,7 +3,6 @@ import { tracked } from "@glimmer/tracking";
 import { concat } from "@ember/helper";
 import { action } from "@ember/object";
 import didInsert from "@ember/render-modifiers/modifiers/did-insert";
-import didUpdate from "@ember/render-modifiers/modifiers/did-update";
 import { schedule } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import { htmlSafe } from "@ember/template";
@@ -11,6 +10,7 @@ import ConditionalLoadingSpinner from "discourse/components/conditional-loading-
 import bodyClass from "discourse/helpers/body-class";
 import { ajax } from "discourse/lib/ajax";
 import Category from "discourse/models/category";
+import { bind } from "discourse-common/utils/decorators";
 
 export default class CategorySidebar extends Component {
   @service router;
@@ -22,21 +22,16 @@ export default class CategorySidebar extends Component {
 
   constructor() {
     super(...arguments);
-    this.router.on("routeDidChange", () => {
-      this.fetchPostContent();
-    });
+    this.router.on("routeDidChange", () => this.fetchPostContent());
+
+    schedule("afterRender", () => this.updateActiveLinks());
   }
 
   <template>
     {{#if this.matchedSetting}}
       {{bodyClass "custom-sidebar"}}
       {{bodyClass (concat "sidebar-" settings.sidebar_side)}}
-      <div
-        class="category-sidebar"
-        {{didInsert this.fetchPostContent}}
-        {{didUpdate this.fetchPostContent this.category}}
-        {{didUpdate this.scheduleUpdateActiveLinks this.router.currentRoute}}
-      >
+      <div class="category-sidebar" {{didInsert this.fetchPostContent}}>
         <div class="sticky-sidebar">
           <div
             class="category-sidebar-contents"
@@ -149,7 +144,6 @@ export default class CategorySidebar extends Component {
 
     // Check if the category has changed
     if (this.lastFetchedCategory === currentCategory?.id) {
-      this.scheduleUpdateActiveLinks();
       // If not, skip fetching
       return;
     }
@@ -161,7 +155,6 @@ export default class CategorySidebar extends Component {
       if (this.matchedSetting) {
         const response = await ajax(`/t/${this.matchedSetting.post}.json`);
         this.sidebarContent = response.post_stream.posts[0].cooked;
-        this.scheduleUpdateActiveLinks();
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -173,7 +166,7 @@ export default class CategorySidebar extends Component {
     return this.sidebarContent;
   }
 
-  @action
+  @bind
   updateActiveLinks() {
     let element = document.querySelector(".category-sidebar-contents");
     const currentPath = window.location.pathname.split("/").pop();
@@ -208,13 +201,6 @@ export default class CategorySidebar extends Component {
         parent = parent.parentElement.closest("details");
       }
     }
-  }
-
-  @action
-  scheduleUpdateActiveLinks() {
-    schedule("afterRender", () => {
-      this.updateActiveLinks();
-    });
   }
 
   willDestroy() {
