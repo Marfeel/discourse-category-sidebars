@@ -12,7 +12,7 @@
 
         if (activeItem) {
           activeItem.classList.remove("active");
-          const parent = activeItem.closest("details");
+          let parent = activeItem.closest("details");
           
           while (parent) {
             if (parent.tagName === "DETAILS") {
