@@ -35,6 +35,7 @@ export default class CategorySidebar extends Component {
           <div
             class="category-sidebar-contents"
             data-category-sidebar={{this.category.slug}}
+            {{didInsert this.setupObserver}}
           >
             <div class="cooked">
               {{#unless this.loading}}
@@ -161,5 +162,41 @@ export default class CategorySidebar extends Component {
     }
 
     return this.sidebarContent;
+  }
+
+  @action
+  setupObserver(element) {
+    this.element = element;
+    this.observer = new MutationObserver(() => {
+      this.updateActiveLinks();
+    });
+
+    this.observer.observe(this.element, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  @action
+  updateActiveLinks() {
+    const links = this.element.querySelectorAll('li a');
+    links.forEach(link => {
+      if (link.href === window.location.href) {
+        link.classList.add('active');
+        const detailsElement = link.closest('details');
+        if (detailsElement) {
+          detailsElement.setAttribute('open', '');
+        }
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  }
+
+  willDestroy() {
+    super.willDestroy();
+    if (this.observer) {
+      this.observer.disconnect();
+    }
   }
 }
