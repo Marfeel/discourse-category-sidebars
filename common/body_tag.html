@@ -1,5 +1,5 @@
 <script>
-    const sideObserver = new MutationObserver(() => {
+    function updateSidebarActiveLink() {
         const currentRT = window.location.pathname.split("/").pop();
         const activeItem = document.querySelector(
           "li a.active:not(.sidebar-section-link)"
@@ -31,6 +31,10 @@
                 element = element.parentElement.closest("details");
             }
         }
+    }
+
+    const sideObserver = new MutationObserver(() => {
+        updateSidebarActiveLink();
     });
 
     const topicBody = document.querySelector("#main-outlet-wrapper");

@@ -1,0 +1,31 @@
+<script>
+    const BTN_HAMBURGER_SIDEBAR = '.header-dropdown-toggle.hamburger-dropdown button';
+
+    function mobileSidebarBtn(sidebarBtn) {
+        if (!sidebarBtn.hasAttribute('data-mrf-open')) {
+            sidebarBtn.addEventListener('click', function() {
+                updateSidebarActiveLink?.();
+            });
+            sidebarBtn.setAttribute('data-mrf-open', 'true');
+        }
+    }
+    
+    function observeHamburgerMobile(mutations) {
+        mutations.forEach(function(mut) {
+            if (mut.type === 'childList' && mut.addedNodes.length > 0) {
+                const hamburgerBtn = document.querySelector(BTN_HAMBURGER_SIDEBAR);
+                
+                mobileSidebarBtn(hamburgerBtn);
+            }
+        });
+    }
+    
+    const observerSidebarMobile = new MutationObserver(observeHamburgerMobile);
+    observerSidebarMobile.observe(document.body, { childList: true, subtree: true });
+
+    const initialBtnMobile = document.querySelector(BTN_HAMBURGER_SIDEBAR);
+    
+    if (initialBtnMobile) {
+        mobileSidebarBtn(initialBtnMobile);
+    }
+</script>
