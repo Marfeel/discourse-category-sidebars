@@ -34,7 +34,8 @@
             "']:not(.active):not(.sidebar-section-link)"
         );
 
-        console.log(currentSidebarItem);
+        console.log(document.querySelector(".sidebar-sections li > a[href*='" + currentRT + "']"));
+
         if (currentSidebarItem) {
           currentSidebarItem.classList.add("active");
           const parent = currentSidebarItem.closest("details");
