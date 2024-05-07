@@ -69,6 +69,14 @@ export default class CategorySidebar extends Component {
     return filteredTargets.includes(this.router.currentRouteName);
   }
 
+  get isDetailTopic() {
+    return this.router?.currentRoute?.params?.hasOwnProperty("slug");
+  }
+
+  get categorySlug() {
+    return this.router?.currentRoute?.params?.slug;
+  }
+
   get categorySlugPathWithID() {
     return this.router?.currentRoute?.params?.category_slug_path_with_id;
   }
@@ -83,7 +91,8 @@ export default class CategorySidebar extends Component {
     if (this.parsedSetting["all"] && this.isTopRoute) {
       // if this is a top_menu route, use the "all" setting
       return this.parsedSetting["all"];
-    } else if (this.categorySlugPathWithID) {
+    } else if (this.isDetailTopic) {
+      console.log('test', this.categorySlug, this.router?.currentRoute);
       const categorySlug = this.category.slug;
       const parentCategorySlug = this.category.parentCategory?.slug;
 
