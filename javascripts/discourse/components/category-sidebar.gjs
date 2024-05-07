@@ -25,7 +25,6 @@ export default class CategorySidebar extends Component {
     super(...arguments);
     this.router.on("routeDidChange", () => {
       this.fetchPostContent();
-      this.scheduleUpdateActiveLinks();
     });
   }
 
@@ -146,6 +145,7 @@ export default class CategorySidebar extends Component {
 
     // Check if the category has changed
     if (this.lastFetchedCategory === currentCategory?.id) {
+      this.scheduleUpdateActiveLinks();
       // If not, skip fetching
       return;
     }
@@ -215,9 +215,6 @@ export default class CategorySidebar extends Component {
 
   willDestroy() {
     super.willDestroy();
-    this.router.off("routeDidChange", () => {
-      this.fetchPostContent();
-      this.scheduleUpdateActiveLinks();
-    });
+    this.router.off("routeDidChange", this.fetchPostContent);
   }
 }
