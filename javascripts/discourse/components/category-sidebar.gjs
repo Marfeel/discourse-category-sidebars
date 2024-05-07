@@ -26,7 +26,7 @@ export default class CategorySidebar extends Component {
       <div
         class="category-sidebar"
         {{didInsert this.fetchPostContent}}
-        {{didUpdate this.fetchPostContent}}
+        {{didUpdate this.fetchPostContent this.category}}
       >
         <div class="sticky-sidebar">
           <div
