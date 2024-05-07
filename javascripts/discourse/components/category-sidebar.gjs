@@ -10,7 +10,6 @@ import ConditionalLoadingSpinner from "discourse/components/conditional-loading-
 import bodyClass from "discourse/helpers/body-class";
 import { ajax } from "discourse/lib/ajax";
 import Category from "discourse/models/category";
-import { bind } from "discourse-common/utils/decorators";
 
 export default class CategorySidebar extends Component {
   @service router;
@@ -167,7 +166,7 @@ export default class CategorySidebar extends Component {
     return this.sidebarContent;
   }
 
-  @bind
+  @action
   updateActiveLinks() {
     let element = document.querySelector(".category-sidebar-contents");
     console.log("Element:", element); // Verifica que el elemento existe
