@@ -170,6 +170,7 @@ export default class CategorySidebar extends Component {
     this.element = element;
     this.observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
+        console.log('mutation');
           this.updateActiveLinks(this.element);
       });
     });
@@ -185,6 +186,8 @@ export default class CategorySidebar extends Component {
   updateActiveLinks(element) {
     this.element = element;
     const activeItem = this.element.querySelector('li a.active:not(.sidebar-section-link)');
+
+    console.log('activeItem', activeItem);
 
     if (activeItem) {
       activeItem.classList.remove("active");
