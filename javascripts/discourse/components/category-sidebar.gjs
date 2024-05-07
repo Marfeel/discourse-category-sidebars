@@ -18,14 +18,14 @@ export default class CategorySidebar extends Component {
   @tracked sidebarContent;
   @tracked loading = true;
   @tracked lastFetchedCategory = null;
-  @tracked contentLoaded = false;
 
   sidebarObserver = null;
 
   constructor() {
     super(...arguments);
     this.router.on("routeDidChange", () => {
-      this.handleRouteChange();
+      this.fetchPostContent();
+      this.scheduleUpdateActiveLinks();
     });
   }
 
@@ -208,17 +208,16 @@ export default class CategorySidebar extends Component {
 
   @action
   scheduleUpdateActiveLinks() {
-    schedule("afterRender", this, this.updateActiveLinks);
-  }
-
-  @action
-  handleRouteChange() {
-    this.fetchPostContent();
-    this.scheduleUpdateActiveLinks();
+    schedule("afterRender", () => {
+      this.updateActiveLinks();
+    });
   }
 
   willDestroy() {
     super.willDestroy();
-    this.router.off("routeDidChange", this.handleRouteChange);
+    this.router.off("routeDidChange", () => {
+      this.fetchPostContent();
+      this.scheduleUpdateActiveLinks();
+    });
   }
 }
