@@ -190,7 +190,7 @@ export default class CategorySidebar extends Component {
       }
     }
 
-    const currentSidebarItem = this.element.querySelector(`li a[href*="${this.router?.currentRoute?.parent?.params?.id}"]`);
+    const currentSidebarItem = this.element.querySelector(`li a[href="${window.location.pathname}"]`);
 
     console.log('current', currentSidebarItem, this.router?.currentRoute?.parent?.params?.id, window.location.pathname);
 
