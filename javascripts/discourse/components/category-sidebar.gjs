@@ -17,6 +17,16 @@ export default class CategorySidebar extends Component {
   @service site;
   @tracked sidebarContent;
   @tracked loading = true;
+  @tracked lastFetchedCategory = null;
+
+  sidebarObserver = null;
+
+  constructor() {
+    super(...arguments);
+    this.router.on("routeDidChange", () => {
+      this.updateActiveLinks();
+    });
+  }
 
   <template>
     {{#if this.matchedSetting}}
@@ -31,6 +41,7 @@ export default class CategorySidebar extends Component {
           <div
             class="category-sidebar-contents"
             data-category-sidebar={{this.category.slug}}
+            {{didInsert this.setupObserver}}
           >
             <div class="cooked">
               {{#unless this.loading}}
@@ -69,6 +80,10 @@ export default class CategorySidebar extends Component {
     return filteredTargets.includes(this.router.currentRouteName);
   }
 
+  get categoryIdTopic() {
+    return this.router?.currentRoute?.parent?.attributes?.category_id;
+  }
+
   get categorySlugPathWithID() {
     return this.router?.currentRoute?.params?.category_slug_path_with_id;
   }
@@ -76,6 +91,12 @@ export default class CategorySidebar extends Component {
   get category() {
     return this.categorySlugPathWithID
       ? Category.findBySlugPathWithID(this.categorySlugPathWithID)
+      : null;
+  }
+
+  get topicCategory() {
+    return this.categoryIdTopic
+      ? Category.findById(this.categoryIdTopic)
       : null;
   }
 
@@ -101,12 +122,40 @@ export default class CategorySidebar extends Component {
       ) {
         return this.parsedSetting[parentCategorySlug];
       }
+    } else if (this.categoryIdTopic) {
+      const topicCategorySlug = this.topicCategory?.slug;
+      const parentTopicCategorySlug = Category.findById(
+        this.topicCategory?.parent_category_id
+      )?.slug;
+
+      if (topicCategorySlug && this.parsedSetting[topicCategorySlug]) {
+        return this.parsedSetting[topicCategorySlug];
+      }
+
+      if (
+        settings.inherit_parent_sidebar &&
+        parentTopicCategorySlug &&
+        this.parsedSetting[parentTopicCategorySlug]
+      ) {
+        return this.parsedSetting[parentTopicCategorySlug];
+      }
     }
   }
 
   @action
   async fetchPostContent() {
+    const currentCategory =
+      this.category ||
+      Category.findById(this.topicCategory?.parent_category_id);
+
+    // Check if the category has changed
+    if (this.lastFetchedCategory === currentCategory?.id) {
+      // If not, skip fetching
+      return;
+    }
+
     this.loading = true;
+    this.lastFetchedCategory = currentCategory?.id;
 
     try {
       if (this.matchedSetting) {
@@ -121,5 +170,55 @@ export default class CategorySidebar extends Component {
     }
 
     return this.sidebarContent;
+  }
+
+  @action
+  setupObserver(element) {
+    if (this.sidebarObserver) {
+      this.observer.disconnect();
+    }
+    this.sidebarObserver = new MutationObserver(() => {
+      this.updateActiveLinks(element);
+    });
+
+    this.sidebarObserver.observe(element, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
+  @action
+  updateActiveLinks(element) {
+    if (!element) {
+      return;
+    }
+    const currentPath = window.location.pathname;
+    const links = element?.querySelectorAll(
+      "li > a:not(.sidebar-section-link)"
+    );
+    links.forEach((link) => {
+      const linkPath = new URL(link.href).pathname;
+      if (linkPath === currentPath) {
+        link.classList.add("active");
+        let detailsElement = link.closest("details");
+        while (detailsElement) {
+          if (detailsElement.tagName === "DETAILS") {
+            detailsElement.setAttribute("open", "");
+          }
+
+          detailsElement = detailsElement.parentElement.closest("details");
+        }
+      } else {
+        link.classList.remove("active");
+      }
+    });
+  }
+
+  willDestroy() {
+    super.willDestroy();
+    if (this.sidebarObserver) {
+      this.sidebarObserver.disconnect();
+    }
+    this.router.off("routeDidChange", this.updateActiveLinks);
   }
 }
