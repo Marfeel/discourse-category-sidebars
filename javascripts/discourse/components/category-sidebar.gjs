@@ -155,6 +155,7 @@ export default class CategorySidebar extends Component {
       if (this.matchedSetting) {
         const response = await ajax(`/t/${this.matchedSetting.post}.json`);
         this.sidebarContent = response.post_stream.posts[0].cooked;
+        this.updateActiveLinks();
       }
     } catch (error) {
       // eslint-disable-next-line no-console
