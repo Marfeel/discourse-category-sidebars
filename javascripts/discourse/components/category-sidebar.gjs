@@ -87,6 +87,8 @@ export default class CategorySidebar extends Component {
       const categorySlug = this.category.slug;
       const parentCategorySlug = this.category.parentCategory?.slug;
 
+      console.log("categorySlug", categorySlug, this.categorySlugPathWithID);
+
       // if there's a setting for this category, use it
       if (categorySlug && this.parsedSetting[categorySlug]) {
         return this.parsedSetting[categorySlug];
