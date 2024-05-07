@@ -29,7 +29,7 @@ export default class CategorySidebar extends Component {
       <div
         class="category-sidebar"
         {{didInsert this.fetchPostContent}}
-        {{didUpdate this.fetchPostContent this.category}}
+        {{didUpdate this.fetchPostContent this.router.currentRoute}}
       >
         <div class="sticky-sidebar">
           <div
@@ -169,8 +169,6 @@ export default class CategorySidebar extends Component {
   updateActiveLinks(element) {
     this.element = element;
     const activeItem = this.element.querySelector('li a.active:not(.sidebar-section-link)');
-
-    console.log('activeItem', activeItem);
 
     if (activeItem) {
       activeItem.classList.remove("active");
