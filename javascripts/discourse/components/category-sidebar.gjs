@@ -18,13 +18,16 @@ export default class CategorySidebar extends Component {
   @tracked sidebarContent;
   @tracked loading = true;
   @tracked lastFetchedCategory = null;
+  @tracked contentLoaded = false;
 
   sidebarObserver = null;
 
   constructor() {
     super(...arguments);
     this.router.on("routeDidChange", () => {
-      this.updateActiveLinks();
+      if (this.contentLoaded) {
+        this.updateActiveLinks();
+      }
     });
   }
 
@@ -161,6 +164,7 @@ export default class CategorySidebar extends Component {
       if (this.matchedSetting) {
         const response = await ajax(`/t/${this.matchedSetting.post}.json`);
         this.sidebarContent = response.post_stream.posts[0].cooked;
+        this.contentLoaded = true;
       }
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -178,7 +182,9 @@ export default class CategorySidebar extends Component {
       this.sidebarObserver.disconnect();
     }
     this.sidebarObserver = new MutationObserver(() => {
-      this.updateActiveLinks(element);
+      if (this.contentLoaded) {
+        this.updateActiveLinks(element);
+      }
     });
 
     this.sidebarObserver.observe(element, {
@@ -193,7 +199,6 @@ export default class CategorySidebar extends Component {
       return;
     }
     const currentPath = window.location.pathname.split("/").pop();
-    console.log(this.router?.currentRoute);
     const activeItem = element.querySelector(
       "li a.active:not(.sidebar-section-link)"
     );
