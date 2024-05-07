@@ -37,14 +37,13 @@ export default class CategorySidebar extends Component {
       {{bodyClass (concat "sidebar-" settings.sidebar_side)}}
       <div
         class="category-sidebar"
-        {{didInsert this.fetchPostContent}}
+        {{didInsert this.setupObserver}}
         {{didUpdate this.fetchPostContent this.category}}
       >
         <div class="sticky-sidebar">
           <div
             class="category-sidebar-contents"
             data-category-sidebar={{this.category.slug}}
-            {{didInsert this.setupObserver}}
           >
             <div class="cooked">
               {{#unless this.loading}}
