@@ -88,6 +88,7 @@ export default class CategorySidebar extends Component {
   }
 
   get matchedSetting() {
+    console.log(this.categorySlugPathWithID, this.router?.currentRoute);
     if (this.parsedSetting["all"] && this.isTopRoute) {
       // if this is a top_menu route, use the "all" setting
       return this.parsedSetting["all"];
