@@ -192,26 +192,38 @@ export default class CategorySidebar extends Component {
     if (!element) {
       return;
     }
-    const currentPath = window.location.pathname;
-    const links = element?.querySelectorAll(
-      "li > a:not(.sidebar-section-link)"
+    const currentPath = window.location.pathname.split("/").pop();
+    console.log(this.router?.currentRoute);
+    const activeItem = element.querySelector(
+      "li a.active:not(.sidebar-section-link)"
     );
-    links.forEach((link) => {
-      const linkPath = new URL(link.href).pathname;
-      if (linkPath === currentPath) {
-        link.classList.add("active");
-        let detailsElement = link.closest("details");
-        while (detailsElement) {
-          if (detailsElement.tagName === "DETAILS") {
-            detailsElement.setAttribute("open", "");
-          }
 
-          detailsElement = detailsElement.parentElement.closest("details");
+    if (activeItem) {
+      activeItem.classList.remove("active");
+      let parent = activeItem.closest("details");
+
+      while (parent) {
+        if (parent.tagName === "DETAILS") {
+          parent.open = false;
         }
-      } else {
-        link.classList.remove("active");
+        parent = parent.parentElement.closest("details");
       }
-    });
+    }
+    const currentSidebarItem = document.querySelector(
+      `.sidebar-sections li > a[href*='${currentPath}']:not(.active):not(.sidebar-section-link)`
+    );
+
+    if (currentSidebarItem) {
+      currentSidebarItem.classList.add("active");
+      let parent = currentSidebarItem.closest("details");
+
+      while (parent) {
+        if (parent.tagName === "DETAILS") {
+          parent.open = true;
+        }
+        parent = parent.parentElement.closest("details");
+      }
+    }
   }
 
   willDestroy() {
