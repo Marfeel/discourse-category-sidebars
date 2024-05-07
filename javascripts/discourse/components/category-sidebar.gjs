@@ -174,7 +174,7 @@ export default class CategorySidebar extends Component {
       });
     });
 
-    this.observer.observe(this.element, {
+    this.observer.observe(document.getElementById("main-outlet"), {
       childList: true,
       subtree: true,
     });
