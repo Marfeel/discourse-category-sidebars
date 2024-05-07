@@ -189,19 +189,20 @@ export default class CategorySidebar extends Component {
 
   @action
   updateActiveLinks() {
-    const links = this.element.querySelectorAll('li a');
+    const currentPath = window.location.pathname;
+    const links = this.element.querySelectorAll('li a:not(.sidebar-section-link)');
     links.forEach(link => {
-      if (link.href === window.location.href) {
-        console.log('active link', link.href, window.location.href)
-        link.classList.add('active');
-        const detailsElement = link.closest('details');
-        if (detailsElement) {
-          detailsElement.setAttribute('open', '');
-        }
-      } else {
-        link.classList.remove('active');
+    const linkPath = new URL(link.href).pathname;
+    if (linkPath === currentPath) {
+      link.classList.add('active');
+      const detailsElement = link.closest('details');
+      if (detailsElement) {
+        detailsElement.setAttribute('open', '');
       }
-    });
+    } else {
+      link.classList.remove('active');
+    }
+  });
   }
 
   willDestroy() {
