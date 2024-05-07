@@ -170,9 +170,7 @@ export default class CategorySidebar extends Component {
     this.element = element;
     this.observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.type === "childList") {
           this.updateActiveLinks(this.element);
-        }
       });
     });
 
@@ -236,6 +234,12 @@ export default class CategorySidebar extends Component {
         grandParent.open = true;
         greatGrandParent.open = true;
       }
+    }
+  }
+
+  willDestroy() {
+    if (this.observer) {
+      this.observer.disconnect();
     }
   }
 }
