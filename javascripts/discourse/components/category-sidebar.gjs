@@ -23,7 +23,9 @@ export default class CategorySidebar extends Component {
     super(...arguments);
     this.router.on("routeDidChange", () => this.fetchPostContent());
 
-    schedule("afterRender", () => this.updateActiveLinks());
+    schedule("afterRender", () => {
+      this.updateActiveLinks();
+    });
   }
 
   <template>
@@ -154,7 +156,9 @@ export default class CategorySidebar extends Component {
       if (this.matchedSetting) {
         const response = await ajax(`/t/${this.matchedSetting.post}.json`);
         this.sidebarContent = response.post_stream.posts[0].cooked;
-        this.updateActiveLinks();
+        schedule("afterRender", () => {
+          this.updateActiveLinks();
+        });
       }
     } catch (error) {
       // eslint-disable-next-line no-console
