@@ -3,6 +3,7 @@ import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
 import { schedule } from "@ember/runloop";
 import { inject as service } from "@ember/service";
+import { htmlSafe } from "@ember/template";
 import { ajax } from "discourse/lib/ajax";
 
 export default class FixedSidebar extends Component {
@@ -14,6 +15,16 @@ export default class FixedSidebar extends Component {
     super(...arguments);
     this.fetchContents();
   }
+
+  <template>
+    {{#each this.contents as |content|}}
+      <div class="sidebar-section" data-section-name={{content.section}}>
+        {{#unless this.loading}}
+          {{htmlSafe this.sidebarContent}}
+        {{/unless}}
+      </div>
+    {{/each}}
+  </template>
 
   get fixedSettings() {
     const setupFixed = settings.setup_fixed.split("|").map((entry) => {
