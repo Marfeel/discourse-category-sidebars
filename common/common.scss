@@ -173,6 +173,14 @@
       }
     }
   }
+  .custom-sidebar-section {
+    > details {
+      padding-inline: 8px;
+    }
+    > ul {
+      ul:before { content: none; }
+    }
+  }
 }
 
 .sidebar-section-wrapper[data-section-name] {
