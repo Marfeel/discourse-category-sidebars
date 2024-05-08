@@ -5,9 +5,11 @@ import { schedule } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import { htmlSafe } from "@ember/template";
 import { ajax } from "discourse/lib/ajax";
+import didUpdate from "discourse-common/utils/did-update";
 
 export default class FixedSidebar extends Component {
   @service siteSettings;
+  @service router;
   @tracked contents = [];
   @tracked loading = true;
 
@@ -18,7 +20,11 @@ export default class FixedSidebar extends Component {
 
   <template>
     {{#each this.contents as |content|}}
-      <div class="custom-sidebar-section" data-section-name={{content.section}}>
+      <div
+        class="custom-sidebar-section"
+        data-section-name={{content.section}}
+        {{didUpdate this.setupContents this.router.currentRoute}}
+      >
         {{#unless this.loading}}
           {{htmlSafe content.content}}
         {{/unless}}
@@ -48,7 +54,6 @@ export default class FixedSidebar extends Component {
       });
 
       this.contents = await Promise.all(promises);
-      this.setupContents();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(
@@ -68,9 +73,13 @@ export default class FixedSidebar extends Component {
           `.sidebar-section-wrapper[data-section-name="${section}"]`
         );
         if (targetElement) {
-          const divElement = document.createElement("div");
-          divElement.innerHTML = content;
-          targetElement.appendChild(divElement);
+          const existingContent = targetElement.querySelector(".cooked");
+          if (!existingContent) {
+            const divElement = document.createElement("div");
+            divElement.innerHTML = content;
+            divElement.classList.add("cooked");
+            targetElement.appendChild(divElement);
+          }
         }
       });
     });
