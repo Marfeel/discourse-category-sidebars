@@ -3,10 +3,12 @@
   [data-section-name="community"] {
     order: -3;
   }
-  [data-section-name="product-guides"], [data-section-name="implementation-guides"] {
+  [data-section-name="product-guides"],
+  [data-section-name="implementation-guides"] {
     order: -2;
   }
-  [data-section-name="general"], [data-section-name="marfeel"] {
+  [data-section-name="general"],
+  [data-section-name="marfeel"] {
     order: -1;
   }
 }
@@ -23,7 +25,8 @@
   .sidebar-wrapper & {
     padding: 30px;
   }
-  .cooked, .custom-sidebar-section {
+  .cooked,
+  .custom-sidebar-section {
     ul {
       margin-left: 0;
       margin-block: 0;
@@ -177,7 +180,9 @@
     > details {
       padding-inline: 8px;
       > details {
-        ul::before { content: none !important; }
+        ul::before {
+          content: none !important;
+        }
       }
     }
   }
@@ -185,11 +190,11 @@
 
 .sidebar-section-wrapper[data-section-name] {
   &:has(.custom-sidebar-section) {
-    .sidebar-section-content { 
+    .sidebar-section-content {
       display: none;
     }
   }
-  &:has(button[aria-expanded="false"])  {
+  &:has(button[aria-expanded="false"]) {
     .custom-sidebar-section {
       display: none;
     }
