@@ -73,7 +73,6 @@ export default class FixedSidebar extends Component {
           const divElement = document.createElement("div");
           divElement.classList.add("cooked");
           divElement.innerHTML = content;
-          targetElement.classList.add("custom-sidebar-section");
           targetElement.appendChild(divElement);
         }
       });
