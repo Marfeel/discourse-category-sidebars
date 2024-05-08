@@ -178,5 +178,10 @@
 }
 
 .custom-sidebar-section[data-section-name] {
-  .sidebar-section-content { display: none }
+  .sidebar-section-content { display: none; }
+  &:has(button[aria-expanded="false"])  {
+    .cooked {
+      display: none;
+    }
+  }
 }
