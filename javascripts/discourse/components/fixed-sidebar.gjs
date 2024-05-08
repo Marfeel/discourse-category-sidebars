@@ -43,7 +43,7 @@ export default class FixedSidebar extends Component {
         const response = await ajax(`/t/${setting.postId}.json`);
         return {
           section: setting.section,
-          content: `<div class="cooked">${response.post_stream.posts[0].cooked}</div>`,
+          content: response.post_stream.posts[0].cooked,
         };
       });
 
