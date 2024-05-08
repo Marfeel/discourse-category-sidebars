@@ -176,9 +176,9 @@
   .custom-sidebar-section {
     > details {
       padding-inline: 8px;
-    }
-    > ul {
-      ul:before { content: none; }
+      > ul {
+        ul:before { content: none; }
+      }
     }
   }
 }
