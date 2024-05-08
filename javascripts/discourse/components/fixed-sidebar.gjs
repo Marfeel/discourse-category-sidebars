@@ -65,9 +65,10 @@ export default class FixedSidebar extends Component {
     schedule("afterRender", () => {
       this.contents.forEach(({ section, content }) => {
         const targetElement = document.querySelector(
-          `[data-section-name="${section}"]`
+          `.sidebar-section-wrapper[data-section-name="${section}"]`
         );
         if (targetElement) {
+          console.log(content);
           const divElement = document.createElement("div");
           divElement.innerHtml = content;
           targetElement.appendChild(divElement);
