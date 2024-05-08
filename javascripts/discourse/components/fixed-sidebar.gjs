@@ -12,11 +12,11 @@ export default class FixedSidebar extends Component {
   @service router;
   @tracked contents = [];
   @tracked loading = true;
-  fixedObserver = null;
 
   constructor() {
     super(...arguments);
     this.fetchContents();
+    this.setupContents();
   }
 
   <template>
@@ -68,8 +68,8 @@ export default class FixedSidebar extends Component {
 
   @action
   setupContents() {
-    console.log(this.siteSettings, this.router);
     schedule("afterRender", () => {
+      console.log(this.siteSettings, this.router);
       this.contents.forEach(({ section }) => {
         const targetElement = document.querySelector(
           `.sidebar-section-wrapper[data-section-name="${section}"]`
