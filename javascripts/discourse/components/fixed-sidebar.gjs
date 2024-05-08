@@ -16,6 +16,7 @@ export default class FixedSidebar extends Component {
   constructor() {
     super(...arguments);
     this.fetchContents();
+    this.setupContents();
   }
 
   <template>
@@ -75,9 +76,7 @@ export default class FixedSidebar extends Component {
           );
           if (targetElement) {
             const existingContent = targetElement.querySelector(".cooked");
-            if (existingContent) {
-              existingContent.innerHTML = content; // replace existing content
-            } else {
+            if (!existingContent) {
               const divElement = document.createElement("div");
               divElement.innerHTML = content;
               divElement.classList.add("cooked");
@@ -86,6 +85,6 @@ export default class FixedSidebar extends Component {
           }
         });
       });
-    }, 250);
+    }, 0);
   }
 }
