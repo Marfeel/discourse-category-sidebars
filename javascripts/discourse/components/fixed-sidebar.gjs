@@ -1,6 +1,7 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
+import { schedule } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import { ajax } from "discourse/lib/ajax";
 
@@ -48,20 +49,26 @@ export default class ProductGuidesSidebar extends Component {
 
   @action
   setupContents() {
-    this.contents.forEach(({ section, content }) => {
-      const targetElement = document.querySelector(
-        `[data-section-name="${section}"]`
-      );
-      if (targetElement) {
-        targetElement.innerHTML = content;
-        const ulElement = targetElement.querySelector(
-          "ul.sidebar-section-content"
+    schedule("afterRender", this, () => {
+      this.contents.forEach(({ section, content }) => {
+        const targetElement = document.querySelector(
+          `[data-section-name="${section}"]`
         );
+        if (targetElement) {
+          // eslint-disable-next-line no-console
+          console.log("targetElement", targetElement);
+          const divElement = document.createElement("div");
+          divElement.innerHTML = content;
+          targetElement.appendChild(divElement);
+          const ulElement = targetElement.querySelector(
+            "ul.sidebar-section-content"
+          );
 
-        if (ulElement) {
-          ulElement.style.display = "none";
+          if (ulElement) {
+            ulElement.style.display = "none";
+          }
         }
-      }
+      });
     });
   }
 }
