@@ -20,18 +20,17 @@ export default class FixedSidebar extends Component {
   }
 
   <template>
-    <div {{didUpdate this.setupContents this.router}}>
-      {{#each this.contents as |content|}}
-        <div
-          class="custom-sidebar-section"
-          data-sidebar-name={{content.section}}
-        >
-          {{#unless this.loading}}
-            {{htmlSafe content.content}}
-          {{/unless}}
-        </div>
-      {{/each}}
-    </div>
+    {{#each this.contents as |content|}}
+      <div
+        class="custom-sidebar-section"
+        data-sidebar-name={{content.section}}
+        {{didUpdate this.setupContents this.router.currentRoute}}
+      >
+        {{#unless this.loading}}
+          {{htmlSafe content.content}}
+        {{/unless}}
+      </div>
+    {{/each}}
   </template>
 
   get fixedSettings() {
@@ -69,7 +68,7 @@ export default class FixedSidebar extends Component {
 
   @action
   setupContents() {
-    console.log(this.siteSettings);
+    console.log(this.siteSettings, this.router);
     schedule("afterRender", () => {
       this.contents.forEach(({ section }) => {
         const targetElement = document.querySelector(
