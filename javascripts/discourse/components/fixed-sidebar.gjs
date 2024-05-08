@@ -1,11 +1,11 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
+import didUpdate from "@ember/render-modifiers/modifiers/did-update";
 import { schedule } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import { htmlSafe } from "@ember/template";
 import { ajax } from "discourse/lib/ajax";
-import didUpdate from "discourse-common/utils/did-update";
 
 export default class FixedSidebar extends Component {
   @service siteSettings;
