@@ -68,22 +68,20 @@ export default class FixedSidebar extends Component {
 
   @action
   setupContents() {
-    setTimeout(() => {
-      schedule("afterRender", () => {
-        this.contents.forEach(({ section }) => {
-          const targetElement = document.querySelector(
-            `.sidebar-section-wrapper[data-section-name="${section}"]`
+    schedule("afterRender", () => {
+      this.contents.forEach(({ section }) => {
+        const targetElement = document.querySelector(
+          `.sidebar-section-wrapper[data-section-name="${section}"]`
+        );
+        if (targetElement) {
+          const contentElement = document.querySelector(
+            `.custom-sidebar-section[data-sidebar-name="${section}"]`
           );
-          if (targetElement) {
-            const contentElement = document.querySelector(
-              `.custom-sidebar-section[data-sidebar-name="${section}"]`
-            );
-            if (contentElement) {
-              targetElement.appendChild(contentElement);
-            }
+          if (contentElement) {
+            targetElement.appendChild(contentElement.cloneNode(true));
           }
-        });
+        }
       });
-    }, 100);
+    });
   }
 }
