@@ -69,7 +69,6 @@ export default class FixedSidebar extends Component {
         );
         if (targetElement) {
           const divElement = document.createElement("div");
-          divElement.classList.add("cooked");
           divElement.innerHTML = content;
           targetElement.appendChild(divElement);
         }
