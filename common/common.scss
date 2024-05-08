@@ -177,7 +177,9 @@
     > details {
       padding-inline: 8px;
       > ul {
-        ul:before { content: none; }
+        > details {
+          ul::before { content: none; }
+        }
       }
     }
   }
