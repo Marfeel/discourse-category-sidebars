@@ -38,9 +38,14 @@
   });
 
   const topicBody = document.querySelector("#main-outlet-wrapper");
-  sideObserver.observe(topicBody, { childList: true, subtree: true });
+  if (topicBody) {
+    const sideObserver = new MutationObserver(() => {
+      updateSidebarActiveLink();
+    });
+    sideObserver.observe(topicBody, { childList: true, subtree: true });
 
-  removeEventListener("beforeunload", () => {
-    sideObserver.disconnect();
-  });
+    window.addEventListener("beforeunload", () => {
+      sideObserver.disconnect();
+    });
+  }
 </script>
