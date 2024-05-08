@@ -14,6 +14,7 @@ export default class FixedSidebar extends Component {
   constructor() {
     super(...arguments);
     this.fetchContents();
+    this.setupContents();
   }
 
   <template>
