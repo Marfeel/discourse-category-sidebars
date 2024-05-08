@@ -18,7 +18,7 @@ export default class FixedSidebar extends Component {
 
   <template>
     {{#each this.contents as |content|}}
-      <div class="sidebar-section" data-section-name={{content.section}}>
+      <div class="custom-sidebar-section" data-section-name={{content.section}}>
         {{#unless this.loading}}
           {{htmlSafe content.content}}
         {{/unless}}
@@ -65,9 +65,11 @@ export default class FixedSidebar extends Component {
   setupContents() {
     schedule("afterRender", this, () => {
       this.contents.forEach(({ section, content }) => {
+        console.log("section", section);
         const targetElement = document.querySelector(
           `[data-section-name="${section}"]`
         );
+        console.log("targetElement", targetElement);
         if (targetElement) {
           // eslint-disable-next-line no-console
           console.log("targetElement", targetElement);
