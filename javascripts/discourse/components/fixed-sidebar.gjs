@@ -19,11 +19,9 @@ export default class FixedSidebar extends Component {
   <template>
     {{#each this.contents as |content|}}
       <div class="custom-sidebar-section" data-section-name={{content.section}}>
-        <div class="cooked">
-          {{#unless this.loading}}
-            {{htmlSafe content.content}}
-          {{/unless}}
-        </div>
+        {{#unless this.loading}}
+          {{htmlSafe content.content}}
+        {{/unless}}
       </div>
     {{/each}}
   </template>
