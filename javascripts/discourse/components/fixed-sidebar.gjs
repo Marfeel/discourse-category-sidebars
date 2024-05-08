@@ -68,7 +68,9 @@ export default class FixedSidebar extends Component {
           `[data-section-name="${section}"]`
         );
         if (targetElement) {
-          const divElement = document.createElement("div");
+          const divElement = document
+            .createElement("div")
+            .classList.add("custom-section");
           divElement.innerHTML = content;
           targetElement.appendChild(divElement);
         }
