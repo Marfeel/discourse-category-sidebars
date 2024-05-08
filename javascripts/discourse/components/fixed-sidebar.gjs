@@ -24,7 +24,7 @@ export default class FixedSidebar extends Component {
       <div
         class="custom-sidebar-section"
         data-sidebar-name={{content.section}}
-        {{didUpdate this.setupContents this.loading}}
+        {{didUpdate this.setupContents this.router.currentRoute}}
       >
         {{#unless this.loading}}
           {{htmlSafe content.content}}
