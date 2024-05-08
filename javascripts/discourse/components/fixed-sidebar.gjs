@@ -77,7 +77,10 @@ export default class FixedSidebar extends Component {
           const contentElement = document.querySelector(
             `.custom-sidebar-section[data-sidebar-name="${section}"]`
           );
-          if (contentElement) {
+          const existingContent = targetElement.querySelector(
+            `.custom-sidebar-section[data-sidebar-name="${section}"]`
+          );
+          if (contentElement && !existingContent) {
             targetElement.appendChild(contentElement.cloneNode(true));
           }
         }
