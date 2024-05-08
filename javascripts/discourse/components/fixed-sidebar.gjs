@@ -68,23 +68,20 @@ export default class FixedSidebar extends Component {
 
   @action
   setupContents() {
-    setTimeout(() => {
-      schedule("afterRender", () => {
-        this.contents.forEach(({ section, content }) => {
-          const targetElement = document.querySelector(
-            `.sidebar-section-wrapper[data-section-name="${section}"]`
+    schedule("afterRender", () => {
+      this.contents.forEach(({ section }) => {
+        const targetElement = document.querySelector(
+          `.sidebar-section-wrapper[data-section-name="${section}"]`
+        );
+        if (targetElement) {
+          const contentElement = document.querySelector(
+            `.custom-sidebar-section[data-section-name="${section}"]`
           );
-          if (targetElement) {
-            const existingContent = targetElement.querySelector(".cooked");
-            if (!existingContent) {
-              const divElement = document.createElement("div");
-              divElement.innerHTML = content;
-              divElement.classList.add("cooked");
-              targetElement.appendChild(divElement);
-            }
+          if (contentElement) {
+            targetElement.appendChild(contentElement);
           }
-        });
+        }
       });
-    }, 0);
+    });
   }
 }

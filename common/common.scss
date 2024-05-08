@@ -178,13 +178,13 @@
 }
 
 .sidebar-section-wrapper[data-section-name] {
-  &:has(.cooked) {
+  &:has(.custom-sidebar-section) {
     .sidebar-section-content { 
       display: none;
     }
   }
   &:has(button[aria-expanded="false"])  {
-    .cooked {
+    .custom-sidebar-section {
       display: none;
     }
   }
