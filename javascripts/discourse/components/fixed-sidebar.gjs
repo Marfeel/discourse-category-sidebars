@@ -5,7 +5,7 @@ import { schedule } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import { ajax } from "discourse/lib/ajax";
 
-export default class ProductGuidesSidebar extends Component {
+export default class FixedSidebar extends Component {
   @service siteSettings;
   @tracked contents = [];
   @tracked loading = true;
@@ -20,6 +20,9 @@ export default class ProductGuidesSidebar extends Component {
       const [section, postId] = entry.split(",");
       return { section: section.trim(), postId: postId.trim() };
     });
+
+    console.log("setupFixed", setupFixed);
+
     return setupFixed;
   }
 
