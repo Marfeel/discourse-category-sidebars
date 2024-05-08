@@ -1,7 +1,7 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
-import didUpdate from "@ember/render-modifiers/modifiers/did-update";
+import didInsert from "@ember/render-modifiers/modifiers/did-insert";
 import { schedule } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import { htmlSafe } from "@ember/template";
@@ -12,16 +12,15 @@ export default class FixedSidebar extends Component {
   @service router;
   @tracked contents = [];
   @tracked loading = true;
-  fixedObserver;
+  fixedObserver = null;
 
   constructor() {
     super(...arguments);
     this.fetchContents();
-    this.setupObserver();
   }
 
   <template>
-    <div {{didUpdate this.setupContents this.router.currentRoute}}>
+    <div {{didInsert this.setupObserver}}>
       {{#each this.contents as |content|}}
         <div
           class="custom-sidebar-section"
@@ -68,6 +67,7 @@ export default class FixedSidebar extends Component {
     }
   }
 
+  @action
   setupObserver() {
     const callback = (mutationsList) => {
       for (let mutation of mutationsList) {
@@ -79,12 +79,17 @@ export default class FixedSidebar extends Component {
 
     this.fixedObserver = new MutationObserver(callback);
 
-    this.fixedObserver.observe(document, { childList: true, subtree: true });
+    this.fixedObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
   }
 
   willDestroy() {
     super.willDestroy(...arguments);
-    this.fixedObserver.disconnect();
+    if (this.fixedObserver) {
+      this.fixedObserver.disconnect();
+    }
   }
 
   @action
