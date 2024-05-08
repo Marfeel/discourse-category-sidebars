@@ -14,7 +14,6 @@ export default class FixedSidebar extends Component {
   constructor() {
     super(...arguments);
     this.fetchContents();
-    this.setupContents();
   }
 
   <template>
@@ -51,6 +50,7 @@ export default class FixedSidebar extends Component {
       });
 
       this.contents = await Promise.all(promises);
+      this.setupContents();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(
@@ -64,7 +64,7 @@ export default class FixedSidebar extends Component {
 
   @action
   setupContents() {
-    schedule("afterRender", this, () => {
+    schedule("afterRender", () => {
       this.contents.forEach(({ section, content }) => {
         console.log("section", section);
         const targetElement = document.querySelector(
