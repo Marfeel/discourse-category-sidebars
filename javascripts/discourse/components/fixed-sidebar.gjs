@@ -20,7 +20,7 @@ export default class FixedSidebar extends Component {
     {{#each this.contents as |content|}}
       <div class="sidebar-section" data-section-name={{content.section}}>
         {{#unless this.loading}}
-          {{htmlSafe this.sidebarContent}}
+          {{htmlSafe content.content}}
         {{/unless}}
       </div>
     {{/each}}
