@@ -19,9 +19,11 @@ export default class FixedSidebar extends Component {
   <template>
     {{#each this.contents as |content|}}
       <div class="custom-sidebar-section" data-section-name={{content.section}}>
-        {{#unless this.loading}}
-          {{htmlSafe content.content}}
-        {{/unless}}
+        <div class="cooked">
+          {{#unless this.loading}}
+            {{htmlSafe content.content}}
+          {{/unless}}
+        </div>
       </div>
     {{/each}}
   </template>
@@ -31,8 +33,6 @@ export default class FixedSidebar extends Component {
       const [section, postId] = entry.split(",");
       return { section: section.trim(), postId: postId.trim() };
     });
-
-    console.log("setupFixed", setupFixed);
 
     return setupFixed;
   }
@@ -66,24 +66,13 @@ export default class FixedSidebar extends Component {
   setupContents() {
     schedule("afterRender", () => {
       this.contents.forEach(({ section, content }) => {
-        console.log("section", section);
         const targetElement = document.querySelector(
           `[data-section-name="${section}"]`
         );
-        console.log("targetElement", targetElement);
         if (targetElement) {
-          // eslint-disable-next-line no-console
-          console.log("targetElement", targetElement);
           const divElement = document.createElement("div");
           divElement.innerHTML = content;
           targetElement.appendChild(divElement);
-          const ulElement = targetElement.querySelector(
-            "ul.sidebar-section-content"
-          );
-
-          if (ulElement) {
-            ulElement.style.display = "none";
-          }
         }
       });
     });
