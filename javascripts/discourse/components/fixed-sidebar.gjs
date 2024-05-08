@@ -12,25 +12,27 @@ export default class FixedSidebar extends Component {
   @service router;
   @tracked contents = [];
   @tracked loading = true;
+  fixedObserver;
 
   constructor() {
     super(...arguments);
     this.fetchContents();
-    this.setupContents();
+    this.setupObserver();
   }
 
   <template>
-    {{#each this.contents as |content|}}
-      <div
-        class="custom-sidebar-section"
-        data-sidebar-name={{content.section}}
-        {{didUpdate this.setupContents this.router.currentRoute}}
-      >
-        {{#unless this.loading}}
-          {{htmlSafe content.content}}
-        {{/unless}}
-      </div>
-    {{/each}}
+    <div {{didUpdate this.setupContents this.router.currentRoute}}>
+      {{#each this.contents as |content|}}
+        <div
+          class="custom-sidebar-section"
+          data-sidebar-name={{content.section}}
+        >
+          {{#unless this.loading}}
+            {{htmlSafe content.content}}
+          {{/unless}}
+        </div>
+      {{/each}}
+    </div>
   </template>
 
   get fixedSettings() {
@@ -64,6 +66,25 @@ export default class FixedSidebar extends Component {
     } finally {
       this.loading = false;
     }
+  }
+
+  setupObserver() {
+    const callback = (mutationsList) => {
+      for (let mutation of mutationsList) {
+        if (mutation.type === "childList") {
+          this.setupContents();
+        }
+      }
+    };
+
+    this.fixedObserver = new MutationObserver(callback);
+
+    this.fixedObserver.observe(document, { childList: true, subtree: true });
+  }
+
+  willDestroy() {
+    super.willDestroy(...arguments);
+    this.fixedObserver.disconnect();
   }
 
   @action
