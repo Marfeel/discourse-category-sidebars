@@ -68,9 +68,8 @@ export default class FixedSidebar extends Component {
           `.sidebar-section-wrapper[data-section-name="${section}"]`
         );
         if (targetElement) {
-          console.log(content);
           const divElement = document.createElement("div");
-          divElement.innerHtml = content;
+          divElement.innerHTML = content;
           targetElement.appendChild(divElement);
         }
       });
