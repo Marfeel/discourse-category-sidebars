@@ -23,8 +23,8 @@ export default class FixedSidebar extends Component {
     {{#each this.contents as |content|}}
       <div
         class="custom-sidebar-section"
-        data-section-name={{content.section}}
-        {{didUpdate this.setupContents this.router.currentRoute}}
+        data-sidebar-name={{content.section}}
+        {{didUpdate this.setupContents this.loading}}
       >
         {{#unless this.loading}}
           {{htmlSafe content.content}}
@@ -75,7 +75,7 @@ export default class FixedSidebar extends Component {
         );
         if (targetElement) {
           const contentElement = document.querySelector(
-            `.custom-sidebar-section[data-section-name="${section}"]`
+            `.custom-sidebar-section[data-sidebar-name="${section}"]`
           );
           if (contentElement) {
             targetElement.appendChild(contentElement);
