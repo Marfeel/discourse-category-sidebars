@@ -176,10 +176,8 @@
   .custom-sidebar-section {
     > details {
       padding-inline: 8px;
-      > ul {
-        > details {
-          ul::before { content: none; }
-        }
+      > details {
+        ul::before { content: none; }
       }
     }
   }
