@@ -2,6 +2,7 @@
   function observeHamburgerMobile(mutations) {
     mutations.forEach(function (mut) {
       if (mut.type === "childList") {
+        updateCustomSidebar?.();
         updateSidebarActiveLink?.();
       }
     });

@@ -53,7 +53,7 @@
 <script>
   // Check each .custom-sidebar-section[data-sidebar-name] exists on .sidebar-section-wrapper[data-section-name]
   // if not exist clone .custom-sidebar-section[data-sidebar-name] from #main-outlet using mutationobserver
-  const fixedObserver = new MutationObserver(() => {
+  function updateCustomSidebar() {
     const sidebarSections = document.querySelectorAll(
       ".sidebar-section-wrapper[data-section-name]"
     );
@@ -73,6 +73,10 @@
         }
       }
     });
+  }
+
+  const fixedObserver = new MutationObserver(() => {
+    updateCustomSidebar();
   });
 
   const mainOutletSidebars = document.querySelector("#main-outlet-wrapper");
