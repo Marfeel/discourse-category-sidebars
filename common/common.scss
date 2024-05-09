@@ -179,6 +179,9 @@
   .custom-sidebar-section {
     > details {
       padding-inline: 8px;
+      > summary {
+        color: var(--primary-700);
+      }
       > details {
         ul::before {
           content: none !important;
