@@ -2,6 +2,16 @@ setup:
   type: list
   default: "staff, 3"
 
+setup_fixed:
+  type: list
+  default: "staff, 3"
+  description: |
+    Each line should be in the format of "<code>section name</code>, <code>post id</code>".<br/> (e.g., product-guides, 7441)<br/>
+    <ul>
+    <li>The section name is the name of the section you want to display in the sidebar</li>
+    <li>The post ID is the first number in its url, for from the url community.example.com/t/welcome-to-discourse/8/10, you would use <b>8</b> in the setting</li>
+    </ul>
+
 setupDetails:
   type: list
   default: ""

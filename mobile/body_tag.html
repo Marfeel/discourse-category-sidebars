@@ -2,14 +2,18 @@
   function observeHamburgerMobile(mutations) {
     mutations.forEach(function (mut) {
       if (mut.type === "childList") {
+        updateCustomSidebar?.();
         updateSidebarActiveLink?.();
       }
     });
   }
 
-  const observerSidebarMobile = new MutationObserver(observeHamburgerMobile);
-  observerSidebarMobile.observe(document.querySelector(".mobile-view .panel"), {
-    childList: true,
-    subtree: true,
+  waitForElement(".mobile-view .panel", (mobilePanel) => {
+    const observerSidebarMobile = new MutationObserver(observeHamburgerMobile);
+
+    observerSidebarMobile.observe(mobilePanel, {
+      childList: true,
+      subtree: true,
+    });
   });
 </script>

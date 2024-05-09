@@ -1,3 +1,18 @@
+.sidebar-custom-sections {
+  display: contents;
+  [data-section-name="community"] {
+    order: -3;
+  }
+  [data-section-name="product-guides"],
+  [data-section-name="implementation-guides"] {
+    order: -2;
+  }
+  [data-section-name="general"],
+  [data-section-name="marfeel"] {
+    order: -1;
+  }
+}
+
 #main-outlet {
   .category-sidebar {
     display: none;
@@ -10,7 +25,8 @@
   .sidebar-wrapper & {
     padding: 30px;
   }
-  .cooked {
+  .cooked,
+  .custom-sidebar-section {
     ul {
       margin-left: 0;
       margin-block: 0;
@@ -20,6 +36,9 @@
         padding-block: 3px;
         font-size: var(--base-font-size-smaller);
       }
+    }
+    > ul {
+      padding-left: 0;
     }
     a {
       color: var(--primary);
@@ -45,6 +64,10 @@
     }
     li {
       position: relative;
+    }
+    > details,
+    li {
+      padding-inline: 8px;
     }
     p:first-child {
       display: none;
@@ -88,15 +111,6 @@
         }
       }
     }
-  }
-  .cooked > ul {
-    padding-left: 0;
-  }
-  .cooked > details,
-  .cooked li {
-    padding-inline: 8px;
-  }
-  .cooked {
     > ul,
     > details > ul {
       position: relative;
@@ -160,6 +174,32 @@
           }
         }
       }
+    }
+  }
+  .custom-sidebar-section {
+    > details {
+      padding-inline: 8px;
+      > summary {
+        color: var(--primary-700);
+      }
+      > details {
+        ul::before {
+          content: none !important;
+        }
+      }
+    }
+  }
+}
+
+.sidebar-section-wrapper[data-section-name] {
+  &:has(.custom-sidebar-section) {
+    .sidebar-section-content {
+      display: none;
+    }
+  }
+  &:has(button[aria-expanded="false"]) {
+    .custom-sidebar-section {
+      display: none;
     }
   }
 }

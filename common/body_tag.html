@@ -49,3 +49,45 @@
     });
   }
 </script>
+
+<script>
+  // Check each .custom-sidebar-section[data-sidebar-name] exists on .sidebar-section-wrapper[data-section-name]
+  // if not exist clone .custom-sidebar-section[data-sidebar-name] from #main-outlet using mutationobserver
+  function updateCustomSidebar() {
+    const sidebarSections = document.querySelectorAll(
+      ".sidebar-section-wrapper[data-section-name]"
+    );
+    sidebarSections.forEach((section) => {
+      const sidebarName = section.dataset.sectionName;
+      const customSidebar = document.querySelector(
+        `.sidebar-section-wrapper .custom-sidebar-section[data-sidebar-name="${sidebarName}"]`
+      );
+      if (!customSidebar) {
+        const mainOutlet = document.querySelector("#main-outlet");
+        const customSidebarClone = mainOutlet.querySelector(
+          `.custom-sidebar-section[data-sidebar-name="${sidebarName}"]`
+        );
+        if (customSidebarClone) {
+          const clonedSidebar = customSidebarClone.cloneNode(true);
+          section.appendChild(clonedSidebar);
+        }
+      }
+    });
+  }
+
+  const fixedObserver = new MutationObserver(() => {
+    updateCustomSidebar();
+  });
+
+  const mainOutletSidebars = document.querySelector("#main-outlet-wrapper");
+  if (mainOutletSidebars) {
+    fixedObserver.observe(mainOutletSidebars, {
+      childList: true,
+      subtree: true,
+    });
+
+    window.addEventListener("beforeunload", () => {
+      fixedObserver.disconnect();
+    });
+  }
+</script>
