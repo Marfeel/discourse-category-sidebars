@@ -1,6 +1,6 @@
 <script>
   function updateSidebarActiveLink() {
-    const currentRT = window.location.pathname.split("/").pop();
+    const currentRT = window.location.pathname.split("/").slice(2, 4).join("/");
     const activeItem = document.querySelector(
       "li a.active:not(.sidebar-section-link)"
     );
@@ -33,15 +33,9 @@
     }
   }
 
-  const sideObserver = new MutationObserver(() => {
-    updateSidebarActiveLink();
-  });
-
+  const sideObserver = new MutationObserver(updateSidebarActiveLink);
   const topicBody = document.querySelector("#main-outlet-wrapper");
   if (topicBody) {
-    const sideObserver = new MutationObserver(() => {
-      updateSidebarActiveLink();
-    });
     sideObserver.observe(topicBody, { childList: true, subtree: true });
 
     window.addEventListener("beforeunload", () => {
