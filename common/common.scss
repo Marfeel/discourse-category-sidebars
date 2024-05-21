@@ -55,9 +55,6 @@
         height: 100%;
         width: 2px;
       }
-      &:hover {
-        background: #ebf1fd;
-      }
       &:hover, &.active {
         font-weight: 600;
         &::after {
@@ -67,6 +64,9 @@
     }
     li {
       position: relative;
+      &:has(a:hover) {
+        background: #ebf1fd;
+      }
     }
     > details,
     li {
@@ -129,12 +129,12 @@
     }
     > details {
       padding-inline: 0;
-      margin-bottom: 10px;
+      margin-bottom: 5px;
       > ul {
         li > ul {
           a.active::after,
           a:hover::after {
-            left: -8px;
+            left: calc(-1 * var(--mrf-sidebar-indent));
           }
         }
       }
