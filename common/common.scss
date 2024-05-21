@@ -66,6 +66,7 @@
       position: relative;
       &:has(a:hover) {
         background: #ebf1fd;
+        border-radius: 4px;
       }
     }
     > details,
