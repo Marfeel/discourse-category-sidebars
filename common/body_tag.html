@@ -7,7 +7,7 @@
     // e.g. /t/how-to-set-up-the-x-twitter-integration/9253, /t/postmortem-2024-05-08-champions-league-semifinals/59480/2
     let topicId = "";
     for (let i = 0; i < segments.length; i++) {
-      if (!isNaN(segments[i])) {
+      if (segments[i].match(/^\d+$/)) {
         topicId = segments[i];
         break;
       }
