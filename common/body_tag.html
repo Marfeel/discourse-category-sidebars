@@ -6,7 +6,6 @@
       "li a.active:not(.sidebar-section-link)"
     );
 
-    console.log({ currentRT, activeItem });
 
     if (activeItem) {
       activeItem.classList.remove("active");
@@ -22,6 +21,8 @@
     const currentSidebarItem = document.querySelector(
       `.sidebar-sections li > a[href*='${currentRT}']:not(.active):not(.sidebar-section-link)`
     );
+
+    console.log({ currentRT, currentSidebarItem, activeItem });
 
     if (currentSidebarItem) {
       currentSidebarItem.classList.add("active");
