@@ -197,7 +197,128 @@
   }
 }
 
-.sidebar-section-wrapper[data-section-name="community"] {
-  
+.sidebar-section-header-global-indicator { display: none; }
+.sidebar-custom-sections {
+    & > [data-section-name]:not([data-section-name="general"],[data-section-name="community"],[data-section-name="marfeel"]) {
+        ul {
+            position: relative;
+            padding: 0;
+            &::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: 1px;
+                background: #dee6ea;
+            }
+        }
+        li {
+            --d-sidebar-row-height: 24px;
+            margin: unset;
+            list-style: none;
+            padding-block: 3px;
+            a.sidebar-section-link {
+                color: var(--primary);
+                &::after {
+                  content: "";
+                  position: absolute;
+                  left: 0;
+                  top: 0;
+                  height: 100%;
+                  width: 2px;
+                }
+                &:hover {
+                    background: unset;
+                    &::after {
+                        background: var(--tertiary);
+                    }
+                }
+                &.active {
+                    font-weight: 600;
+                    &::after {
+                        background: var(--tertiary);
+                    }
+                }
+            }
+        }
+    }
 }
 
+.sidebar-wrapper {
+    li { 
+        a.sidebar-section-link-about, a.sidebar-section-link-faq {
+	        display: none;
+        }
+    }
+}
+
+[data-section-name="messages"],
+[data-section-name="tags"],
+[data-section-name="categories"],
+[data-list-item-name="anniversaries"],
+[data-list-item-name="birthdays"] {
+	display: none;
+}
+
+.menu-panel {
+	.panel-body {
+		max-height: unset;
+	}
+}
+
+// Community links
+[data-section-name="community"] {
+	margin-inline: -30px;
+	padding-block: 10px 30px;
+	margin-bottom: 20px;
+	.unread {
+	    display: none;
+	}
+	.sidebar-section-header-wrapper {
+		margin-inline: 30px;
+		button.sidebar-section-header-button {
+			svg {
+				padding: 2px;
+			}
+			.discourse-no-touch & {
+				&:hover {
+					background: unset;
+					svg.d-icon {
+						color: #93A0B2;
+					}
+				}
+				svg {
+					color: #93A0B2;
+				}
+			}
+		}
+	}
+  // more section
+	.sidebar-more-section-links-details-content-footer {
+	    border: none;
+	}
+  // Hide admin links
+	body:not(.staff) & {
+	    .sidebar-section-link-wrapper:has([href="/admin"]) {
+	        display: none;
+	    }
+	    .sidebar-more-section-links-details-summary {
+	        display: none;
+	    }
+	}
+}
+#sidebar-section-content-community {
+	margin-inline: 30px;
+	padding: 0 0 20px;
+	display: flex;
+	flex-direction: column;
+  border-bottom: 1px solid #DEE6EA;
+}
+
+// Not logged
+.anon {
+	[data-section-name="tags"], [data-section-name="categories"], [data-section-name="community"] {
+		display: none;
+	}
+}
