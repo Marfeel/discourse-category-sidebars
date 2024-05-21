@@ -22,6 +22,7 @@
   overflow-y: unset;
 }
 .sidebar-sections {
+  -webkit-antialiased: antialiased;
   .sidebar-wrapper & {
     padding: 30px;
   }
@@ -34,7 +35,7 @@
       li {
         list-style: none;
         padding-block: 3px;
-        font-size: var(--base-font-size-smaller);
+        font-size: 14px;
       }
     }
     > ul {
@@ -51,11 +52,9 @@
         width: 2px;
       }
       &:hover {
-        &::after {
-          background: var(--tertiary);
-        }
+        background: #ebf1fd;
       }
-      &.active {
+      &:hover, &.active {
         font-weight: 600;
         &::after {
           background: var(--tertiary);
@@ -67,7 +66,7 @@
     }
     > details,
     li {
-      padding-inline: 8px;
+      padding-left: 8px;
     }
     p:first-child {
       display: none;
@@ -86,7 +85,7 @@
         align-items: center;
         gap: 8px;
         padding-block: 3px;
-        font-size: var(--base-font-size-smaller);
+        font-size: 14px;
         &::before {
           content: none;
         }
@@ -127,9 +126,6 @@
     > details {
       padding-inline: 0;
       margin-bottom: 10px;
-      > summary {
-        font-weight: 500;
-      }
       > ul {
         li > ul {
           a.active::after,
@@ -178,10 +174,7 @@
   }
   .custom-sidebar-section {
     > details {
-      padding-inline: 8px;
-      > summary {
-        color: var(--primary-700);
-      }
+      padding-left: 8px;
       > details {
         ul::before {
           content: none !important;
@@ -203,3 +196,8 @@
     }
   }
 }
+
+.sidebar-section-wrapper[data-section-name="community"] {
+  
+}
+
