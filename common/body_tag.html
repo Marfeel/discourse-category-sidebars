@@ -33,8 +33,6 @@
       `.sidebar-sections li > a[href*='${topicId}']:not(.active):not(.sidebar-section-link)`
     );
 
-    console.log({ topicId, currentSidebarItem, activeItem });
-
     if (currentSidebarItem) {
       currentSidebarItem.classList.add("active");
       let element = currentSidebarItem.closest("details");
