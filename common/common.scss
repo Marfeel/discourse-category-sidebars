@@ -252,28 +252,6 @@
     }
 }
 
-.sidebar-wrapper {
-    li { 
-        a.sidebar-section-link-about, a.sidebar-section-link-faq {
-	        display: none;
-        }
-    }
-}
-
-[data-section-name="messages"],
-[data-section-name="tags"],
-[data-section-name="categories"],
-[data-list-item-name="anniversaries"],
-[data-list-item-name="birthdays"] {
-	display: none;
-}
-
-.menu-panel {
-	.panel-body {
-		max-height: unset;
-	}
-}
-
 // Community links
 [data-section-name="community"] {
 	margin-inline: -30px;
@@ -321,11 +299,4 @@
 	display: flex;
 	flex-direction: column;
   border-bottom: 1px solid #DEE6EA;
-}
-
-// Not logged
-.anon {
-	[data-section-name="tags"], [data-section-name="categories"], [data-section-name="community"] {
-		display: none;
-	}
 }
