@@ -56,10 +56,12 @@
         width: 2px;
       }
       &:hover, &.active {
-        font-weight: 600;
         &::after {
           background: var(--tertiary);
         }
+      }
+      &.active {
+        font-weight: 600;
       }
     }
     li {
