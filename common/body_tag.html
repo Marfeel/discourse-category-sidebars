@@ -6,6 +6,8 @@
       "li a.active:not(.sidebar-section-link)"
     );
 
+    console.log({ currentRT, activeItem });
+
     if (activeItem) {
       activeItem.classList.remove("active");
       let parent = activeItem.closest("details");
