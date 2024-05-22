@@ -18,7 +18,7 @@ export default apiInitializer("1.6.0", (api) => {
       // result returns <a href='/u/jonay.rodriguez/messages/tags/accountid-2201'  data-tag-name=accountid-2201 class='discourse-tag bullet'>accountid-2201</a>
       // we need to change href to https://www.hub.marfeel.com/?accountId=2201
 
-      const newHref = `https://www.hub.marfeel.com/?accountId=${accountId}`;
+      const newHref = `https://hub.marfeel.com/compass/editorial/?accountId=${accountId}`;
       const hrefRegex = /href='[^']*'/;
 
       val = result.replace(hrefRegex, `href='${newHref}'`);
