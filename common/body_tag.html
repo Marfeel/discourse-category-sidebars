@@ -122,11 +122,12 @@
   function addIconSections() {
     const customSidebarSections = document.querySelectorAll(".custom-sidebar-section > details");
     // add svg icon on first of details > summary with format <svg class="fa d-icon svg-icon prefix-icon svg-string" xmlns="http://www.w3.org/2000/svg"><use href="#icon"></use></svg>
-
+    console.log(customSidebarSections);
     if (customSidebarSections) {
       customSidebarSections.forEach((section) => {
         const sectionName = section.querySelector("summary").textContent.trim();
         const icon = iconSections[sectionName];
+        console.log(sectionName, icon);
         if (icon) {
           const iconElement = document.createElement("svg");
           iconElement.classList.add("fa", "d-icon", "svg-icon", "prefix-icon", "svg-string");
