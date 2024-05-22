@@ -97,3 +97,63 @@
     });
   }
 </script>
+
+<script>
+  // function to add icon on first of details > summary usign text from list { [summaryText]: [icon] }
+  const iconSections = {
+    "Platform": "mrf-apps",
+    "Audience": "mrf-users",
+    "Enagagement": "mrf-heart",
+    "Subscriptions": "mrf-subscriptions",
+    "Advertisement": "mrf-comments-lines",
+    "Social": "mrf-comments",
+    "Affiliation": "mrf-shopping-bag",
+    "User settings": "mrf-user-settings",
+    "SDKs": "mrf-apps",
+    "Editorial metadata": "mrf-apps",
+    "Multimedia": "mrf-play",
+    "Experiences": "mrf-map-pin",
+    "Data Exports": "mrf-shuffle",
+    "Marfeel API": "mrf-bolt",
+    "Organization settings": "mrf-user-settings",
+    "Debugging": "mrf-apps"
+  }
+
+  function addIconSections() {
+    const customSidebarSections = document.querySelectorAll(".custom-sidebar-section > details");
+    // add svg icon on first of details > summary with format <svg class="fa d-icon svg-icon prefix-icon svg-string" xmlns="http://www.w3.org/2000/svg"><use href="#icon"></use></svg>
+
+    if (customSidebarSections) {
+      customSidebarSections.forEach((section) => {
+        const sectionName = section.querySelector("summary").textContent.trim();
+        const icon = iconSections[sectionName];
+        if (icon) {
+          const iconElement = document.createElement("svg");
+          iconElement.classList.add("fa", "d-icon", "svg-icon", "prefix-icon", "svg-string");
+          iconElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+          iconElement.innerHTML = `<use href="#${icon}"></use>`;
+
+          if (!section.querySelector(".prefix-icon")) {
+            section.querySelector("summary").prepend(iconElement);
+          }
+        }
+      });
+    }
+  }
+
+  const iconSectionsObserver = new MutationObserver(() => {
+    addIconSections();
+  });
+
+  const customSidebarSections = document.querySelector(".custom-sidebar-section");
+  if (customSidebarSections) {
+    iconSectionsObserver.observe(customSidebarSections, {
+      childList: true,
+      subtree: true,
+    });
+
+    window.addEventListener("beforeunload", () => {
+      iconSectionsObserver.disconnect();
+    });
+  }  
+</script>
