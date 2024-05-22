@@ -81,25 +81,6 @@
     });
   }
 
-  const fixedObserver = new MutationObserver(() => {
-    updateCustomSidebar();
-  });
-
-  const mainOutletSidebars = document.querySelector("body");
-  if (mainOutletSidebars) {
-    fixedObserver.observe(mainOutletSidebars, {
-      childList: true,
-      subtree: true,
-    });
-
-    window.addEventListener("beforeunload", () => {
-      fixedObserver.disconnect();
-    });
-  }
-</script>
-
-<script>
-  // function to add icon on first of details > summary usign text from list { [summaryText]: [icon] }
   const iconSections = {
     "Platform": "mrf-apps",
     "Audience": "mrf-users",
@@ -142,20 +123,20 @@
     }
   }
 
-  waitForElement(".custom-sidebar-section", (customSidebar) => {
-    const iconSectionsObserver = new MutationObserver(() => {
-      addIconSections();
+  const fixedObserver = new MutationObserver(async() => {
+    await updateCustomSidebar();
+    addIconSections();
+  });
+
+  const mainOutletSidebars = document.querySelector("body");
+  if (mainOutletSidebars) {
+    fixedObserver.observe(mainOutletSidebars, {
+      childList: true,
+      subtree: true,
     });
 
-    if (customSidebar) {
-      iconSectionsObserver.observe(customSidebar, {
-        childList: true,
-        subtree: true,
-      });
-
-      window.addEventListener("beforeunload", () => {
-        iconSectionsObserver.disconnect();
-      });
-    }
-  });
+    window.addEventListener("beforeunload", () => {
+      fixedObserver.disconnect();
+    });
+  }
 </script>
