@@ -141,7 +141,6 @@
     }
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    addIconSections();
-  });
+  // wait for custom sidebar to be loaded
+  waitForElement(".sidebar-sections .custom-sidebar-section p", addIconSections);
 </script>
