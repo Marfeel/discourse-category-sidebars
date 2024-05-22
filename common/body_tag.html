@@ -131,7 +131,7 @@
           const iconElement = document.createElement("svg");
           iconElement.classList.add("fa", "d-icon", "svg-icon", "prefix-icon", "svg-string");
           iconElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-          iconElement.innerHTML = `<use href="#${icon}"></use>`;
+          iconElement.innerHTML = document.querySelector(`#${icon}`).innerHTML;
 
           if (!section.querySelector(".prefix-icon")) {
             section.querySelector("summary").prepend(iconElement);
