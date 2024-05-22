@@ -1,5 +1,6 @@
 .sidebar-sections {
   --mrf-sidebar-indent: 8px;
+  --mrf-hover-bgcolor: #ebf1fd;
 }
 
 .sidebar-custom-sections {
@@ -68,7 +69,7 @@
     li {
       position: relative;
       &:has(a:hover) {
-        background: #ebf1fd;
+        background: var(--mrf-hover-bgcolor);
         border-radius: 4px;
       }
     }
@@ -140,6 +141,14 @@
           a:hover::after {
             left: calc(-1 * var(--mrf-sidebar-indent));
           }
+        }
+      }
+      > summary {
+        padding-left: var(--mrf-sidebar-indent);
+        margin-left: calc(-1 * var(--mrf-sidebar-indent));
+        &:hover {
+          background: var(--mrf-hover-bgcolor);
+          border-radius: 4px;
         }
       }
       > details {
