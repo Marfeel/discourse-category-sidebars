@@ -21,7 +21,7 @@ export default apiInitializer("1.6.0", (api) => {
       const newHref = `https://hub.marfeel.com/compass/editorial/?accountId=${accountId}`;
       const hrefRegex = /href='[^']*'/;
 
-      val = result.replace(hrefRegex, `href='${newHref}'`);
+      val = result.replace(hrefRegex, `href='${newHref} target='_blank'`);
     }
 
     // eslint-disable-next-line no-console
