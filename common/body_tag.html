@@ -76,6 +76,7 @@
         if (customSidebarClone) {
           const clonedSidebar = customSidebarClone.cloneNode(true);
           section.appendChild(clonedSidebar);
+          addIconSections();
         }
       }
     });
@@ -140,19 +141,4 @@
       fixedObserver.disconnect();
     });
   }
-</script>
-
-<script>
-  waitForElement(".sidebar-sections .custom-sidebar-section > details", (detailsLinks) => {
-    const iconDetailsObserver = new MutationObserver(() => {
-      addIconSections();
-    });
-
-    iconDetailsObserver.observe(detailsLinks, {
-      childList: true,
-      subtree: true,
-    });
-  });
-
-
 </script>
