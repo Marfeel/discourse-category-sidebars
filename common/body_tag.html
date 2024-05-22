@@ -127,7 +127,6 @@
 
   const fixedObserver = new MutationObserver(async() => {
     await updateCustomSidebar();
-    addIconSections();
   });
 
   const mainOutletSidebars = document.querySelector("body");
@@ -141,4 +140,26 @@
       fixedObserver.disconnect();
     });
   }
+</script>
+
+<script>
+  waitForElement(".sidebar-sections .custom-sidebar-section > details", () => {
+    const iconDetailsObserver = new MutationObserver(() => {
+      addIconSections();
+    });
+
+    const iconDetails = document.querySelector(".sidebar-sections .custom-sidebar-section");
+    if (iconDetails) {
+      iconDetailsObserver.observe(iconDetails, {
+        childList: true,
+        subtree: true,
+      });
+
+      window.addEventListener("beforeunload", () => {
+        iconDetailsObserver.disconnect();
+      });
+    }
+  });
+
+
 </script>
