@@ -125,6 +125,7 @@
     console.log(customSidebarSections);
     if (customSidebarSections) {
       customSidebarSections.forEach((section) => {
+        const summaryElement = section.querySelector("summary");
         const sectionName = section.querySelector("summary").textContent.trim();
         const icon = iconSections[sectionName];
         if (icon) {
@@ -134,6 +135,10 @@
           iconElement.innerHTML = document.querySelector(`#${icon}`).innerHTML;
 
           if (!section.querySelector(".prefix-icon")) {
+            const spanElement = document.createElement("span");
+            spanElement.textContent = summaryElement.textContent;
+            summaryElement.textContent = '';
+            summaryElement.append(iconElement, spanElement);
             section.querySelector("summary").prepend(iconElement);
           }
         }
