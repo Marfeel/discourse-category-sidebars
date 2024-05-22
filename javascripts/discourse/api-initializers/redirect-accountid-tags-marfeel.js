@@ -6,7 +6,10 @@ export default apiInitializer("1.6.0", (api) => {
     const result = defaultRenderTag(tag, params);
 
     // eslint-disable-next-line no-console
-    console.log('result', result);
+    console.log('result', result, { tag });
+
+    // change href if tag is accountid-XXXX
+
 
     return result;
   };
