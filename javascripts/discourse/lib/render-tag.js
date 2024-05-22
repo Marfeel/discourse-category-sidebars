@@ -7,6 +7,8 @@ import { helperContext } from "discourse-common/lib/helpers";
 let _renderer = defaultRenderTag;
 
 function isAccountIdTag(tag) {
+  // eslint-disable-next-line no-console
+  console.log('tag', tag, tag.match(/^accountid-/));
   return tag.match(/^accountid-/);
 }
 
