@@ -4,6 +4,7 @@ import { defaultRenderTag } from "discourse/lib/render-tag";
 export default apiInitializer("1.6.0", (api) => {
   const customRenderer = (tag, params) => {
     const result = defaultRenderTag(tag, params);
+    let val = result;
 
     // eslint-disable-next-line no-console
     console.log('result', result, { tag });
@@ -19,10 +20,13 @@ export default apiInitializer("1.6.0", (api) => {
 
       const newHref = `https://www.hub.marfeel.com/?accountId=${accountId}`;
 
-      result.replace('href=\'', `href='${newHref}`);
+      val = result.replace('href=\'', `href='${newHref}`);
     }
 
-    return result;
+    // eslint-disable-next-line no-console
+    console.log({ result, val });
+
+    return val;
   };
 
   api.replaceTagRenderer(customRenderer);
