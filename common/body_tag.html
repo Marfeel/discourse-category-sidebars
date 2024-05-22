@@ -142,21 +142,6 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    waitForElement(".sidebar-sections .custom-sidebar-section", (customSidebar) => {
-        const iconSectionsObserver = new MutationObserver(() => {
-          addIconSections();
-        });
-
-        if (customSidebar) {
-          iconSectionsObserver.observe(customSidebar, {
-            childList: true,
-            subtree: true,
-          });
-
-          window.addEventListener("beforeunload", () => {
-            iconSectionsObserver.disconnect();
-          });
-        }
-    });
+    addIconSections();
   });
 </script>
