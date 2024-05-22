@@ -110,13 +110,14 @@
         const icon = iconSections[sectionName];
         console.log(sectionName, icon);
         if (icon) {
-          const iconElement = document.createElement("svg");
-          iconElement.classList.add("fa", "d-icon", "svg-icon", "prefix-icon", "svg-string");
-          iconElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-          iconElement.innerHTML = `<use href="#${icon}"></use>`;
-
           if (!section.querySelector(".prefix-icon")) {
-            section.querySelector("summary").prepend(iconElement);
+            const spanElement = document.createElement("span");
+            const iconElement = document.createElement("svg");
+            iconElement.classList.add("fa", "d-icon", "svg-icon", "prefix-icon", "svg-string");
+            iconElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+            iconElement.innerHTML = `<use href="#${icon}"></use>`;
+            spanElement.appendChild(iconElement);
+            section.querySelector("summary").prepend(spanElement);
           }
         }
       });
