@@ -142,19 +142,20 @@
     }
   }
 
-  const iconSectionsObserver = new MutationObserver(() => {
-    addIconSections();
+  waitForElement(".custom-sidebar-section", (customSidebar) => {
+    const iconSectionsObserver = new MutationObserver(() => {
+      addIconSections();
+    });
+
+    if (customSidebar) {
+      iconSectionsObserver.observe(customSidebar, {
+        childList: true,
+        subtree: true,
+      });
+
+      window.addEventListener("beforeunload", () => {
+        iconSectionsObserver.disconnect();
+      });
+    }
   });
-
-  const customSidebarSections = document.querySelector(".custom-sidebar-section");
-  if (customSidebarSections) {
-    iconSectionsObserver.observe(customSidebarSections, {
-      childList: true,
-      subtree: true,
-    });
-
-    window.addEventListener("beforeunload", () => {
-      iconSectionsObserver.disconnect();
-    });
-  }  
 </script>
