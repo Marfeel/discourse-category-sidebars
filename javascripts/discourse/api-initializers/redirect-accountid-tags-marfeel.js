@@ -1,15 +1,12 @@
-import { typeOf } from "@ember/utils";
-import $ from "jquery";
 import { apiInitializer } from "discourse/lib/api";
 import { defaultRenderTag } from "discourse/lib/render-tag";
 
-export default apiInitializer("0.11.1", (api) => {
+export default apiInitializer("1.6.0", (api) => {
   const customRenderer = (tag, params) => {
     const result = defaultRenderTag(tag, params);
-    const text = $(result).html();
 
     // eslint-disable-next-line no-console
-    console.log('text', text );
+    console.log('result', result, { tag });
 
     function isAccountIdTag(tagId) {
       return tagId.match(/^accountid-\d+$/);
