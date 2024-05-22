@@ -19,8 +19,9 @@ export default apiInitializer("1.6.0", (api) => {
       // we need to change href to https://www.hub.marfeel.com/?accountId=2201
 
       const newHref = `https://www.hub.marfeel.com/?accountId=${accountId}`;
+      const hrefRegex = /href='[^']*'/;
 
-      val = result.replace('href=\'', `href='${newHref}`);
+      val = result.replace(hrefRegex, `href='${newHref}'`);
     }
 
     // eslint-disable-next-line no-console
