@@ -19,7 +19,7 @@ export default apiInitializer("1.6.0", (api) => {
       marfeelLink.className = 'marfeel-link-to-hub';
       marfeelLink.href = `https://hub.marfeel.com/compass/editorial/?accountId=${accountId}`;
       marfeelLink.target = '_blank';
-      marfeelLink.innerHTML = '<svg width="9" height="9" xmlns="http://www.w3.org/2000/svg"><use href="#mrf-marfeelLogo"></use></svg>';
+      marfeelLink.innerHTML = '<svg width="9" height="9" xmlns="http://www.w3.org/2000/svg"><use href="#mrf-marfeel"></use></svg>';
 
       val = `
         <div class='marfeel-tag-wrapper'>
