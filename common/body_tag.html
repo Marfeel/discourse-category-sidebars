@@ -120,6 +120,10 @@
             spanElement.classList.add("sidebar-section-link-prefix", "icon");
             spanElement.appendChild(iconElement);
             section.querySelector("summary").prepend(spanElement);
+
+            section.style.display = 'none';
+            section.offsetHeight; // no need to store this anywhere, the reference is enough
+            section.style.display = '';
           }
         }
       });
