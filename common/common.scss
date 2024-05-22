@@ -138,13 +138,13 @@
         li > ul {
           a.active::after,
           a:hover::after {
-            left: -var(--mrf-sidebar-indent);
+            left: calc(-1 * var(--mrf-sidebar-indent));
           }
         }
       }
       > summary {
         padding-left: var(--mrf-sidebar-indent);
-        margin-left: -var(--mrf-sidebar-indent);
+        margin-left: calc(-1 * var(--mrf-sidebar-indent));
         &:hover {
           background: #ebf1fd;
           border-radius: 4px;
