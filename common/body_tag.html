@@ -116,6 +116,7 @@
             iconElement.classList.add("fa", "d-icon", "svg-icon", "prefix-icon", "svg-string");
             iconElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
             iconElement.innerHTML = `<use href="#${icon}"></use>`;
+            spanElement.classList.add("sidebar-section-link-prefix", "icon");
             spanElement.appendChild(iconElement);
             section.querySelector("summary").prepend(spanElement);
           }
