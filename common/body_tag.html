@@ -119,17 +119,34 @@
     "Debugging": "mrf-apps"
   }
 
+  function svgToBase64(svg) {
+    const xml = new XMLSerializer().serializeToString(svg);
+
+    return `data:image/svg+xml;base64,${btoa(xml)}`;
+  }
+
   function addIconSections() {
     const customSidebarSections = document.querySelectorAll(".sidebar-sections .custom-sidebar-section > details");
-    // add svg icon on first of details > summary with format <svg class="fa d-icon svg-icon prefix-icon svg-string" xmlns="http://www.w3.org/2000/svg"><use href="#icon"></use></svg>
-    console.log(customSidebarSections);
+
     if (customSidebarSections) {
       customSidebarSections.forEach((section) => {
         const sectionName = section.querySelector("summary").textContent.trim();
         const icon = iconSections[sectionName];
+
         if (icon) {
-          // add class
           section.classList.add(`mrf-sidebar-${icon}`);
+
+          const svg = document.createElement("svg");
+          svg.classList.add("fa", "d-icon", "svg-icon", "prefix-icon", "svg-string");
+          svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
+          const use = document.createElement("use");
+          use.setAttribute("href", `#icon-${icon}`);
+          svg.appendChild(use);
+
+          const svgBase64 = svgToBase64(svg);
+
+          section.style.backgroundImage = `url(${svgBase64})`;
         }
       });
     }
