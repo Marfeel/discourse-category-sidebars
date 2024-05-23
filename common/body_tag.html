@@ -138,15 +138,13 @@
           section.classList.add(`mrf-sidebar-${icon}`);
 
           const span = document.createElement("span");
-          const svg = document.createElement("svg");
+          const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
           svg.classList.add("fa", "d-icon", "svg-icon", "prefix-icon", "svg-string", `d-icon-${icon}`);
-          svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
           svg.setAttribute("viewBox", "0 0 512 512");
 
           const path = document.querySelector(`symbol#${icon}`);
           svg.innerHTML = path.innerHTML;
           console.log(svg);
-          span.style.backgroundImage = `url(${svgToBase64(svg)})`;
 
           document.body.appendChild(svg);
         }
