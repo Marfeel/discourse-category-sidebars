@@ -114,7 +114,7 @@ export default class FixedSidebar extends Component {
       )?.slug;
       const currentSection = this.contents.find((content) => {
         if (parentTopicCategorySlug === "configuration") {
-          return true;
+          return content.section === "implementation-guides";
         }
 
         return content.section === parentTopicCategorySlug;
