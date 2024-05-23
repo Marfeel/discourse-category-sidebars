@@ -21,6 +21,9 @@ export default class FixedSidebar extends Component {
     this.router.on("routeDidChange", () => {
       this.toggleCurrentSection();
     });
+    this.router.on("didTransition", () => {
+      this.toggleCurrentSection();
+    });
   }
 
   <template>
@@ -100,7 +103,7 @@ export default class FixedSidebar extends Component {
         (content) => content.section === currentRoute
       );
       // eslint-disable-next-line no-console
-      console.log({ currentRoute });
+      console.log({ currentRoute, content: this.contents });
       if (currentSection) {
         this.sidebarState.expandSection(currentSection.section);
       }
