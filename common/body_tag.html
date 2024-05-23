@@ -121,8 +121,9 @@
 
   function svgToBase64(svg) {
     const xml = new XMLSerializer().serializeToString(svg);
+    const base64 = window.btoa(xml);
 
-    return window.btoa(xml);
+    return `data:image/svg+xml;base64,${base64}`;
   }
 
   function addIconSections() {
