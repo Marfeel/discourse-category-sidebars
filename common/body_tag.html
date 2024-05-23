@@ -100,26 +100,28 @@
 
 <script>
   const iconSections = {
-    "Platform": "mrf-apps",
-    "Audience": "mrf-users",
-    "Engagement": "mrf-heart",
-    "Subscriptions": "mrf-subscriptions",
-    "Advertisement": "mrf-comments-lines",
-    "Social": "mrf-comments",
-    "Affiliation": "mrf-shopping-bag",
+    Platform: "mrf-apps",
+    Audience: "mrf-users",
+    Engagement: "mrf-heart",
+    Subscriptions: "mrf-subscriptions",
+    Advertisement: "mrf-comments-lines",
+    Social: "mrf-comments",
+    Affiliation: "mrf-shopping-bag",
     "User settings": "mrf-user-settings",
-    "SDKs": "mrf-apps",
+    SDKs: "mrf-apps",
     "Editorial metadata": "mrf-apps",
-    "Multimedia": "mrf-play",
-    "Experiences": "mrf-map-pin",
+    Multimedia: "mrf-play",
+    Experiences: "mrf-map-pin",
     "Data Exports": "mrf-shuffle",
     "Marfeel API": "mrf-bolt",
     "Organization settings": "mrf-user-settings",
-    "Debugging": "mrf-apps"
-  }
+    Debugging: "mrf-apps",
+  };
 
   function addIconSections() {
-    const customSidebarSections = document.querySelectorAll(".sidebar-sections .custom-sidebar-section > details");
+    const customSidebarSections = document.querySelectorAll(
+      ".sidebar-sections .custom-sidebar-section > details"
+    );
 
     if (customSidebarSections) {
       customSidebarSections.forEach((section) => {
@@ -129,8 +131,18 @@
         if (icon) {
           section.classList.add(`mrf-sidebar-${icon}`);
 
-          const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
-          svg.classList.add("fa", "d-icon", "svg-icon", "prefix-icon", "svg-string", `d-icon-${icon}`);
+          const svg = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "svg"
+          );
+          svg.classList.add(
+            "fa",
+            "d-icon",
+            "svg-icon",
+            "prefix-icon",
+            "svg-string",
+            `d-icon-${icon}`
+          );
           svg.setAttribute("viewBox", "0 0 512 512");
 
           const path = document.querySelector(`symbol#${icon}`);
