@@ -112,11 +112,13 @@ export default class FixedSidebar extends Component {
       const parentTopicCategorySlug = Category.findById(
         this.topicCategory?.parent_category_id
       )?.slug;
-      const currentSection = this.contents.find(
-        (content) => content.section === parentTopicCategorySlug
-      );
+      const currentSection = this.contents.find((content) => {
+        if (parentTopicCategorySlug === "configuration") {
+          return true;
+        }
 
-      console.log({ currentSection, parentTopicCategorySlug });
+        return content.section === parentTopicCategorySlug;
+      });
 
       if (currentSection) {
         this.sidebarState.expandSection(currentSection.section);
