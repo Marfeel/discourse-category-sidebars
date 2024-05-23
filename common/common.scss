@@ -150,6 +150,17 @@
           background: var(--mrf-hover-bgcolor);
           border-radius: 4px;
         }
+        span {
+          color: var(--d-sidebar-link-icon-color);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+        svg {
+          font-size: 16px;
+          color: #5D6C81;
+        }
       }
       > details {
         padding-left: var(--mrf-sidebar-indent);

@@ -6,10 +6,12 @@ import { schedule } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import { htmlSafe } from "@ember/template";
 import { ajax } from "discourse/lib/ajax";
+import Category from "discourse/models/category";
 
 export default class FixedSidebar extends Component {
   @service siteSettings;
   @service router;
+  @service sidebarState;
   @tracked contents = [];
   @tracked loading = true;
 
@@ -17,6 +19,12 @@ export default class FixedSidebar extends Component {
     super(...arguments);
     this.fetchContents();
     this.setupContents();
+    this.router.on("routeDidChange", this, this.toggleCurrentSection);
+  }
+
+  willDestroy() {
+    super.willDestroy(...arguments);
+    this.router.off("routeDidChange", this, this.toggleCurrentSection);
   }
 
   <template>
@@ -40,6 +48,16 @@ export default class FixedSidebar extends Component {
     });
 
     return setupFixed;
+  }
+
+  get categoryIdTopic() {
+    return this.router?.currentRoute?.parent?.attributes?.category_id;
+  }
+
+  get topicCategory() {
+    return this.categoryIdTopic
+      ? Category.findById(this.categoryIdTopic)
+      : null;
   }
 
   @action
@@ -85,6 +103,26 @@ export default class FixedSidebar extends Component {
           }
         }
       });
+    });
+  }
+
+  @action
+  toggleCurrentSection() {
+    schedule("afterRender", () => {
+      const parentTopicCategorySlug = Category.findById(
+        this.topicCategory?.parent_category_id
+      )?.slug;
+      const currentSection = this.contents.find((content) => {
+        if (parentTopicCategorySlug === "configuration") {
+          return content.section === "implementation-guides";
+        }
+
+        return content.section === parentTopicCategorySlug;
+      });
+
+      if (currentSection) {
+        this.sidebarState.expandSection(currentSection.section);
+      }
     });
   }
 }
