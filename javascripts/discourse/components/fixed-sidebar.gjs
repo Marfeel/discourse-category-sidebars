@@ -109,15 +109,13 @@ export default class FixedSidebar extends Component {
   @action
   toggleCurrentSection() {
     schedule("afterRender", () => {
-      const currentRoute = this.router.currentRoute;
-      const currentSection = this.contents.find(
-        (content) => content.section === currentRoute
-      );
       const parentTopicCategorySlug = Category.findById(
         this.topicCategory?.parent_category_id
       )?.slug;
-      // eslint-disable-next-line no-console
-      console.log({ currentRoute, parentTopicCategorySlug });
+      const currentSection = this.contents.find(
+        (content) => content.section === parentTopicCategorySlug
+      );
+
       if (currentSection) {
         this.sidebarState.expandSection(currentSection.section);
       }
