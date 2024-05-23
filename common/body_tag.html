@@ -140,6 +140,7 @@
           const span = document.createElement("span");
           const svg = document.createElement("svg");
           svg.classList.add("fa", "d-icon", "svg-icon", "prefix-icon", "svg-string", `d-icon-${icon}`);
+          svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 
           const use = document.createElement("use");
           use.setAttribute("href", `#${icon}`);
