@@ -142,8 +142,9 @@
           svg.classList.add("fa", "d-icon", "svg-icon", "prefix-icon", "svg-string", `d-icon-${icon}`);
           svg.setAttribute("viewBox", "0 0 512 512");
 
-          const path = document.querySelector(`symbol#${icon}`);
-          svg.innerHTML = path.innerHTML;
+          const use = document.createElement("use");
+          use.setAttribute("href", `#${icon}`);
+          svg.appendChild(use);
           console.log(svg);
 
           document.body.appendChild(svg);
