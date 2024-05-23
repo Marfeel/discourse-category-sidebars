@@ -137,17 +137,15 @@
         if (icon) {
           section.classList.add(`mrf-sidebar-${icon}`);
 
-          const span = document.createElement("span");
           const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
           svg.classList.add("fa", "d-icon", "svg-icon", "prefix-icon", "svg-string", `d-icon-${icon}`);
           svg.setAttribute("viewBox", "0 0 512 512");
 
-          const use = document.createElement("use");
-          use.setAttribute("href", `#${icon}`);
-          svg.appendChild(use);
+          const path = document.querySelector(`symbol#${icon}`);
+          svg.innerHTML = path.innerHTML;
           console.log(svg);
 
-          document.body.appendChild(svg);
+          section.querySelector("summary").prepend(svg);
         }
       });
     }
