@@ -103,7 +103,7 @@
   const iconSections = {
     "Platform": "mrf-apps",
     "Audience": "mrf-users",
-    "Enagagement": "mrf-heart",
+    "Engagement": "mrf-heart",
     "Subscriptions": "mrf-subscriptions",
     "Advertisement": "mrf-comments-lines",
     "Social": "mrf-comments",
@@ -144,7 +144,7 @@
           use.setAttribute("href", `#${icon}`);
           svg.appendChild(use);
 
-          section.appendChild(svg);
+          section.parentElement.appendChild(svg);
         }
       });
     }
