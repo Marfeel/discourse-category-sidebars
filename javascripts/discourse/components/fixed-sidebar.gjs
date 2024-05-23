@@ -6,6 +6,7 @@ import { schedule } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import { htmlSafe } from "@ember/template";
 import { ajax } from "discourse/lib/ajax";
+import Category from "discourse/models/category";
 
 export default class FixedSidebar extends Component {
   @service siteSettings;
@@ -47,6 +48,12 @@ export default class FixedSidebar extends Component {
     });
 
     return setupFixed;
+  }
+
+  get topicCategory() {
+    return this.categoryIdTopic
+      ? Category.findById(this.categoryIdTopic)
+      : null;
   }
 
   @action
@@ -102,8 +109,11 @@ export default class FixedSidebar extends Component {
       const currentSection = this.contents.find(
         (content) => content.section === currentRoute
       );
+      const parentTopicCategorySlug = Category.findById(
+        this.topicCategory?.parent_category_id
+      )?.slug;
       // eslint-disable-next-line no-console
-      console.log({ currentRoute, content: this.contents });
+      console.log({ currentRoute, parentTopicCategorySlug });
       if (currentSection) {
         this.sidebarState.expandSection(currentSection.section);
       }
