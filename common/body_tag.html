@@ -140,8 +140,9 @@
           const svg = document.createElement("svg");
           svg.classList.add("fa", "d-icon", "svg-icon", "prefix-icon", "svg-string");
 
-          const path = document.querySelector(`#${icon}`);
-          svg.innerHTML = path.innerHTML;
+          const use = document.createElement("use");
+          use.setAttribute("href", `#${icon}`);
+          svg.appendChild(use);
 
           section.appendChild(svg);
         }
