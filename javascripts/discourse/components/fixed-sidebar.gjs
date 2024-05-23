@@ -19,7 +19,6 @@ export default class FixedSidebar extends Component {
     super(...arguments);
     this.fetchContents();
     this.setupContents();
-    this.toggleCurrentSection();
     this.router.on("routeDidChange", this, this.toggleCurrentSection);
   }
 
@@ -116,6 +115,8 @@ export default class FixedSidebar extends Component {
       const currentSection = this.contents.find(
         (content) => content.section === parentTopicCategorySlug
       );
+
+      console.log({ currentSection, parentTopicCategorySlug });
 
       if (currentSection) {
         this.sidebarState.expandSection(currentSection.section);
