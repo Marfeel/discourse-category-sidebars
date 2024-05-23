@@ -141,10 +141,7 @@
           svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 
           const path = document.querySelector(`#${icon}`);
-          console.log(path);
-          svg.appendChild(path.innerHTML);
-
-          console.log(svg);
+          svg.innerHTML = path.innerHTML;
 
           const svgBase64 = svgToBase64(svg);
 
