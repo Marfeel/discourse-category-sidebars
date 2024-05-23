@@ -10,6 +10,7 @@ import { ajax } from "discourse/lib/ajax";
 export default class FixedSidebar extends Component {
   @service siteSettings;
   @service router;
+  @service sidebarState;
   @tracked contents = [];
   @tracked loading = true;
 
@@ -17,6 +18,9 @@ export default class FixedSidebar extends Component {
     super(...arguments);
     this.fetchContents();
     this.setupContents();
+    this.router.on("routeDidChange", () => {
+      this.toggleCurrentSection();
+    });
   }
 
   <template>
@@ -85,6 +89,21 @@ export default class FixedSidebar extends Component {
           }
         }
       });
+    });
+  }
+
+  @action
+  toggleCurrentSection() {
+    schedule("afterRender", () => {
+      const currentRoute = this.router.currentRoute;
+      const currentSection = this.contents.find(
+        (content) => content.section === currentRoute
+      );
+      // eslint-disable-next-line no-console
+      console.log({ currentSection });
+      if (currentSection) {
+        this.sidebarState.expandSection(currentSection.section);
+      }
     });
   }
 }
