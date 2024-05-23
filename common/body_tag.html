@@ -140,9 +140,8 @@
           svg.classList.add("fa", "d-icon", "svg-icon", "prefix-icon", "svg-string");
           svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 
-          const use = document.createElement("use");
-          use.setAttribute("href", `#icon-${icon}`);
-          svg.appendChild(use);
+          const path = document.querySelector(`#${icon}`);
+          svg.appendChild(path.innerHTML);
 
           const svgBase64 = svgToBase64(svg);
 
