@@ -143,9 +143,7 @@
           const path = document.querySelector(`#${icon}`);
           svg.innerHTML = path.innerHTML;
 
-          const svgBase64 = svgToBase64(svg);
-
-          section.style.backgroundImage = `url(${svgBase64})`;
+          section.appendChild(svg);
         }
       });
     }
