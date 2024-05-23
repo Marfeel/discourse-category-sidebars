@@ -100,7 +100,7 @@ export default class FixedSidebar extends Component {
         (content) => content.section === currentRoute
       );
       // eslint-disable-next-line no-console
-      console.log({ currentSection });
+      console.log({ currentRoute });
       if (currentSection) {
         this.sidebarState.expandSection(currentSection.section);
       }
