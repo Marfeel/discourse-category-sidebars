@@ -50,6 +50,10 @@ export default class FixedSidebar extends Component {
     return setupFixed;
   }
 
+  get categoryIdTopic() {
+    return this.router?.currentRoute?.parent?.attributes?.category_id;
+  }
+
   get topicCategory() {
     return this.categoryIdTopic
       ? Category.findById(this.categoryIdTopic)
