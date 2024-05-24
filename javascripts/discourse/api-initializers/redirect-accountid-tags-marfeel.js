@@ -14,7 +14,7 @@ export default apiInitializer("1.6.0", (api) => {
       marfeelLink.target = '_blank';
       marfeelLink.innerHTML = '<svg width="9" height="9" xmlns="http://www.w3.org/2000/svg"><use href="#mrf-marfeel"></use></svg>';
 
-      const customTag = originalTag.replace('accountid-', '');
+      const customTag = originalTag.replace(/>accountid-\d+</, '');
 
       console.log({ customTag, originalTag });
 
