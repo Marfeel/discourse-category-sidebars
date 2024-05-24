@@ -14,14 +14,15 @@ export default apiInitializer("1.6.0", (api) => {
       marfeelLink.target = '_blank';
       marfeelLink.innerHTML = '<svg width="9" height="9" xmlns="http://www.w3.org/2000/svg"><use href="#mrf-marfeel"></use></svg>';
 
-      const customTag = originalTag.replace(/>accountid-\d+</, (_, p1) => '>' + p1.replace('accountid-', '') + '<');
+      // Remove accountid- from visible tag content, not href or attributes, eg. <a href="/tag/accountid-123" data-tag-name"accountid-123">accountid-123</a>
+      const onlyId = originalTag.replace(`>${tag}<`, `>${accountId}<`);
 
-      console.log({ customTag, originalTag });
+      console.log({ onlyId, originalTag });
 
       let val = `
         <div class='marfeel-tag-wrapper'>
           ${marfeelLink.outerHTML}
-          ${customTag}
+          ${onlyId}
         </div>
       `;
 
