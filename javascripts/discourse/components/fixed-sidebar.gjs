@@ -24,7 +24,6 @@ export default class FixedSidebar extends Component {
     await this.fetchContents();
     await this.setupContents();
     this.router.on("routeDidChange", this, this.toggleCurrentSection);
-    this.toggleCurrentSection();
   }
 
   willDestroy() {
