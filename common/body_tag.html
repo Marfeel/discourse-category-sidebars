@@ -45,13 +45,13 @@
     }
   }
 
-  const sideObserver = new MutationObserver(updateSidebarActiveLink);
+  const activeLinkUpdater = new MutationObserver(updateSidebarActiveLink);
   const topicBody = document.querySelector("#main-outlet-wrapper");
   if (topicBody) {
-    sideObserver.observe(topicBody, { childList: true, subtree: true });
+    activeLinkUpdater.observe(topicBody, { childList: true, subtree: true });
 
     window.addEventListener("beforeunload", () => {
-      sideObserver.disconnect();
+      activeLinkUpdater.disconnect();
     });
   }
 </script>
