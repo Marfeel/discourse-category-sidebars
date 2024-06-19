@@ -85,9 +85,9 @@
     updateCustomSidebar();
   });
 
-  const mainOutletSidebars = document.querySelector("body");
-  if (mainOutletSidebars) {
-    observerForFixedElement.observe(mainOutletSidebars, {
+  const outletBody = document.querySelector("body");
+  if (outletBody) {
+    observerForFixedElement.observe(outletBody, {
       childList: true,
       subtree: true,
     });
