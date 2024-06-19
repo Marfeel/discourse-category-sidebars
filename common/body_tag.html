@@ -45,13 +45,13 @@
     }
   }
 
-  const activeLinkUpdater = new MutationObserver(updateSidebarActiveLink);
-  const mainOutletWrapper = document.querySelector("#main-outlet-wrapper");
-  if (mainOutletWrapper) {
-    activeLinkUpdater.observe(mainOutletWrapper, { childList: true, subtree: true });
+  const sideObserver = new MutationObserver(updateSidebarActiveLink);
+  const topicBody = document.querySelector("#main-outlet-wrapper");
+  if (topicBody) {
+    sideObserver.observe(topicBody, { childList: true, subtree: true });
 
     window.addEventListener("beforeunload", () => {
-      activeLinkUpdater.disconnect();
+      sideObserver.disconnect();
     });
   }
 </script>
@@ -81,19 +81,19 @@
     });
   }
 
-  const observerForFixedElement = new MutationObserver(() => {
+  const fixedObserver = new MutationObserver(() => {
     updateCustomSidebar();
   });
 
-  const outletBody = document.querySelector("body");
-  if (outletBody) {
-    observerForFixedElement.observe(outletBody, {
+  const mainOutletSidebars = document.querySelector("body");
+  if (mainOutletSidebars) {
+    fixedObserver.observe(mainOutletSidebars, {
       childList: true,
       subtree: true,
     });
 
     window.addEventListener("beforeunload", () => {
-      observerForFixedElement.disconnect();
+      fixedObserver.disconnect();
     });
   }
 </script>
