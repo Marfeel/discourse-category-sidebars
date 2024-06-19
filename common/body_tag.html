@@ -46,9 +46,9 @@
   }
 
   const activeLinkUpdater = new MutationObserver(updateSidebarActiveLink);
-  const topicBody = document.querySelector("#main-outlet-wrapper");
-  if (topicBody) {
-    activeLinkUpdater.observe(topicBody, { childList: true, subtree: true });
+  const mainOutletWrapper = document.querySelector("#main-outlet-wrapper");
+  if (mainOutletWrapper) {
+    activeLinkUpdater.observe(mainOutletWrapper, { childList: true, subtree: true });
 
     window.addEventListener("beforeunload", () => {
       activeLinkUpdater.disconnect();
