@@ -81,19 +81,19 @@
     });
   }
 
-  const fixedObserver = new MutationObserver(() => {
+  const observerForFixedElement = new MutationObserver(() => {
     updateCustomSidebar();
   });
 
   const mainOutletSidebars = document.querySelector("body");
   if (mainOutletSidebars) {
-    fixedObserver.observe(mainOutletSidebars, {
+    observerForFixedElement.observe(mainOutletSidebars, {
       childList: true,
       subtree: true,
     });
 
     window.addEventListener("beforeunload", () => {
-      fixedObserver.disconnect();
+      observerForFixedElement.disconnect();
     });
   }
 </script>
