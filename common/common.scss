@@ -150,9 +150,6 @@
           background: var(--mrf-hover-bgcolor);
           border-radius: 4px;
         }
-        &:not(:has(svg)) {
-          padding-left: calc(var(--mrf-sidebar-indent) + 16px + 8px);
-        }
         svg {
           font-size: 16px;
           color: #5d6c81;
@@ -202,6 +199,11 @@
       > details {
         ul::before {
           content: none !important;
+        }
+      }
+      > summary {
+        &:not(:has(svg)) {
+          padding-left: calc(var(--mrf-sidebar-indent) + 16px + 8px);
         }
       }
     }
