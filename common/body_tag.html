@@ -29,7 +29,7 @@
       }
     }
     const currentSidebarItem = document.querySelector(
-      `.sidebar-sections li > a[href*='${topicId}']:not(.active):not(.sidebar-section-link)`
+      `.sidebar-sections li > a[href$='/${topicId}']:not(.active):not(.sidebar-section-link)`
     );
 
     if (currentSidebarItem) {
@@ -128,7 +128,7 @@
         const sectionName = section.querySelector("summary").textContent.trim();
         const icon = iconSections[sectionName];
 
-        if (icon) {
+        if (icon && !section.querySelector(`.d-icon-${icon}`)) {
           section.classList.add(`mrf-sidebar-${icon}`);
 
           const svg = document.createElementNS(
