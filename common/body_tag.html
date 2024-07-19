@@ -147,11 +147,9 @@
           svg.setAttribute("viewBox", "0 0 512 512");
 
           const path = document.querySelector(`symbol#${icon}`);
-          if (path) {
-            svg.innerHTML = path.innerHTML;
+          svg.innerHTML = path.innerHTML;
 
-            section.querySelector("summary").prepend(svg);
-          }
+          section.querySelector("summary").prepend(svg);
         }
       });
     }
