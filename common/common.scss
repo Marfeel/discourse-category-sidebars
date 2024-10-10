@@ -16,6 +16,9 @@
   [data-section-name="marfeel"] {
     order: -1;
   }
+  [data-section-name] .sidebar-section-header {
+    text-transform: unset;
+  }
 }
 
 #main-outlet {
@@ -278,30 +281,13 @@
 
 // Community links
 [data-section-name="community"] {
-  margin-inline: -30px;
-  padding-block: 10px 30px;
-  margin-bottom: 20px;
+  .sidebar-custom-sections & {
+    margin-inline: -30px;
+    padding-block: 10px 30px;
+    margin-bottom: 20px;
+  }
   .unread {
     display: none;
-  }
-  .sidebar-section-header-wrapper {
-    margin-inline: 30px;
-    button.sidebar-section-header-button {
-      svg {
-        padding: 2px;
-      }
-      .discourse-no-touch & {
-        &:hover {
-          background: unset;
-          svg.d-icon {
-            color: #93a0b2;
-          }
-        }
-        svg {
-          color: #93a0b2;
-        }
-      }
-    }
   }
   // more section
   .sidebar-more-section-links-details-content-footer {
