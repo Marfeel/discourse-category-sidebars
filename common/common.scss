@@ -31,6 +31,9 @@
 }
 .sidebar-sections {
   -webkit-antialiased: antialiased;
+  .sidebar-section-wrapper {
+    border-bottom: 0;
+  }
   .sidebar-wrapper & {
     padding: 30px;
   }
