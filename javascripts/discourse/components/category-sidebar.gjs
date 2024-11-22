@@ -63,7 +63,7 @@ export default class CategorySidebar extends Component {
     this.router.off("routeDidChange", this.updateActiveLinks);
   }
 
-get parsedSetting() {
+  get parsedSetting() {
     return settings.setup.split("|").reduce((result, setting) => {
       const [category, value] = setting
         .split(",")
@@ -221,6 +221,4 @@ get parsedSetting() {
       }
     });
   }
-
-
 }
