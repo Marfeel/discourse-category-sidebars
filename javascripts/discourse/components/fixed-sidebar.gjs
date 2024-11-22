@@ -3,7 +3,7 @@ import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
 import didUpdate from "@ember/render-modifiers/modifiers/did-update";
 import { schedule } from "@ember/runloop";
-import { service } from "@ember/service";
+import { inject as service } from "@ember/service";
 import { htmlSafe } from "@ember/template";
 import { ajax } from "discourse/lib/ajax";
 import Category from "discourse/models/category";
@@ -20,16 +20,16 @@ export default class FixedSidebar extends Component {
     this.initialize();
   }
 
-  willDestroy() {
-    super.willDestroy(...arguments);
-    this.router.off("routeDidChange", this, this.toggleCurrentSection);
-  }
-
   async initialize() {
     await this.fetchContents();
     await this.setupContents();
     this.router.on("routeDidChange", this, this.toggleCurrentSection);
     this.toggleCurrentSection();
+  }
+
+  willDestroy() {
+    super.willDestroy(...arguments);
+    this.router.off("routeDidChange", this, this.toggleCurrentSection);
   }
 
   <template>

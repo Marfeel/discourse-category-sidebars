@@ -4,7 +4,7 @@ import { concat } from "@ember/helper";
 import { action } from "@ember/object";
 import didInsert from "@ember/render-modifiers/modifiers/did-insert";
 import didUpdate from "@ember/render-modifiers/modifiers/did-update";
-import { service } from "@ember/service";
+import { inject as service } from "@ember/service";
 import { htmlSafe } from "@ember/template";
 import ConditionalLoadingSpinner from "discourse/components/conditional-loading-spinner";
 import bodyClass from "discourse/helpers/body-class";
@@ -54,14 +54,6 @@ export default class CategorySidebar extends Component {
       </div>
     {{/if}}
   </template>
-
-  willDestroy() {
-    super.willDestroy();
-    if (this.sidebarObserver) {
-      this.sidebarObserver.disconnect();
-    }
-    this.router.off("routeDidChange", this.updateActiveLinks);
-  }
 
   get parsedSetting() {
     return settings.setup.split("|").reduce((result, setting) => {
@@ -220,5 +212,13 @@ export default class CategorySidebar extends Component {
         link.classList.remove("active");
       }
     });
+  }
+
+  willDestroy() {
+    super.willDestroy();
+    if (this.sidebarObserver) {
+      this.sidebarObserver.disconnect();
+    }
+    this.router.off("routeDidChange", this.updateActiveLinks);
   }
 }
