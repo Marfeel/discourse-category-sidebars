@@ -1,0 +1,12 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+es:
+  theme_metadata:
+    settings:
+      inherit_parent_sidebar: >
+        Si está marcada, las subcategorías heredarán la barra lateral de su categoría principal (a menos que la subcategoría tenga asignada su propia barra lateral). <p>Si no está marcada, las subcategorías solo mostrarán una barra lateral si se especifica una.</p>
+      stick_on_scroll: "Cuando está marcada, la barra lateral tiene una posición fija en el desplazamiento"

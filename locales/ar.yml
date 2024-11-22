@@ -1,0 +1,12 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+ar:
+  theme_metadata:
+    settings:
+      inherit_parent_sidebar: >
+        إذا تم التحديد، فستحصل الفئات الفرعية على الشريط الجانبي للفئة الأصلية (ما لم يتم تعيين شريط جانبي خاص للفئة الفرعية). <p>إذا لم يتم التحديد، فستعرض الفئات الفرعية شريطًا جانبيًا فقط إذا تم تحديده.</p>
+      stick_on_scroll: "عند التحديد، يظل الشريط الجانبي ثابتًا عند التمرير"

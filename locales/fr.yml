@@ -1,0 +1,12 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+fr:
+  theme_metadata:
+    settings:
+      inherit_parent_sidebar: >
+        Si cette case est cochée, les sous-catégories hériteront de la barre latérale de leur catégorie parente (sauf si la sous-catégorie possède sa propre barre latérale). <p>Lorsque cette case n'est pas cochée, les sous-catégories n'affichent une barre latérale que si elle est spécifiée.</p>
+      stick_on_scroll: "Lorsque cette case est cochée, la barre latérale a une position collante lors du défilement"

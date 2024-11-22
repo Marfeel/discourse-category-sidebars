@@ -1,0 +1,12 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+zh_CN:
+  theme_metadata:
+    settings:
+      inherit_parent_sidebar: >
+        如果选中，子类别将继承其父类别的边栏（除非子类别已被指定自己的边栏）。<p>未选中时，只有在指定一个边栏时，子类别才会显示边栏。</p>
+      stick_on_scroll: "选中时，边栏在滚动时具有粘性位置"

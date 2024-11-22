@@ -1,0 +1,12 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+nl:
+  theme_metadata:
+    settings:
+      inherit_parent_sidebar: >
+        Als dit is geselecteerd, nemen subcategorieën de zijbalk van hun bovenliggende categorie over (tenzij een eigen zijbalk is toegewezen aan een subcategorie). <p>Als dit niet is geselecteerd, wordt er in subcategorieën alleen een zijbalk weergegeven als er een is opgegeven.</p>
+      stick_on_scroll: "Als dit is geselecteerd, heeft de zijbalk een vaste positie bij het scrollen"

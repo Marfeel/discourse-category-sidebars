@@ -35,6 +35,23 @@ setup_by_category_id:
     <li>The topic ID is the first number in its url, for from the url community.example.com/t/welcome-to-discourse/8/10, you would use <b>8</b> in the setting</li>
     </ul>
     <p>Note that for a user to be able to see the sidebar, they must be able to access the topic. A topic in a protected category will not be visible as a sidebar to all users. If you don't want a sidebar topic to appear in your topic list, you can unlist it.</p>
+sidebars:
+  type: objects
+  default: []
+  schema:
+    name: "sidebar"
+    identifier: name
+    properties:
+      name:
+        type: string
+        required: true
+      category:
+        type: categories
+      tag:
+        type: tags
+      topic_id:
+        type: integer
+        required: true
 
 sidebar_side:
   default: left

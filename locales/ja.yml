@@ -1,0 +1,12 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+ja:
+  theme_metadata:
+    settings:
+      inherit_parent_sidebar: >
+        オンである場合、サブカテゴリは親カテゴリのサイドバーを継承します (サブカテゴリに独自サイドバーが割り当てられていない場合を除く)。<p>オフにすると、サブカテゴリはサイドバーが指定されている場合にのみそれを表示します。</p>
+      stick_on_scroll: "オンの場合、サイドバーはスクロール時に固定表示されます"

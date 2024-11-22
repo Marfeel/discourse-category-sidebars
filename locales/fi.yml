@@ -1,0 +1,12 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+fi:
+  theme_metadata:
+    settings:
+      inherit_parent_sidebar: >
+        Jos tämä valitaan, ala-alueet perivät yläalueensa sivupalkin (ellei ala-alueelle ole määritetty omaa sivupalkkia). <p>Kun tätä ei valita, ala-alueet näyttävät sivupalkin vain, jos sellainen on määritetty.</p>
+      stick_on_scroll: "Kun tämä on valittu, sivupalkki pysyy paikoillaan vieritettäessä"

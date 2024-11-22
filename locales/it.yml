@@ -1,0 +1,12 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+it:
+  theme_metadata:
+    settings:
+      inherit_parent_sidebar: >
+        Se selezionata, le sottocategorie erediteranno la barra laterale della categoria principale (a meno che la sottocategoria non abbia una propria barra laterale assegnata). <p>Se non selezionata, le sottocategorie visualizzeranno una barra laterale solo se ne è specificata una.</p>
+      stick_on_scroll: "Se selezionata, la barra laterale ha una posizione fissa durante lo scorrimento"

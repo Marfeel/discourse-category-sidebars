@@ -1,0 +1,12 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+tr_TR:
+  theme_metadata:
+    settings:
+      inherit_parent_sidebar: >
+        İşaretlenirse alt kategoriler üst kategorilerinin kenar çubuğunu devralır (alt kategorinin kendi kenar çubuğu atanmadığı sürece). <p>İşaretli olmadığında alt kategoriler yalnızca bir kenar çubuğu belirtilmişse gösterir.</p>
+      stick_on_scroll: "İşaretlendiğinde kenar çubuğu kaydırmada yapışkan bir konuma sahiptir"

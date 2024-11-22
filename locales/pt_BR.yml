@@ -1,0 +1,12 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+pt_BR:
+  theme_metadata:
+    settings:
+      inherit_parent_sidebar: >
+        Se esta opção estiver marcada, as subcategorias herdarão a barra lateral da categoria pai (a menos que a subcategoria tenha sua própria barra de ferramentas atribuída). <p>Se estiver desmarcada, será exibida apenas a barra lateral da subcategoria especificada.</p>
+      stick_on_scroll: "Se esta opção estiver marcada, a posição da barra lateral acompanhará a rolagem"

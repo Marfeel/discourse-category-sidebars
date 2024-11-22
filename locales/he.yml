@@ -1,0 +1,13 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+he:
+  theme_metadata:
+    description: "הצגת תוכן הנושא לצד רשימת הנושאים לתגית או קטגוריה"
+    settings:
+      inherit_parent_sidebar: >
+        אם האפשרות מסומנת, תת־קטגוריות יירשו את סרגל הצד של קטגוריית האב שלהן (אלא אם לתת־הקטגוריית הוקצה סרגל צד משלה). <p>כאשר תת־קטגוריות לא מסומנות יציגו סרגל צד רק אם צוין.</p>
+      stick_on_scroll: "כאשר האפשרות מסומנת לסרגל הצד יש מיקום דביק בגלילה"
