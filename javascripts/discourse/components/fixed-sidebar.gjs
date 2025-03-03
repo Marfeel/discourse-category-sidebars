@@ -47,10 +47,18 @@ export default class FixedSidebar extends Component {
   </template>
 
   get fixedSettings() {
-    const setupFixed = settings.setup_fixed.split("|").map((entry) => {
-      const [section, postId] = entry.split(",");
-      return { section: section.trim(), postId: postId.trim() };
-    });
+    const setupFixed = (settings.setup_fixed || "")
+      .split("|")
+      .map((entry) => {
+        if (!entry || !entry.includes(",")) {
+          return null;
+        }
+        const [section, postId] = entry.split(",");
+        return section && postId
+          ? { section: section.trim(), postId: postId.trim() }
+          : null;
+      })
+      .filter(Boolean);
 
     return setupFixed;
   }
@@ -69,21 +77,32 @@ export default class FixedSidebar extends Component {
   async fetchContents() {
     this.loading = true;
     try {
-      const promises = this.fixedSettings.map(async (setting) => {
-        const response = await ajax(`/t/${setting.postId}.json`);
-        return {
-          section: setting.section,
-          content: response.post_stream.posts[0].cooked,
-        };
-      });
+      const successfulContents = [];
 
-      this.contents = await Promise.all(promises);
+      for (const setting of this.fixedSettings) {
+        try {
+          const response = await ajax(`/t/${setting.postId}.json`);
+          successfulContents.push({
+            section: setting.section,
+            content: response.post_stream.posts[0].cooked,
+          });
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(
+            `Error fetching content for section ${setting.section}, skipping:`,
+            error
+          );
+        }
+      }
+
+      this.contents = successfulContents;
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(
         "Error fetching fixed content for multiple sidebars:",
         error
       );
+      this.contents = [];
     } finally {
       this.loading = false;
     }
