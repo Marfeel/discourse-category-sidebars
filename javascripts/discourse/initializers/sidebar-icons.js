@@ -69,19 +69,11 @@ export default {
         iconsInitialized = false;
       });
 
-      api.onAppEvent("sidebar:rendered", () => {
-        if (!iconsInitialized) {
-          setTimeout(() => {
-            addIconSections();
-          }, 100);
-        }
-      });
-
-      setTimeout(() => {
+      document.addEventListener('custom-sections-ready', () => {
         if (!iconsInitialized) {
           addIconSections();
         }
-      }, 500);
+      });
     });
   }
 };
