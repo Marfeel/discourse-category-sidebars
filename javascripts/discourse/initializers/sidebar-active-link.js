@@ -58,6 +58,7 @@ export default {
       });
 
       document.addEventListener('custom-sections-ready', () => {
+        console.log("Custom sections are ready, updating sidebar active link.");
         schedule("afterRender", () => {
           updateSidebarActiveLink();
         });

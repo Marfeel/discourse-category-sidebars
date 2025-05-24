@@ -71,6 +71,7 @@ export default {
       });
 
       document.addEventListener('custom-sections-ready', () => {
+        console.log("Custom sections are ready, adding icons...", iconsInitialized);
         if (!iconsInitialized) {
           schedule("afterRender", () => {
             addIconSections();
