@@ -1,8 +1,8 @@
-import { schedule } from "@ember/runloop";
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 export default {
   name: "sidebar-active-link",
+  after: "custom-sidebar-sections",
 
   initialize() {
     withPluginApi("0.8.31", (api) => {
@@ -57,12 +57,7 @@ export default {
         updateSidebarActiveLink();
       });
 
-      document.addEventListener('custom-sections-ready', () => {
-        console.log("Custom sections are ready, updating sidebar active link.");
-        schedule("afterRender", () => {
-          updateSidebarActiveLink();
-        });
-      });
+      updateSidebarActiveLink();
     });
   }
 };
