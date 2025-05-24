@@ -57,6 +57,8 @@ export default {
         updateSidebarActiveLink();
       });
 
+      console.log("Sidebar active link initializer loaded");
+
       updateSidebarActiveLink();
     });
   }
