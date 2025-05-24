@@ -1,5 +1,34 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
 
+// Utility function
+function waitForElement(selector, callback) {
+  const element = document.querySelector(selector);
+  if (element) {
+    callback(element);
+    return;
+  }
+
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const foundElement = node.matches?.(selector) ? node : node.querySelector?.(selector);
+          if (foundElement) {
+            observer.disconnect();
+            callback(foundElement);
+            return;
+          }
+        }
+      }
+    }
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+}
+
 const ICON_SECTIONS = {
   Platform: "mrf-apps",
   Editorial: "mrf-editorial",
@@ -52,8 +81,6 @@ export default {
 
   initialize() {
     withPluginApi("0.11.1", (api) => {
-    //   const { waitForElement } = window.MarfeelCommunityUtils;
-
       waitForElement(".sidebar-sections .custom-sidebar-section", addIconSections);
 
       document.addEventListener("sidebar:update-icons", addIconSections);

@@ -1,5 +1,46 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
 
+// Utility functions
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+function waitForElement(selector, callback) {
+  const element = document.querySelector(selector);
+  if (element) {
+    callback(element);
+    return;
+  }
+
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const foundElement = node.matches?.(selector) ? node : node.querySelector?.(selector);
+          if (foundElement) {
+            observer.disconnect();
+            callback(foundElement);
+            return;
+          }
+        }
+      }
+    }
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+}
+
 function updateSidebarActiveLink() {
   const segments = window.location.pathname.split("/");
   let topicId = "";
@@ -76,8 +117,6 @@ export default {
 
   initialize() {
     withPluginApi("0.11.1", (api) => {
-      const { debounce } = window.MarfeelCommunityUtils;
-
       const sideObserver = new MutationObserver(debounce(updateSidebarActiveLink, 100));
       const topicBody = document.querySelector("#main-outlet-wrapper");
       if (topicBody) {
@@ -88,7 +127,6 @@ export default {
       fixedObserver.observe(document.body, { childList: true, subtree: true });
 
       if (document.body.classList.contains("mobile-view")) {
-        const { waitForElement } = window.MarfeelCommunityUtils;
         waitForElement(".mobile-view .panel", (mobilePanel) => {
           const observerSidebarMobile = new MutationObserver(debounce(observeHamburgerMobile, 100));
           observerSidebarMobile.observe(mobilePanel, { childList: true, subtree: true });
