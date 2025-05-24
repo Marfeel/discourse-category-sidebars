@@ -22,6 +22,8 @@ const iconSections = {
   Amplify: "mrf-amplify"
 };
 
+let iconsInitialized = false;
+
 function addIconSections() {
   const customSidebarSections = document.querySelectorAll(
     ".sidebar-sections .custom-sidebar-section > details"
@@ -55,6 +57,7 @@ function addIconSections() {
       }
     }
   }
+  iconsInitialized = true;
 }
 
 export default {
@@ -62,18 +65,22 @@ export default {
 
   initialize() {
     withPluginApi("0.8.31", (api) => {
-      api.onPageChange(() => {
-        setTimeout(() => {
-          addIconSections();
-        }, 100);
+      api.onAppEvent("dom:clean", () => {
+        iconsInitialized = false;
       });
 
       api.onAppEvent("sidebar:rendered", () => {
-        addIconSections();
+        if (!iconsInitialized) {
+          setTimeout(() => {
+            addIconSections();
+          }, 100);
+        }
       });
 
       setTimeout(() => {
-        addIconSections();
+        if (!iconsInitialized) {
+          addIconSections();
+        }
       }, 500);
     });
   }
