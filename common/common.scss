@@ -3,6 +3,16 @@
   --mrf-hover-bgcolor: #ebf1fd;
 }
 
+// Prevent flash when loading custom sidebar content
+.sidebar-section-wrapper[data-section-name] {
+  // Default smooth transition for all sidebar sections
+  transition: opacity 0.15s ease;
+
+  &.sidebar-ready {
+    opacity: 1;
+  }
+}
+
 .sidebar-custom-sections {
   display: contents;
   [data-section-name="community"] {
