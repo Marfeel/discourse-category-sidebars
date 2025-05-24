@@ -112,7 +112,6 @@ export default class FixedSidebar extends Component {
     const style = document.createElement("style");
     style.id = "fixed-sidebar-preload";
 
-    // Only target sections that will actually be modified
     const selectors = sectionNames
       .map((name) => `.sidebar-section-wrapper[data-section-name="${name}"]`)
       .join(", ");
@@ -120,10 +119,11 @@ export default class FixedSidebar extends Component {
     style.textContent = `
       ${selectors} {
         opacity: 0 !important;
-        transition: opacity 0.15s ease !important;
+        transition: none !important;
       }
       ${selectors}.sidebar-ready {
         opacity: 1 !important;
+        transition: opacity 0.1s ease !important;
       }
     `;
     document.head.appendChild(style);
@@ -151,16 +151,26 @@ export default class FixedSidebar extends Component {
   async fetchContents() {
     this.loading = true;
     try {
-      // Use Promise.allSettled for better performance (parallel requests)
+      // Fetch and apply content immediately as it becomes available
       const promises = this.fixedSettings.map(async (setting) => {
         try {
           const response = await ajax(`/t/${setting.postId}.json`);
-          return {
+          const content = {
             section: setting.section,
             content: response.post_stream.posts[0].cooked,
           };
+
+          schedule("afterRender", () => {
+            const targetElement = document.querySelector(
+              `.sidebar-section-wrapper[data-section-name="${setting.section}"]`
+            );
+            if (targetElement) {
+              this.applyContentToSectionImmediate(targetElement, content);
+            }
+          });
+
+          return content;
         } catch (error) {
-          // eslint-disable-next-line no-console
           console.error(
             `Error fetching content for section ${setting.section}, skipping:`,
             error
@@ -176,7 +186,6 @@ export default class FixedSidebar extends Component {
         )
         .map((result) => result.value);
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error(
         "Error fetching fixed content for multiple sidebars:",
         error
@@ -233,13 +242,12 @@ export default class FixedSidebar extends Component {
     );
 
     if (contentElement && !existingContent) {
-      // Use requestAnimationFrame for smoother DOM updates
-      requestAnimationFrame(() => {
-        targetElement.appendChild(contentElement.cloneNode(true));
-        targetElement.classList.add("sidebar-ready");
+      targetElement.appendChild(contentElement.cloneNode(true));
 
-        document.dispatchEvent(new CustomEvent("sidebar:update-icons"));
-      });
+      targetElement.offsetHeight;
+      targetElement.classList.add("sidebar-ready");
+
+      document.dispatchEvent(new CustomEvent("sidebar:update-icons"));
     } else if (!contentElement) {
       targetElement.classList.add("sidebar-ready");
     }
