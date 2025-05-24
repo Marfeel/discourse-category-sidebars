@@ -2,7 +2,6 @@ import { withPluginApi } from "discourse/lib/plugin-api";
 
 export default {
   name: "sidebar-active-link",
-  after: "custom-sidebar-sections",
 
   initialize() {
     withPluginApi("0.8.31", (api) => {
@@ -57,9 +56,10 @@ export default {
         updateSidebarActiveLink();
       });
 
-      console.log("Sidebar active link initializer loaded");
-
-      updateSidebarActiveLink();
+      window.addEventListener('sidebar-sections-ready', () => {
+        console.log("Sidebar active link initializer loaded");
+        updateSidebarActiveLink();
+      });
     });
   }
 };

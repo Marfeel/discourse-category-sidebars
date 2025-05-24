@@ -62,7 +62,6 @@ function addIconSections() {
 
 export default {
   name: "sidebar-icons",
-  after: "custom-sidebar-sections",
 
   initialize() {
     withPluginApi("0.8.31", (api) => {
@@ -70,12 +69,12 @@ export default {
         iconsInitialized = false;
       });
 
-      console.log("Sidebar icons initializer loaded", iconsInitialized);
-
-
-      if (!iconsInitialized) {
-        addIconSections();
-      }
+      window.addEventListener('sidebar-sections-ready', () => {
+        console.log("Sidebar icons initializer loaded", iconsInitialized);
+        if (!iconsInitialized) {
+          addIconSections();
+        }
+      });
     });
   }
 };
