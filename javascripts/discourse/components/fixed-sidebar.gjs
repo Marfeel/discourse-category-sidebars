@@ -237,9 +237,10 @@ export default class FixedSidebar extends Component {
       requestAnimationFrame(() => {
         targetElement.appendChild(contentElement.cloneNode(true));
         targetElement.classList.add("sidebar-ready");
+
+        document.dispatchEvent(new CustomEvent("sidebar:update-icons"));
       });
     } else if (!contentElement) {
-      // Mark as ready even if no custom content
       targetElement.classList.add("sidebar-ready");
     }
   }
