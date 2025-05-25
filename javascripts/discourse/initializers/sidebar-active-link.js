@@ -1,4 +1,3 @@
-import { schedule } from "@ember/runloop";
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 export default {
@@ -58,9 +57,7 @@ export default {
       });
 
       document.addEventListener('custom-sections-ready', () => {
-        schedule("afterRender", () => {
-          updateSidebarActiveLink();
-        });
+        updateSidebarActiveLink();
       });
     });
   }

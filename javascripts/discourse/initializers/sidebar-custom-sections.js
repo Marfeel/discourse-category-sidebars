@@ -1,4 +1,3 @@
-import { schedule } from '@ember/runloop';
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 let sectionsInitialized = false;
@@ -25,9 +24,8 @@ function updateCustomSidebar() {
   });
   sectionsInitialized = true;
 
-  schedule("afterRender", () => {
-    document.dispatchEvent(new CustomEvent('custom-sections-ready'));
-  });
+  document.dispatchEvent(new CustomEvent('custom-sections-ready'));
+  console.log("Custom sidebar sections ready");
 }
 
 export default {
@@ -41,17 +39,15 @@ export default {
 
       api.onAppEvent("sidebar:rendered", () => {
         if (!sectionsInitialized) {
-          schedule("afterRender", () => {
-            updateCustomSidebar();
-          });
-        }
-      });
-
-      schedule("afterRender", () => {
-        if (!sectionsInitialized) {
           updateCustomSidebar();
         }
       });
+
+      setTimeout(() => {
+        if (!sectionsInitialized) {
+          updateCustomSidebar();
+        }
+      }, 100);
     });
   },
 };

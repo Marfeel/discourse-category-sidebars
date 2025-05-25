@@ -1,4 +1,3 @@
-import { schedule } from "@ember/runloop";
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 const iconSections = {
@@ -72,9 +71,7 @@ export default {
 
       document.addEventListener('custom-sections-ready', () => {
         if (!iconsInitialized) {
-          schedule("afterRender", () => {
-            addIconSections();
-          });
+          addIconSections();
         }
       });
     });
