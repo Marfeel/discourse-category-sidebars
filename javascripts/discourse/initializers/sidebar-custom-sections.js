@@ -1,3 +1,4 @@
+import { schedule } from '@ember/runloop';
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 let sectionsInitialized = false;
@@ -12,22 +13,6 @@ window.sidebarCustomSections = {
     }
   }
 };
-
-function executeCallbacks() {
-  sectionsInitialized = true;
-  console.log("Custom sections are ready, sections initialized:");
-
-  pendingCallbacks.forEach(callback => {
-    try {
-      callback();
-    } catch (error) {
-      console.error('Error executing sidebar callback:', error);
-    }
-  });
-  pendingCallbacks = [];
-
-  window.dispatchEvent(new CustomEvent('sidebar-sections-ready'));
-}
 
 function updateCustomSidebar() {
   const sidebarSections = document.querySelectorAll(
@@ -50,16 +35,22 @@ function updateCustomSidebar() {
     }
   });
 
-  if (waitForElement) {
-    waitForElement('.sidebar-sections .custom-sidebar-section', () => {
-      executeCallbacks();
+  sectionsInitialized = true;
+
+  console.log("Custom sections are ready, sections initialized:");
+
+  requestAnimationFrame(() => {
+    pendingCallbacks.forEach(callback => {
+      try {
+        callback();
+      } catch (error) {
+        console.error('Error executing sidebar callback:', error);
+      }
     });
-  } else {
-    // Fallback si waitForElement no está disponible
-    requestAnimationFrame(() => {
-      executeCallbacks();
-    });
-  }
+    pendingCallbacks = [];
+
+    window.dispatchEvent(new CustomEvent('sidebar-sections-ready'));
+  });
 }
 
 export default {
@@ -74,13 +65,17 @@ export default {
 
       api.onAppEvent("sidebar:rendered", () => {
         if (!sectionsInitialized) {
-          updateCustomSidebar();
+          schedule("afterRender", () => {
+            updateCustomSidebar();
+          });
         }
       });
 
-      if (!sectionsInitialized) {
-        updateCustomSidebar();
-      }
+      schedule("afterRender", () => {
+        if (!sectionsInitialized) {
+          updateCustomSidebar();
+        }
+      });
     });
   },
 };
