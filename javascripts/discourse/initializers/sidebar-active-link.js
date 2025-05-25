@@ -57,10 +57,8 @@ export default {
       });
 
       window.addEventListener('sidebar-sections-ready', () => {
-        requestAnimationFrame(() => {
-            console.log("Sidebar active link initializer loaded");
-          updateSidebarActiveLink();
-        });
+        console.log("Sidebar active link initializer loaded");
+        updateSidebarActiveLink();
       });
     });
   }

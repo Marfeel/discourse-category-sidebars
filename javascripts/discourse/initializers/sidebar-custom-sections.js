@@ -26,9 +26,7 @@ function updateCustomSidebar() {
   sectionsInitialized = true;
 
   console.log("Custom sections are ready, sections initialized:");
-  requestAnimationFrame(() => {
-    window.dispatchEvent(new CustomEvent('sidebar-sections-ready'));
-  });
+  window.dispatchEvent(new CustomEvent('sidebar-sections-ready'));
 }
 
 export default {

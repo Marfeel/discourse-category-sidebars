@@ -70,10 +70,9 @@ export default {
       });
 
       window.addEventListener('sidebar-sections-ready', () => {
+        console.log("Sidebar icons initializer loaded", iconsInitialized);
         if (!iconsInitialized) {
-          requestAnimationFrame(() => {
-            addIconSections();
-          });
+          addIconSections();
         }
       });
     });
