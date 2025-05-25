@@ -70,8 +70,6 @@ export default {
         iconsInitialized = false;
       });
 
-      console.log("Sidebar icons initializer loaded", iconsInitialized);
-
 
       if (!iconsInitialized) {
         addIconSections();
