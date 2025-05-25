@@ -25,6 +25,7 @@ function updateCustomSidebar() {
   });
   sectionsInitialized = true;
 
+  document.dispatchEvent(new CustomEvent('custom-sections-ready'));
   console.log("Custom sections are ready, sections initialized:");
 }
 

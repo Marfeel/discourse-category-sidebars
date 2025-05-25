@@ -1,3 +1,4 @@
+import { schedule } from "@ember/runloop";
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 const iconSections = {
@@ -62,7 +63,6 @@ function addIconSections() {
 
 export default {
   name: "sidebar-icons",
-  after: "custom-sidebar-sections",
 
   initialize() {
     withPluginApi("0.8.31", (api) => {
@@ -70,10 +70,14 @@ export default {
         iconsInitialized = false;
       });
 
-
-      if (!iconsInitialized) {
-        addIconSections();
-      }
+      document.addEventListener('custom-sections-ready', () => {
+        console.log("Custom sections are ready, adding icons...", iconsInitialized);
+        if (!iconsInitialized) {
+          schedule("afterRender", () => {
+            addIconSections();
+          });
+        }
+      });
     });
   }
 };
