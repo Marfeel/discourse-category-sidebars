@@ -1,7 +1,5 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
 
-let sectionsInitialized = false;
-
 function updateCustomSidebar() {
   const sidebarSections = document.querySelectorAll(
     ".sidebar-section-wrapper[data-section-name]"
@@ -22,7 +20,6 @@ function updateCustomSidebar() {
       }
     }
   });
-  sectionsInitialized = true;
 }
 
 export default {
@@ -30,21 +27,19 @@ export default {
 
   initialize() {
     withPluginApi("0.8.31", (api) => {
+      api.onPageChange(() => {
+        setTimeout(() => {
+          updateCustomSidebar();
+        }, 100);
+      });
+
       api.onAppEvent("dom:clean", () => {
-        sectionsInitialized = false;
+        updateCustomSidebar();
       });
 
-      api.onAppEvent("sidebar:rendered", () => {
-        if (!sectionsInitialized) {
-          updateCustomSidebar();
-        }
+      api.onAppEvent("page:changed", () => {
+        updateCustomSidebar();
       });
-
-      setTimeout(() => {
-        if (!sectionsInitialized) {
-          updateCustomSidebar();
-        }
-      }, 100);
     });
   },
 };
