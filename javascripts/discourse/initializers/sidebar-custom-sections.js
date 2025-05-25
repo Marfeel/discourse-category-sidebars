@@ -23,9 +23,6 @@ function updateCustomSidebar() {
     }
   });
   sectionsInitialized = true;
-
-  document.dispatchEvent(new CustomEvent('custom-sections-ready'));
-  console.log("Custom sidebar sections ready");
 }
 
 export default {

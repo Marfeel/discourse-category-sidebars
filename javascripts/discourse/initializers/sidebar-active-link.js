@@ -56,9 +56,7 @@ export default {
         updateSidebarActiveLink();
       });
 
-      document.addEventListener('custom-sections-ready', () => {
-        updateSidebarActiveLink();
-      });
+      updateSidebarActiveLink();
     });
   }
 };
