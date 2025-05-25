@@ -69,14 +69,6 @@ export default {
         iconsInitialized = false;
       });
 
-      if (window.sidebarCustomSections) {
-        window.sidebarCustomSections.onSectionsReady(() => {
-          if (!iconsInitialized) {
-            addIconSections();
-          }
-        });
-      }
-
       window.addEventListener('sidebar-sections-ready', () => {
         if (!iconsInitialized) {
           requestAnimationFrame(() => {
