@@ -56,9 +56,16 @@ export default {
         updateSidebarActiveLink();
       });
 
+      if (window.sidebarCustomSections) {
+        window.sidebarCustomSections.onSectionsReady(() => {
+          console.log("Sidebar active link initializer loaded, sections ready");
+          updateSidebarActiveLink();
+        });
+      }
+
       window.addEventListener('sidebar-sections-ready', () => {
         requestAnimationFrame(() => {
-            console.log("Sidebar active link initializer loaded");
+          console.log("Sidebar active link initializer loaded");
           updateSidebarActiveLink();
         });
       });

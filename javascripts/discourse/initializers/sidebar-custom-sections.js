@@ -2,6 +2,17 @@ import { schedule } from '@ember/runloop';
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 let sectionsInitialized = false;
+let pendingCallbacks = [];
+
+window.sidebarCustomSections = {
+  onSectionsReady: (callback) => {
+    if (sectionsInitialized) {
+      callback();
+    } else {
+      pendingCallbacks.push(callback);
+    }
+  }
+};
 
 function updateCustomSidebar() {
   const sidebarSections = document.querySelectorAll(
@@ -23,10 +34,21 @@ function updateCustomSidebar() {
       }
     }
   });
+
   sectionsInitialized = true;
 
   console.log("Custom sections are ready, sections initialized:");
+
   requestAnimationFrame(() => {
+    pendingCallbacks.forEach(callback => {
+      try {
+        callback();
+      } catch (error) {
+        console.error('Error executing sidebar callback:', error);
+      }
+    });
+    pendingCallbacks = [];
+
     window.dispatchEvent(new CustomEvent('sidebar-sections-ready'));
   });
 }
@@ -38,6 +60,7 @@ export default {
     withPluginApi("0.8.31", (api) => {
       api.onAppEvent("dom:clean", () => {
         sectionsInitialized = false;
+        pendingCallbacks = [];
       });
 
       api.onAppEvent("sidebar:rendered", () => {
