@@ -1,4 +1,5 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
+import { SidebarLoadingManager } from "../lib/sidebar-loading-manager";
 
 const iconSections = {
   Platform: "mrf-apps",
@@ -22,13 +23,26 @@ const iconSections = {
   Amplify: "mrf-amplify"
 };
 
+let sidebarObserver = null;
+let retryCount = 0;
+const MAX_RETRIES = 20;
+const RETRY_INTERVAL = 100;
+const loadingManager = SidebarLoadingManager.getInstance();
+
 function addIconSections() {
   const customSidebarSections = document.querySelectorAll(
     ".sidebar-sections .custom-sidebar-section > details"
   );
 
+  let iconsAdded = 0;
+
   for (const section of customSidebarSections) {
-    const sectionName = section.querySelector("summary").textContent.trim();
+    const summary = section.querySelector("summary");
+    if (!summary) {
+      continue;
+    }
+
+    const sectionName = summary.textContent.trim();
     const icon = iconSections[sectionName];
 
     if (icon && !section.querySelector(`.d-icon-${icon}`)) {
@@ -51,10 +65,99 @@ function addIconSections() {
       const path = document.querySelector(`symbol#${icon}`);
       if (path) {
         svg.innerHTML = path.innerHTML;
-        section.querySelector("summary").prepend(svg);
+        summary.prepend(svg);
+
+        // Add loaded class for smooth transition
+        setTimeout(() => {
+          svg.classList.add("icon-loaded");
+        }, 10);
+
+        iconsAdded++;
       }
     }
   }
+
+  // Mark custom sections as loaded for smooth appearance
+  for (const section of customSidebarSections) {
+    const parentSection = section.closest(".custom-sidebar-section");
+    if (parentSection) {
+      const sectionName = parentSection.getAttribute("data-sidebar-name");
+      if (sectionName) {
+        loadingManager.markSectionAsLoaded(sectionName);
+      } else {
+        parentSection.classList.add("loaded");
+      }
+    }
+  }
+
+  return iconsAdded;
+}
+
+function waitForCustomSections() {
+  const customSections = document.querySelectorAll(
+    ".sidebar-sections .custom-sidebar-section > details"
+  );
+
+  if (customSections.length > 0) {
+    const iconsAdded = addIconSections();
+    if (iconsAdded > 0) {
+      retryCount = 0; // Reset retry count on success
+      return true;
+    }
+  }
+
+  if (retryCount < MAX_RETRIES) {
+    retryCount++;
+    setTimeout(waitForCustomSections, RETRY_INTERVAL);
+  } else {
+    retryCount = 0; // Reset for next attempt
+  }
+
+  return false;
+}
+
+function setupSidebarObserver() {
+  if (sidebarObserver) {
+    sidebarObserver.disconnect();
+  }
+
+  const sidebarContainer = document.querySelector(".sidebar-sections");
+  if (!sidebarContainer) {
+    // If sidebar container doesn't exist yet, retry
+    setTimeout(setupSidebarObserver, 100);
+    return;
+  }
+
+  sidebarObserver = new MutationObserver((mutations) => {
+    let shouldUpdateIcons = false;
+
+    for (const mutation of mutations) {
+      if (mutation.type === "childList") {
+        // Check if custom sidebar sections were added
+        for (const node of mutation.addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            if (node.classList?.contains("custom-sidebar-section") ||
+                node.querySelector?.(".custom-sidebar-section")) {
+              shouldUpdateIcons = true;
+            }
+          }
+        }
+      }
+    }
+
+    if (shouldUpdateIcons) {
+      // Use a small delay to ensure DOM is fully updated
+      setTimeout(() => {
+        waitForCustomSections();
+      }, 50);
+    }
+  });
+
+  sidebarObserver.observe(sidebarContainer, {
+    childList: true,
+    subtree: true,
+    attributes: false
+  });
 }
 
 export default {
@@ -62,19 +165,39 @@ export default {
 
   initialize() {
     withPluginApi("0.8.31", (api) => {
+      // Set up observer when app starts
+      api.onAppEvent("dom:loaded", () => {
+        setupSidebarObserver();
+        waitForCustomSections();
+      });
+
+      // Handle page changes
       api.onPageChange(() => {
+        setupSidebarObserver();
         setTimeout(() => {
-          addIconSections();
+          waitForCustomSections();
         }, 100);
       });
 
+      // Handle sidebar rendered events
       api.onAppEvent("sidebar:rendered", () => {
-        addIconSections();
+        setTimeout(() => {
+          waitForCustomSections();
+        }, 50);
       });
 
+      // Listen for custom section added events
+      window.addEventListener("sidebar:section-added", () => {
+        setTimeout(() => {
+          waitForCustomSections();
+        }, 20);
+      });
+
+      // Initial setup
       setTimeout(() => {
-        addIconSections();
-      }, 500);
+        setupSidebarObserver();
+        waitForCustomSections();
+      }, 200);
     });
   }
 };

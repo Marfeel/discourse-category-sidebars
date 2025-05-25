@@ -7,6 +7,7 @@ import { service } from "@ember/service";
 import { htmlSafe } from "@ember/template";
 import { ajax } from "discourse/lib/ajax";
 import Category from "discourse/models/category";
+import { SidebarLoadingManager } from "../lib/sidebar-loading-manager";
 
 export default class FixedSidebar extends Component {
   @service siteSettings;
@@ -14,6 +15,8 @@ export default class FixedSidebar extends Component {
   @service sidebarState;
   @tracked contents = [];
   @tracked loading = true;
+
+  loadingManager = SidebarLoadingManager.getInstance();
 
   constructor() {
     super(...arguments);
@@ -76,6 +79,12 @@ export default class FixedSidebar extends Component {
   @action
   async fetchContents() {
     this.loading = true;
+
+    // Mark all sections as loading
+    for (const setting of this.fixedSettings) {
+      this.loadingManager.markSectionAsLoading(setting.section);
+    }
+
     try {
       const successfulContents = [];
 
@@ -86,6 +95,9 @@ export default class FixedSidebar extends Component {
             section: setting.section,
             content: response.post_stream.posts[0].cooked,
           });
+
+          // Mark this section as loaded
+          this.loadingManager.markSectionAsLoaded(setting.section);
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error(
@@ -123,7 +135,19 @@ export default class FixedSidebar extends Component {
             `.custom-sidebar-section[data-sidebar-name="${section}"]`
           );
           if (contentElement && !existingContent) {
-            targetElement.appendChild(contentElement.cloneNode(true));
+            const clonedElement = contentElement.cloneNode(true);
+            // Add loaded class immediately to prevent flicker
+            clonedElement.classList.add("loaded");
+            targetElement.appendChild(clonedElement);
+
+            // Trigger icon loading after a small delay
+            setTimeout(() => {
+              window.dispatchEvent(
+                new CustomEvent("sidebar:section-added", {
+                  detail: { section, element: clonedElement },
+                })
+              );
+            }, 10);
           }
         }
       });
