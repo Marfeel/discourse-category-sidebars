@@ -50,8 +50,8 @@ function updateCustomSidebar() {
     }
   });
 
-  if (window.MarfeelCommunityUtils.waitForElement) {
-    window.MarfeelCommunityUtils.waitForElement('.sidebar-sections .custom-sidebar-section', () => {
+  if (waitForElement) {
+    waitForElement('.sidebar-sections .custom-sidebar-section', () => {
       executeCallbacks();
     });
   } else {
