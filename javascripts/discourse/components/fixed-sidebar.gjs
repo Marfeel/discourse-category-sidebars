@@ -151,7 +151,6 @@ export default class FixedSidebar extends Component {
         }
       });
 
-      // Add icons to sections after content is loaded
       this.addIconSections();
     });
   }
