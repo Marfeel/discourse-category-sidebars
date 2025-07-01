@@ -52,9 +52,12 @@ export default {
 
     // Initialize when DOM is ready
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initializeCustomSidebarObserver);
+      document.addEventListener(
+        "DOMContentLoaded",
+        initializeCustomSidebarObserver
+      );
     } else {
       initializeCustomSidebarObserver();
     }
-  }
+  },
 };
