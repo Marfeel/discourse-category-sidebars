@@ -1,5 +1,7 @@
 {
   "name": "discourse-category-sidebars",
+  "authors": "Marfeel",
+  "theme_version": "0.0.5",
   "license_url": "https://github.com/Marfeel/discourse-category-sidebars/blob/main/LICENSE",
   "about_url": "https://github.com/Marfeel/discourse-category-sidebars",
   "component": true
