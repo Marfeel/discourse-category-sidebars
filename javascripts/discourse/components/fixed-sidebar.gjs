@@ -12,6 +12,7 @@ export default class FixedSidebar extends Component {
   @service siteSettings;
   @service router;
   @service sidebarState;
+
   @tracked contents = [];
   @tracked loading = true;
 

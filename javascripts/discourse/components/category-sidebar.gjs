@@ -15,6 +15,7 @@ export default class CategorySidebar extends Component {
   @service router;
   @service siteSettings;
   @service site;
+
   @tracked sidebarContent;
   @tracked loading = true;
   @tracked lastFetchedCategory = null;
