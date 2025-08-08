@@ -1,10 +1,10 @@
 setup:
   type: list
-  default: "staff, 3"
+  default: "privacy,7443|staging-pm,9471|internal-processes,5535|amplify-prerelease,96446"
 
 setup_fixed:
   type: list
-  default: "staff, 3"
+  default: "product-guides, 7440|implementation-guides, 7441"
   description: |
     Each line should be in the format of "<code>section name</code>, <code>post id</code>".<br/> (e.g., product-guides, 7441)<br/>
     <ul>
@@ -48,3 +48,14 @@ inherit_parent_sidebar:
 
 stick_on_scroll:
   default: true
+
+icon_mappings:
+  type: list
+  default: "Platform, mrf-apps|Editorial, mrf-editorial|Audience, mrf-users|Engagement, mrf-heart|Subscriptions, mrf-subscriptions|Advertisement, mrf-comments-lines|Social, mrf-comments|Affiliation, mrf-shopping-bag|User settings, mrf-user-settings|SDKs, mrf-apps|Editorial metadata, mrf-apps|Multimedia, mrf-play|Experiences, mrf-map-pin|Data Exports, mrf-shuffle|Marfeel API, mrf-bolt|Organization settings, mrf-user-settings|Debugging, mrf-apps|Recommender, mrf-recommender|Amplify, mrf-amplify"
+  description: |
+    Each line should be in the format of "<code>Section Name, icon-identifier</code>".<br/> (e.g., Platform, mrf-apps)<br/>
+    <ul>
+    <li>The section name should match exactly as it appears in your content</li>
+    <li>The icon identifier corresponds to the icon you want to display</li>
+    </ul>
+  client: true

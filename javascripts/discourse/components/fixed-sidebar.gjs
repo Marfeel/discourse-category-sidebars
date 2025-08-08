@@ -16,28 +16,6 @@ export default class FixedSidebar extends Component {
   @tracked contents = [];
   @tracked loading = true;
 
-  iconSections = {
-    Platform: "mrf-apps",
-    Editorial: "mrf-editorial",
-    Audience: "mrf-users",
-    Engagement: "mrf-heart",
-    Subscriptions: "mrf-subscriptions",
-    Advertisement: "mrf-comments-lines",
-    Social: "mrf-comments",
-    Affiliation: "mrf-shopping-bag",
-    "User settings": "mrf-user-settings",
-    SDKs: "mrf-apps",
-    "Editorial metadata": "mrf-apps",
-    Multimedia: "mrf-play",
-    Experiences: "mrf-map-pin",
-    "Data Exports": "mrf-shuffle",
-    "Marfeel API": "mrf-bolt",
-    "Organization settings": "mrf-user-settings",
-    Debugging: "mrf-apps",
-    Recommender: "mrf-recommender",
-    Amplify: "mrf-amplify",
-  };
-
   constructor() {
     super(...arguments);
     this.initialize();
@@ -46,6 +24,23 @@ export default class FixedSidebar extends Component {
   willDestroy() {
     super.willDestroy(...arguments);
     this.router.off("routeDidChange", this, this.toggleCurrentSection);
+  }
+
+  get iconSections() {
+    const mappings = this.siteSettings.icon_mappings || "";
+    const result = {};
+
+    mappings.split("|").forEach((mapping) => {
+      if (!mapping || !mapping.includes(",")) {
+        return;
+      }
+      const [sectionName, iconId] = mapping.split(",").map(s => s.trim());
+      if (sectionName && iconId) {
+        result[sectionName] = iconId;
+      }
+    });
+
+    return result;
   }
 
   async initialize() {

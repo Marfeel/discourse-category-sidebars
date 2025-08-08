@@ -15,3 +15,9 @@ en:
         If checked subcategories will inherit their parent category's sidebar (unless the subcategory has its own sidebar assigned). 
         <p>When unchecked subcategories will only display a sidebar if one is specified.</p>
       stick_on_scroll: "When checked sidebar has a sticky position on scroll"
+      icon_mappings: >
+        Each line should be in the format of "<code>Section Name, icon-identifier</code>".<br/> (e.g., Platform, mrf-apps)<br/>
+        <ul>
+        <li>The section name should match exactly as it appears in your content</li>
+        <li>The icon identifier corresponds to the icon you want to display</li>
+        </ul>
