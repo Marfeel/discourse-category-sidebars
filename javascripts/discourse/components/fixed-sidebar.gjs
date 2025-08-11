@@ -27,10 +27,19 @@ export default class FixedSidebar extends Component {
   }
 
   get iconSections() {
-    const mappings = this.siteSettings.icon_mappings || "";
+    console.log("settings object:", settings);
+    console.log("Available settings keys:", Object.keys(settings || {}));
+    console.log("icon_mappings property:", settings?.icon_mappings);
+    
+    const mappings = settings.icon_mappings || "";
     const result = {};
 
     console.log("Raw icon_mappings setting:", mappings);
+
+    if (!mappings) {
+      console.log("No mappings found - mappings is empty or undefined");
+      return result;
+    }
 
     mappings.split("|").forEach((mapping) => {
       if (!mapping || !mapping.includes(",")) {
