@@ -34,7 +34,7 @@ export default class FixedSidebar extends Component {
       if (!mapping || !mapping.includes(",")) {
         return;
       }
-      const [sectionName, iconId] = mapping.split(",").map(s => s.trim());
+      const [sectionName, iconId] = mapping.split(",").map((s) => s.trim());
       if (sectionName && iconId) {
         result[sectionName] = iconId;
       }

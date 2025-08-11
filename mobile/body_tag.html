@@ -11,7 +11,9 @@
   function initMobileObserver() {
     const mobilePanel = document.querySelector(".mobile-view .panel");
     if (mobilePanel) {
-      const observerSidebarMobile = new MutationObserver(observeHamburgerMobile);
+      const observerSidebarMobile = new MutationObserver(
+        observeHamburgerMobile
+      );
       observerSidebarMobile.observe(mobilePanel, {
         childList: true,
         subtree: true,
