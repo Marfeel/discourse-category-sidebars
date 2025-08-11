@@ -12,7 +12,6 @@ export default class FixedSidebar extends Component {
   @service siteSettings;
   @service router;
   @service sidebarState;
-  @service site;
 
   @tracked contents = [];
   @tracked loading = true;
@@ -138,26 +137,15 @@ export default class FixedSidebar extends Component {
         if (contentElement) {
           this.addIconsToContent(contentElement);
 
-          // Different behavior for mobile vs desktop
-          if (this.site.mobileView || this.site.narrowDesktopView) {
-            // In mobile, content is already rendered, just ensure collapsible behavior
-            this.ensureCollapsibleBehavior(contentElement, section);
-          } else {
-            // Desktop behavior: move content to sidebar structure
-            const targetElement = document.querySelector(
-              `.sidebar-section-wrapper[data-section-name="${section}"]`
+          const targetElement = document.querySelector(
+            `.sidebar-section-wrapper[data-section-name="${section}"]`
+          );
+          if (targetElement) {
+            const existingContent = targetElement.querySelector(
+              `.custom-sidebar-section[data-sidebar-name="${section}"]`
             );
-
-            if (targetElement) {
-              const existingContent = targetElement.querySelector(
-                `.custom-sidebar-section[data-sidebar-name="${section}"]`
-              );
-              if (!existingContent) {
-                targetElement.appendChild(contentElement.cloneNode(true));
-              }
-
-              // remove on Discourse 3.5.0
-              this.ensureCollapsibleBehavior(targetElement, section);
+            if (!existingContent) {
+              targetElement.appendChild(contentElement.cloneNode(true));
             }
           }
         }
@@ -218,123 +206,4 @@ export default class FixedSidebar extends Component {
       }
     });
   }
-
-  @action
-  ensureCollapsibleBehavior(element, section) {
-    // TODO: Remove when Discourse 3.5.0+
-    // Temporal fix where sidebar sections are not collapsible on mobile
-    // Fixed in: https://github.com/discourse/discourse/commit/0abc33c5a25a5ab3535c678e6c5e03412fdd8b8a (3.5.0-beta8)
-
-    const isMobile = this.site.mobileView || this.site.narrowDesktopView;
-
-    if (isMobile) {
-      // For mobile, wait and then fix headers that get moved to the mobile sidebar
-      schedule("afterRender", () => {
-        this.fixMobileSidebarHeaders(section);
-      });
-    } else {
-      // Desktop behavior - working with sidebar wrapper elements
-      const headerButton = element.querySelector(".sidebar-section-header button");
-
-      if (headerButton) {
-        if (!headerButton.hasAttribute("aria-expanded")) {
-          headerButton.setAttribute("aria-expanded", "true");
-        }
-
-        if (!headerButton.onclick) {
-          headerButton.onclick = (e) => {
-            e.preventDefault();
-            const isExpanded = headerButton.getAttribute("aria-expanded") === "true";
-            headerButton.setAttribute("aria-expanded", !isExpanded);
-
-            const customContent = element.querySelector(".custom-sidebar-section");
-            if (customContent) {
-              customContent.style.display = !isExpanded ? "none" : "";
-            }
-          };
-        }
-      } else {
-        const header = element.querySelector(".sidebar-section-header");
-        if (header && !header.onclick) {
-          header.style.cursor = "pointer";
-          header.onclick = (e) => {
-            e.preventDefault();
-            const customContent = element.querySelector(".custom-sidebar-section");
-            if (customContent) {
-              const isVisible = customContent.style.display !== "none";
-              customContent.style.display = isVisible ? "none" : "";
-
-              const button = header.querySelector("button");
-              if (button) {
-                button.setAttribute("aria-expanded", !isVisible);
-              }
-            }
-          };
-        }
-      }
-    }
-  }
-
-  @action
-  fixMobileSidebarHeaders(section) {
-    // Find all sidebar section headers that might need to be made collapsible
-    const sidebarHeaders = document.querySelectorAll('.sidebar-section-header button, .sidebar-section-header');
-    
-    sidebarHeaders.forEach((header) => {
-      // Check if this header corresponds to our section
-      const headerText = header.textContent || '';
-      const sectionWords = section.toLowerCase().replace('-', ' ').split(' ');
-      
-      const isMatchingSection = sectionWords.some(word => 
-        headerText.toLowerCase().includes(word) && word.length > 2
-      );
-      
-      if (isMatchingSection) {
-        if (header.tagName === 'BUTTON') {
-          // It's already a button, ensure it has proper behavior
-          if (!header.hasAttribute('aria-expanded')) {
-            header.setAttribute('aria-expanded', 'true');
-          }
-          
-          // Force the button to be interactive
-          if (!header.onclick) {
-            header.onclick = (e) => {
-              const isExpanded = header.getAttribute('aria-expanded') === 'true';
-              header.setAttribute('aria-expanded', (!isExpanded).toString());
-              
-              // Find associated content and toggle it
-              const parent = header.closest('.sidebar-section-wrapper, [class*="section"]');
-              if (parent) {
-                const content = parent.querySelector('.custom-sidebar-section, .sidebar-section-content');
-                if (content) {
-                  content.style.display = isExpanded ? 'none' : '';
-                }
-              }
-            };
-          }
-        } else {
-          // It's not a button, make it behave like one
-          header.setAttribute('role', 'button');
-          header.setAttribute('aria-expanded', 'true');
-          header.style.cursor = 'pointer';
-          
-          header.onclick = (e) => {
-            e.preventDefault();
-            const isExpanded = header.getAttribute('aria-expanded') === 'true';
-            header.setAttribute('aria-expanded', (!isExpanded).toString());
-            
-            // Find associated content and toggle it
-            const parent = header.closest('.sidebar-section-wrapper, [class*="section"]');
-            if (parent) {
-              const content = parent.querySelector('.custom-sidebar-section, .sidebar-section-content');
-              if (content) {
-                content.style.display = isExpanded ? 'none' : '';
-              }
-            }
-          };
-        }
-      }
-    });
-  }
-
 }
