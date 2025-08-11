@@ -1,0 +1,3 @@
+.sidebar-section-wrapper:has([aria-expanded="false"]) > .custom-sidebar-section {
+    display: none;
+}
