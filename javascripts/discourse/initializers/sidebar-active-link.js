@@ -16,12 +16,10 @@ export default {
         const currentRoute = router.currentRoute;
         if (!currentRoute) return null;
 
-        // Get topic ID from route params if available
         if (currentRoute.params?.topic_id) {
           return currentRoute.params.topic_id;
         }
 
-        // Get topic ID from parent route params
         let route = currentRoute;
         while (route && !route.params?.topic_id) {
           route = route.parent;
@@ -31,7 +29,6 @@ export default {
           return route.params.topic_id;
         }
 
-        // Fallback to URL parsing for edge cases
         const segments = window.location.pathname.split("/");
         for (let i = 0; i < segments.length; i++) {
           if (segments[i].match(/^\d+$/)) {
@@ -80,9 +77,7 @@ export default {
       }
 
       function initializeSidebarObserver() {
-        if (sideObserver) {
-          sideObserver.disconnect();
-        }
+        sideObserver?.disconnect();
 
         const topicBody = document.querySelector("#main-outlet-wrapper");
         if (topicBody) {
@@ -91,28 +86,73 @@ export default {
         }
       }
 
-      // Handle page changes using router service
+      function initializeMobileObserver() {
+        api.onAppEvent("sidebar:panel-shown", () => {
+          setTimeout(() => updateSidebarActiveLink(), 50);
+        });
+
+        api.onAppEvent("mobile:panel-opened", () => {
+          setTimeout(() => updateSidebarActiveLink(), 50);
+        });
+
+        const mobilePanel = document.querySelector(".mobile-view .panel");
+        if (mobilePanel) {
+          const mobilePanelObserver = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+              if (mutation.type === "childList") {
+                // Check if sidebar sections are now visible in the panel
+                const sidebarInPanel = mobilePanel.querySelector(".sidebar-sections");
+                if (sidebarInPanel) {
+                  setTimeout(() => updateSidebarActiveLink(), 50);
+                }
+              }
+            }
+          });
+          
+          mobilePanelObserver.observe(mobilePanel, {
+            childList: true,
+            subtree: true
+          });
+
+          const panelVisibilityObserver = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+              if (mutation.type === "attributes" && mutation.attributeName === "class") {
+                const panel = mutation.target;
+                if (panel.offsetParent !== null && panel.querySelector(".sidebar-sections")) {
+                  setTimeout(() => updateSidebarActiveLink(), 50);
+                }
+              }
+            }
+          });
+
+          panelVisibilityObserver.observe(mobilePanel, {
+            attributes: true,
+            attributeFilter: ["class", "style"]
+          });
+        }
+      }
+
       api.onPageChange(() => {
         if (!router) {
           router = api.container.lookup("service:router");
         }
 
-        // Add slight delay to allow fixed-sidebar content to move
         setTimeout(() => {
           updateSidebarActiveLink();
           initializeSidebarObserver();
         }, 100);
       });
 
-      // Initialize services and observer on startup
       router = api.container.lookup("service:router");
       initializeSidebarObserver();
+      
+      const site = api.container.lookup("service:site");
+      if (site?.mobileView) {
+        setTimeout(() => initializeMobileObserver(), 200);
+      }
 
-      // Cleanup on application teardown
       api.onAppEvent("discourse:before-route-change", () => {
-        if (sideObserver) {
-          sideObserver.disconnect();
-        }
+        sideObserver?.disconnect();
       });
     });
   }
