@@ -27,7 +27,7 @@ setupDetails:
 
 setup_by_category_id:
   type: list
-  default: "58, 719"
+  default: ""
   description: |
     Each line should be in the format of "<code>category id</code>, <code>ID</code>".<br/> (e.g., 58, 719)<br/>
     <ul>
@@ -45,9 +45,11 @@ sidebar_side:
 
 inherit_parent_sidebar:
   default: true
+  type: boolean
 
 stick_on_scroll:
-  default: true
+  default: false
+  type: boolean
 
 icon_mappings:
   type: list
