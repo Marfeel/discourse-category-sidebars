@@ -2,7 +2,7 @@ import { withPluginApi } from "discourse/lib/plugin-api";
 
 export default {
   name: "sidebar-active-link",
-  
+
   initialize() {
     withPluginApi("0.8.7", (api) => {
       let sideObserver;
@@ -100,25 +100,31 @@ export default {
           const mobilePanelObserver = new MutationObserver((mutations) => {
             for (const mutation of mutations) {
               if (mutation.type === "childList") {
-                // Check if sidebar sections are now visible in the panel
-                const sidebarInPanel = mobilePanel.querySelector(".sidebar-sections");
+                const sidebarInPanel =
+                  mobilePanel.querySelector(".sidebar-sections");
                 if (sidebarInPanel) {
                   setTimeout(() => updateSidebarActiveLink(), 50);
                 }
               }
             }
           });
-          
+
           mobilePanelObserver.observe(mobilePanel, {
             childList: true,
-            subtree: true
+            subtree: true,
           });
 
           const panelVisibilityObserver = new MutationObserver((mutations) => {
             for (const mutation of mutations) {
-              if (mutation.type === "attributes" && mutation.attributeName === "class") {
+              if (
+                mutation.type === "attributes" &&
+                mutation.attributeName === "class"
+              ) {
                 const panel = mutation.target;
-                if (panel.offsetParent !== null && panel.querySelector(".sidebar-sections")) {
+                if (
+                  panel.offsetParent !== null &&
+                  panel.querySelector(".sidebar-sections")
+                ) {
                   setTimeout(() => updateSidebarActiveLink(), 50);
                 }
               }
@@ -127,7 +133,7 @@ export default {
 
           panelVisibilityObserver.observe(mobilePanel, {
             attributes: true,
-            attributeFilter: ["class", "style"]
+            attributeFilter: ["class", "style"],
           });
         }
       }
@@ -145,7 +151,7 @@ export default {
 
       router = api.container.lookup("service:router");
       initializeSidebarObserver();
-      
+
       const site = api.container.lookup("service:site");
       if (site?.mobileView) {
         setTimeout(() => initializeMobileObserver(), 200);
@@ -155,5 +161,5 @@ export default {
         sideObserver?.disconnect();
       });
     });
-  }
+  },
 };
