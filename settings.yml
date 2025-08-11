@@ -45,11 +45,11 @@ sidebar_side:
 
 inherit_parent_sidebar:
   default: true
-  type: boolean
+  type: bool
 
 stick_on_scroll:
   default: false
-  type: boolean
+  type: bool
 
 icon_mappings:
   type: list
