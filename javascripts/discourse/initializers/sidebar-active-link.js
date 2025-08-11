@@ -14,7 +14,9 @@ export default {
         }
 
         const currentRoute = router.currentRoute;
-        if (!currentRoute) return null;
+        if (!currentRoute) {
+          return null;
+        }
 
         if (currentRoute.params?.topic_id) {
           return currentRoute.params.topic_id;
@@ -41,7 +43,9 @@ export default {
 
       function updateSidebarActiveLink() {
         const topicId = getTopicIdFromRoute();
-        if (!topicId) return;
+        if (!topicId) {
+          return;
+        }
 
         const activeItem = document.querySelector(
           "li a.active:not(.sidebar-section-link)"
