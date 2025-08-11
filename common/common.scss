@@ -314,6 +314,6 @@
   border-bottom: 1px solid #dee6ea;
 }
 
-.sidebar-section-wrapper:has(.sidebar-section-header[aria-expanded="false"]) > .custom-sidebar-section {
+.sidebar-section-wrapper:has(.sidebar-section-header[aria-expanded="false"]) > :is(.custom-sidebar-section, .sidebar-section-content) {
     display: none;
 }
