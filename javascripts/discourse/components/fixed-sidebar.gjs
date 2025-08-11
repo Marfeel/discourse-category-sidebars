@@ -27,33 +27,19 @@ export default class FixedSidebar extends Component {
   }
 
   get iconSections() {
-    console.log("settings object:", settings);
-    console.log("Available settings keys:", Object.keys(settings || {}));
-    console.log("icon_mappings property:", settings?.icon_mappings);
-    
     const mappings = settings.icon_mappings || "";
     const result = {};
 
-    console.log("Raw icon_mappings setting:", mappings);
-
-    if (!mappings) {
-      console.log("No mappings found - mappings is empty or undefined");
-      return result;
-    }
-
     mappings.split("|").forEach((mapping) => {
       if (!mapping || !mapping.includes(",")) {
-        console.log("Skipping invalid mapping:", mapping);
         return;
       }
       const [sectionName, iconId] = mapping.split(",").map((s) => s.trim());
       if (sectionName && iconId) {
-        console.log(`Mapping: "${sectionName}" -> "${iconId}"`);
         result[sectionName] = iconId;
       }
     });
 
-    console.log("Final iconSections result:", result);
     return result;
   }
 
@@ -144,28 +130,23 @@ export default class FixedSidebar extends Component {
   setupContents() {
     schedule("afterRender", () => {
       this.contents.forEach(({ section }) => {
-        const contentElement = document.querySelector(
-          `.custom-sidebar-section[data-sidebar-name="${section}"]`
+        const targetElement = document.querySelector(
+          `.sidebar-section-wrapper[data-section-name="${section}"]`
         );
-        
-        if (contentElement) {
-          // Add icons to the content first, before moving to sidebar
-          this.addIconsToContent(contentElement);
-          
-          const targetElement = document.querySelector(
-            `.sidebar-section-wrapper[data-section-name="${section}"]`
+        if (targetElement) {
+          const contentElement = document.querySelector(
+            `.custom-sidebar-section[data-sidebar-name="${section}"]`
           );
-          
-          if (targetElement) {
-            const existingContent = targetElement.querySelector(
-              `.custom-sidebar-section[data-sidebar-name="${section}"]`
-            );
-            if (!existingContent) {
-              targetElement.appendChild(contentElement.cloneNode(true));
-            }
+          const existingContent = targetElement.querySelector(
+            `.custom-sidebar-section[data-sidebar-name="${section}"]`
+          );
+          if (contentElement && !existingContent) {
+            targetElement.appendChild(contentElement.cloneNode(true));
           }
         }
       });
+
+      this.addIconSections();
     });
   }
 
@@ -189,44 +170,6 @@ export default class FixedSidebar extends Component {
     });
   }
 
-  @action
-  addIconsToContent(contentElement) {
-    const sections = contentElement.querySelectorAll("details");
-
-    sections.forEach((section) => {
-      const sectionName = section.querySelector("summary")?.textContent.trim();
-      const icon = this.iconSections[sectionName];
-
-      console.log(
-        `Adding icon for section: "${sectionName}", icon: ${icon}`
-      );
-      console.log("Available mappings:", Object.keys(this.iconSections));
-
-      if (icon && !section.querySelector(`.d-icon-${icon}`)) {
-        section.classList.add(`mrf-sidebar-${icon}`);
-
-        const svg = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "svg"
-        );
-        svg.classList.add(
-          "fa",
-          "d-icon",
-          "svg-icon",
-          "prefix-icon",
-          "svg-string",
-          `d-icon-${icon}`
-        );
-        svg.setAttribute("viewBox", "0 0 512 512");
-
-        const path = document.querySelector(`symbol#${icon}`);
-        if (path) {
-          svg.innerHTML = path.innerHTML;
-          section.querySelector("summary").prepend(svg);
-        }
-      }
-    });
-  }
 
   @action
   addIconSections() {
@@ -239,10 +182,6 @@ export default class FixedSidebar extends Component {
         const sectionName = section.querySelector("summary").textContent.trim();
         const icon = this.iconSections[sectionName];
 
-        console.log(
-          `Adding icon for section: "${sectionName}", icon: ${icon}`
-        );
-        console.log("Available mappings:", Object.keys(this.iconSections));
 
         if (icon && !section.querySelector(`.d-icon-${icon}`)) {
           section.classList.add(`mrf-sidebar-${icon}`);
