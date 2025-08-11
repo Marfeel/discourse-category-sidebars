@@ -146,7 +146,9 @@ export default class FixedSidebar extends Component {
         }
       });
 
-      this.addIconSections();
+      schedule("afterRender", () => {
+        this.addIconSections();
+      });
     });
   }
 
