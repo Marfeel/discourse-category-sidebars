@@ -158,6 +158,9 @@ export default class FixedSidebar extends Component {
             // In mobile, content is already rendered, just ensure collapsible behavior
             console.log(`Mobile mode: applying collapsible behavior directly to content for ${section}`);
             this.ensureCollapsibleBehavior(contentElement, section);
+            
+            // Also try to find and fix the mobile sidebar structure
+            this.fixMobileSidebarStructure(section);
           } else {
             // Desktop behavior: move content to sidebar structure
             const targetElement = document.querySelector(
@@ -321,6 +324,111 @@ export default class FixedSidebar extends Component {
           };
         }
       }
+    }
+  }
+
+  @action
+  fixMobileSidebarStructure(section) {
+    console.log(`Investigating mobile sidebar structure for ${section}`);
+    
+    // Look for possible sidebar containers in mobile
+    const possibleContainers = [
+      '.hamburger-dropdown .sidebar-sections',
+      '.hamburger-dropdown [class*="sidebar"]',
+      '.sidebar-wrapper',
+      '.hamburger-panel',
+      '.off-screen-menu',
+      '.mobile-nav'
+    ];
+    
+    possibleContainers.forEach(selector => {
+      const container = document.querySelector(selector);
+      if (container) {
+        console.log(`Found container ${selector}:`, container);
+        
+        // Look for section headers within this container
+        const headers = container.querySelectorAll('[class*="section-header"], .sidebar-section-header, button[aria-expanded]');
+        console.log(`Found ${headers.length} headers in ${selector}:`, headers);
+        
+        headers.forEach((header, index) => {
+          console.log(`Header ${index}:`, {
+            className: header.className,
+            textContent: header.textContent,
+            hasAriaExpanded: header.hasAttribute('aria-expanded'),
+            isButton: header.tagName === 'BUTTON'
+          });
+          
+          // If this header corresponds to our section, try to make it collapsible
+          if (header.textContent.toLowerCase().includes(section.toLowerCase())) {
+            console.log(`Found matching header for ${section}:`, header);
+            this.makeHeaderCollapsible(header, section);
+          }
+        });
+      }
+    });
+    
+    // Also check if there are any buttons or headers that might be our section
+    const allButtons = document.querySelectorAll('button, [role="button"]');
+    console.log(`Found ${allButtons.length} total buttons/clickable elements`);
+    
+    allButtons.forEach((button, index) => {
+      if (button.textContent && button.textContent.toLowerCase().includes(section.toLowerCase())) {
+        console.log(`Found potential section button for ${section}:`, {
+          index,
+          textContent: button.textContent,
+          className: button.className,
+          hasAriaExpanded: button.hasAttribute('aria-expanded')
+        });
+      }
+    });
+  }
+
+  @action
+  makeHeaderCollapsible(header, section) {
+    console.log(`Attempting to make header collapsible for ${section}`);
+    
+    // If it's already a button with aria-expanded, ensure it works
+    if (header.hasAttribute('aria-expanded')) {
+      console.log(`Header already has aria-expanded for ${section}`);
+      
+      if (!header.onclick && header.tagName === 'BUTTON') {
+        header.onclick = (e) => {
+          console.log(`Collapsible header clicked for ${section}`);
+          const isExpanded = header.getAttribute('aria-expanded') === 'true';
+          header.setAttribute('aria-expanded', (!isExpanded).toString());
+          
+          // Try to find and toggle associated content
+          const parent = header.closest('[class*="section"], [class*="wrapper"]');
+          if (parent) {
+            const content = parent.querySelector('.custom-sidebar-section, [class*="content"]');
+            if (content) {
+              content.style.display = isExpanded ? 'none' : '';
+            }
+          }
+        };
+      }
+    } else {
+      // If it's not already collapsible, try to make it so
+      console.log(`Trying to add collapsible behavior to header for ${section}`);
+      header.setAttribute('role', 'button');
+      header.setAttribute('aria-expanded', 'true');
+      header.style.cursor = 'pointer';
+      
+      header.onclick = (e) => {
+        e.preventDefault();
+        console.log(`Made collapsible header clicked for ${section}`);
+        const isExpanded = header.getAttribute('aria-expanded') === 'true';
+        header.setAttribute('aria-expanded', (!isExpanded).toString());
+        
+        // Try to find and toggle associated content
+        const parent = header.closest('[class*="section"], [class*="wrapper"]');
+        if (parent) {
+          const content = parent.querySelector('.custom-sidebar-section, [class*="content"]');
+          if (content) {
+            content.style.display = isExpanded ? 'none' : '';
+          }
+        }
+      };
     }
   }
 }
