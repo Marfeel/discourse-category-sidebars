@@ -12,6 +12,7 @@ export default class FixedSidebar extends Component {
   @service siteSettings;
   @service router;
   @service sidebarState;
+  @service site;
 
   @tracked contents = [];
   @tracked loading = true;
@@ -133,14 +134,14 @@ export default class FixedSidebar extends Component {
         const contentElement = document.querySelector(
           `.custom-sidebar-section[data-sidebar-name="${section}"]`
         );
-        
+
         if (contentElement) {
           this.addIconsToContent(contentElement);
-          
+
           const targetElement = document.querySelector(
             `.sidebar-section-wrapper[data-section-name="${section}"]`
           );
-          
+
           if (targetElement) {
             const existingContent = targetElement.querySelector(
               `.custom-sidebar-section[data-sidebar-name="${section}"]`
@@ -148,6 +149,9 @@ export default class FixedSidebar extends Component {
             if (!existingContent) {
               targetElement.appendChild(contentElement.cloneNode(true));
             }
+
+            // remove on Discourse 3.5.0
+            this.ensureCollapsibleBehavior(targetElement);
           }
         }
       });
@@ -173,7 +177,6 @@ export default class FixedSidebar extends Component {
       }
     });
   }
-
 
   @action
   addIconsToContent(contentElement) {
@@ -207,5 +210,64 @@ export default class FixedSidebar extends Component {
         }
       }
     });
+  }
+
+  @action
+  ensureCollapsibleBehavior(targetElement) {
+    // TODO: Remove when Discourse 3.5.0+
+    // Temporal fix where sidebar sections are not collapsible on mobile
+    // Fixed in: https://github.com/discourse/discourse/commit/0abc33c5a25a5ab3535c678e6c5e03412fdd8b8a (3.5.0-beta8)
+
+    const isMobile = this.site.mobileView || this.site.narrowDesktopView;
+
+    console.log(this.site.mobileView, this.site.narrowDesktopView);
+
+    if (isMobile) {
+      const headerButton = targetElement.querySelector(
+        ".sidebar-section-header button"
+      );
+
+      if (headerButton) {
+        if (!headerButton.hasAttribute("aria-expanded")) {
+          headerButton.setAttribute("aria-expanded", "true");
+        }
+
+        if (!headerButton.onclick) {
+          headerButton.onclick = (e) => {
+            e.preventDefault();
+            const isExpanded =
+              headerButton.getAttribute("aria-expanded") === "true";
+            headerButton.setAttribute("aria-expanded", !isExpanded);
+
+            const customContent = targetElement.querySelector(
+              ".custom-sidebar-section"
+            );
+            if (customContent) {
+              customContent.style.display = !isExpanded ? "none" : "";
+            }
+          };
+        }
+      } else {
+        const header = targetElement.querySelector(".sidebar-section-header");
+        if (header && !header.onclick) {
+          header.style.cursor = "pointer";
+          header.onclick = (e) => {
+            e.preventDefault();
+            const customContent = targetElement.querySelector(
+              ".custom-sidebar-section"
+            );
+            if (customContent) {
+              const isVisible = customContent.style.display !== "none";
+              customContent.style.display = isVisible ? "none" : "";
+
+              const button = header.querySelector("button");
+              if (button) {
+                button.setAttribute("aria-expanded", !isVisible);
+              }
+            }
+          };
+        }
+      }
+    }
   }
 }
