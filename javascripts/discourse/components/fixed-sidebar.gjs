@@ -45,6 +45,11 @@ export default class FixedSidebar extends Component {
   }
 
   async initialize() {
+    console.log("initialize running", {
+      mobileView: this.site.mobileView,
+      narrowDesktopView: this.site.narrowDesktopView
+    });
+    
     await this.fetchContents();
     await this.setupContents();
     this.router.on("routeDidChange", this, this.toggleCurrentSection);
@@ -130,10 +135,20 @@ export default class FixedSidebar extends Component {
   @action
   setupContents() {
     schedule("afterRender", () => {
+      console.log("setupContents running", { 
+        mobileView: this.site.mobileView, 
+        narrowDesktopView: this.site.narrowDesktopView,
+        contentsLength: this.contents.length 
+      });
+      
       this.contents.forEach(({ section }) => {
+        console.log(`Processing section: ${section}`);
+        
         const contentElement = document.querySelector(
           `.custom-sidebar-section[data-sidebar-name="${section}"]`
         );
+
+        console.log(`Content element found for ${section}:`, !!contentElement);
 
         if (contentElement) {
           this.addIconsToContent(contentElement);
@@ -141,6 +156,8 @@ export default class FixedSidebar extends Component {
           const targetElement = document.querySelector(
             `.sidebar-section-wrapper[data-section-name="${section}"]`
           );
+
+          console.log(`Target element found for ${section}:`, !!targetElement);
 
           if (targetElement) {
             const existingContent = targetElement.querySelector(
