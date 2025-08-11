@@ -30,16 +30,21 @@ export default class FixedSidebar extends Component {
     const mappings = this.siteSettings.icon_mappings || "";
     const result = {};
 
+    console.log("Raw icon_mappings setting:", mappings);
+
     mappings.split("|").forEach((mapping) => {
       if (!mapping || !mapping.includes(",")) {
+        console.log("Skipping invalid mapping:", mapping);
         return;
       }
       const [sectionName, iconId] = mapping.split(",").map((s) => s.trim());
       if (sectionName && iconId) {
+        console.log(`Mapping: "${sectionName}" -> "${iconId}"`);
         result[sectionName] = iconId;
       }
     });
 
+    console.log("Final iconSections result:", result);
     return result;
   }
 
@@ -184,8 +189,9 @@ export default class FixedSidebar extends Component {
       const icon = this.iconSections[sectionName];
 
       console.log(
-        `Adding icon for section: ${sectionName}, icon: ${icon}`
+        `Adding icon for section: "${sectionName}", icon: ${icon}`
       );
+      console.log("Available mappings:", Object.keys(this.iconSections));
 
       if (icon && !section.querySelector(`.d-icon-${icon}`)) {
         section.classList.add(`mrf-sidebar-${icon}`);
@@ -225,8 +231,9 @@ export default class FixedSidebar extends Component {
         const icon = this.iconSections[sectionName];
 
         console.log(
-          `Adding icon for section: ${sectionName}, icon: ${icon}`
+          `Adding icon for section: "${sectionName}", icon: ${icon}`
         );
+        console.log("Available mappings:", Object.keys(this.iconSections));
 
         if (icon && !section.querySelector(`.d-icon-${icon}`)) {
           section.classList.add(`mrf-sidebar-${icon}`);
