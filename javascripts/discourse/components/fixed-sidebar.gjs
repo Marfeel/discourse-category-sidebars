@@ -220,6 +220,10 @@ export default class FixedSidebar extends Component {
         const sectionName = section.querySelector("summary").textContent.trim();
         const icon = this.iconSections[sectionName];
 
+        console.log(
+          `Adding icon for section: ${sectionName}, icon: ${icon}`
+        );
+
         if (icon && !section.querySelector(`.d-icon-${icon}`)) {
           section.classList.add(`mrf-sidebar-${icon}`);
 
