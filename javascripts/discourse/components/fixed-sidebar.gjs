@@ -45,11 +45,6 @@ export default class FixedSidebar extends Component {
   }
 
   async initialize() {
-    console.log("initialize running", {
-      mobileView: this.site.mobileView,
-      narrowDesktopView: this.site.narrowDesktopView
-    });
-    
     await this.fetchContents();
     await this.setupContents();
     this.router.on("routeDidChange", this, this.toggleCurrentSection);
@@ -135,20 +130,10 @@ export default class FixedSidebar extends Component {
   @action
   setupContents() {
     schedule("afterRender", () => {
-      console.log("setupContents running", { 
-        mobileView: this.site.mobileView, 
-        narrowDesktopView: this.site.narrowDesktopView,
-        contentsLength: this.contents.length 
-      });
-      
       this.contents.forEach(({ section }) => {
-        console.log(`Processing section: ${section}`);
-        
         const contentElement = document.querySelector(
           `.custom-sidebar-section[data-sidebar-name="${section}"]`
         );
-
-        console.log(`Content element found for ${section}:`, !!contentElement);
 
         if (contentElement) {
           this.addIconsToContent(contentElement);
@@ -156,18 +141,12 @@ export default class FixedSidebar extends Component {
           // Different behavior for mobile vs desktop
           if (this.site.mobileView || this.site.narrowDesktopView) {
             // In mobile, content is already rendered, just ensure collapsible behavior
-            console.log(`Mobile mode: applying collapsible behavior directly to content for ${section}`);
             this.ensureCollapsibleBehavior(contentElement, section);
-            
-            // Also try to find and fix the mobile sidebar structure
-            this.fixMobileSidebarStructure(section);
           } else {
             // Desktop behavior: move content to sidebar structure
             const targetElement = document.querySelector(
               `.sidebar-section-wrapper[data-section-name="${section}"]`
             );
-
-            console.log(`Desktop mode - Target element found for ${section}:`, !!targetElement);
 
             if (targetElement) {
               const existingContent = targetElement.querySelector(
@@ -248,41 +227,10 @@ export default class FixedSidebar extends Component {
 
     const isMobile = this.site.mobileView || this.site.narrowDesktopView;
 
-    console.log(`ensureCollapsibleBehavior running for ${section}:`, {
-      mobileView: this.site.mobileView, 
-      narrowDesktopView: this.site.narrowDesktopView,
-      isMobile,
-      elementType: element?.classList?.toString() || 'unknown'
-    });
-
     if (isMobile) {
-      // In mobile, we're working directly with content elements (details elements)
-      const detailsElements = element.querySelectorAll('details');
-      
-      console.log(`Found ${detailsElements.length} details elements for ${section}`);
-      
-      detailsElements.forEach((details, index) => {
-        console.log(`Processing details element ${index} for ${section}`);
-        
-        // Make sure details elements are interactive
-        if (details.onclick === null) {
-          details.onclick = (e) => {
-            // Let the native details/summary behavior work
-            console.log(`Details element clicked for ${section}`);
-          };
-        }
-        
-        // Ensure proper accessibility
-        const summary = details.querySelector('summary');
-        if (summary && !summary.getAttribute('role')) {
-          summary.setAttribute('role', 'button');
-          summary.setAttribute('aria-expanded', details.hasAttribute('open') ? 'true' : 'false');
-          
-          // Update aria-expanded when details toggle
-          details.addEventListener('toggle', () => {
-            summary.setAttribute('aria-expanded', details.hasAttribute('open') ? 'true' : 'false');
-          });
-        }
+      // For mobile, wait and then fix headers that get moved to the mobile sidebar
+      schedule("afterRender", () => {
+        this.fixMobileSidebarHeaders(section);
       });
     } else {
       // Desktop behavior - working with sidebar wrapper elements
@@ -328,107 +276,65 @@ export default class FixedSidebar extends Component {
   }
 
   @action
-  fixMobileSidebarStructure(section) {
-    console.log(`Investigating mobile sidebar structure for ${section}`);
+  fixMobileSidebarHeaders(section) {
+    // Find all sidebar section headers that might need to be made collapsible
+    const sidebarHeaders = document.querySelectorAll('.sidebar-section-header button, .sidebar-section-header');
     
-    // Look for possible sidebar containers in mobile
-    const possibleContainers = [
-      '.hamburger-dropdown .sidebar-sections',
-      '.hamburger-dropdown [class*="sidebar"]',
-      '.sidebar-wrapper',
-      '.hamburger-panel',
-      '.off-screen-menu',
-      '.mobile-nav'
-    ];
-    
-    possibleContainers.forEach(selector => {
-      const container = document.querySelector(selector);
-      if (container) {
-        console.log(`Found container ${selector}:`, container);
-        
-        // Look for section headers within this container
-        const headers = container.querySelectorAll('[class*="section-header"], .sidebar-section-header, button[aria-expanded]');
-        console.log(`Found ${headers.length} headers in ${selector}:`, headers);
-        
-        headers.forEach((header, index) => {
-          console.log(`Header ${index}:`, {
-            className: header.className,
-            textContent: header.textContent,
-            hasAriaExpanded: header.hasAttribute('aria-expanded'),
-            isButton: header.tagName === 'BUTTON'
-          });
-          
-          // If this header corresponds to our section, try to make it collapsible
-          if (header.textContent.toLowerCase().includes(section.toLowerCase())) {
-            console.log(`Found matching header for ${section}:`, header);
-            this.makeHeaderCollapsible(header, section);
+    sidebarHeaders.forEach((header) => {
+      // Check if this header corresponds to our section
+      const headerText = header.textContent || '';
+      const sectionWords = section.toLowerCase().replace('-', ' ').split(' ');
+      
+      const isMatchingSection = sectionWords.some(word => 
+        headerText.toLowerCase().includes(word) && word.length > 2
+      );
+      
+      if (isMatchingSection) {
+        if (header.tagName === 'BUTTON') {
+          // It's already a button, ensure it has proper behavior
+          if (!header.hasAttribute('aria-expanded')) {
+            header.setAttribute('aria-expanded', 'true');
           }
-        });
-      }
-    });
-    
-    // Also check if there are any buttons or headers that might be our section
-    const allButtons = document.querySelectorAll('button, [role="button"]');
-    console.log(`Found ${allButtons.length} total buttons/clickable elements`);
-    
-    allButtons.forEach((button, index) => {
-      if (button.textContent && button.textContent.toLowerCase().includes(section.toLowerCase())) {
-        console.log(`Found potential section button for ${section}:`, {
-          index,
-          textContent: button.textContent,
-          className: button.className,
-          hasAriaExpanded: button.hasAttribute('aria-expanded')
-        });
+          
+          // Force the button to be interactive
+          if (!header.onclick) {
+            header.onclick = (e) => {
+              const isExpanded = header.getAttribute('aria-expanded') === 'true';
+              header.setAttribute('aria-expanded', (!isExpanded).toString());
+              
+              // Find associated content and toggle it
+              const parent = header.closest('.sidebar-section-wrapper, [class*="section"]');
+              if (parent) {
+                const content = parent.querySelector('.custom-sidebar-section, .sidebar-section-content');
+                if (content) {
+                  content.style.display = isExpanded ? 'none' : '';
+                }
+              }
+            };
+          }
+        } else {
+          // It's not a button, make it behave like one
+          header.setAttribute('role', 'button');
+          header.setAttribute('aria-expanded', 'true');
+          header.style.cursor = 'pointer';
+          
+          header.onclick = (e) => {
+            e.preventDefault();
+            const isExpanded = header.getAttribute('aria-expanded') === 'true';
+            header.setAttribute('aria-expanded', (!isExpanded).toString());
+            
+            // Find associated content and toggle it
+            const parent = header.closest('.sidebar-section-wrapper, [class*="section"]');
+            if (parent) {
+              const content = parent.querySelector('.custom-sidebar-section, .sidebar-section-content');
+              if (content) {
+                content.style.display = isExpanded ? 'none' : '';
+              }
+            }
+          };
+        }
       }
     });
   }
 
-  @action
-  makeHeaderCollapsible(header, section) {
-    console.log(`Attempting to make header collapsible for ${section}`);
-    
-    // If it's already a button with aria-expanded, ensure it works
-    if (header.hasAttribute('aria-expanded')) {
-      console.log(`Header already has aria-expanded for ${section}`);
-      
-      if (!header.onclick && header.tagName === 'BUTTON') {
-        header.onclick = (e) => {
-          console.log(`Collapsible header clicked for ${section}`);
-          const isExpanded = header.getAttribute('aria-expanded') === 'true';
-          header.setAttribute('aria-expanded', (!isExpanded).toString());
-          
-          // Try to find and toggle associated content
-          const parent = header.closest('[class*="section"], [class*="wrapper"]');
-          if (parent) {
-            const content = parent.querySelector('.custom-sidebar-section, [class*="content"]');
-            if (content) {
-              content.style.display = isExpanded ? 'none' : '';
-            }
-          }
-        };
-      }
-    } else {
-      // If it's not already collapsible, try to make it so
-      console.log(`Trying to add collapsible behavior to header for ${section}`);
-      header.setAttribute('role', 'button');
-      header.setAttribute('aria-expanded', 'true');
-      header.style.cursor = 'pointer';
-      
-      header.onclick = (e) => {
-        e.preventDefault();
-        console.log(`Made collapsible header clicked for ${section}`);
-        const isExpanded = header.getAttribute('aria-expanded') === 'true';
-        header.setAttribute('aria-expanded', (!isExpanded).toString());
-        
-        // Try to find and toggle associated content
-        const parent = header.closest('[class*="section"], [class*="wrapper"]');
-        if (parent) {
-          const content = parent.querySelector('.custom-sidebar-section, [class*="content"]');
-          if (content) {
-            content.style.display = isExpanded ? 'none' : '';
-          }
-        }
-      };
-    }
-  }
 }
