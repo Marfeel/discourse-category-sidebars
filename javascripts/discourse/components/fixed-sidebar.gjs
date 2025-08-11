@@ -130,24 +130,27 @@ export default class FixedSidebar extends Component {
   setupContents() {
     schedule("afterRender", () => {
       this.contents.forEach(({ section }) => {
-        const targetElement = document.querySelector(
-          `.sidebar-section-wrapper[data-section-name="${section}"]`
+        const contentElement = document.querySelector(
+          `.custom-sidebar-section[data-sidebar-name="${section}"]`
         );
-        if (targetElement) {
-          const contentElement = document.querySelector(
-            `.custom-sidebar-section[data-sidebar-name="${section}"]`
+        
+        if (contentElement) {
+          // Add icons to the content first, before moving to sidebar
+          this.addIconsToContent(contentElement);
+          
+          const targetElement = document.querySelector(
+            `.sidebar-section-wrapper[data-section-name="${section}"]`
           );
-          const existingContent = targetElement.querySelector(
-            `.custom-sidebar-section[data-sidebar-name="${section}"]`
-          );
-          if (contentElement && !existingContent) {
-            targetElement.appendChild(contentElement.cloneNode(true));
+          
+          if (targetElement) {
+            const existingContent = targetElement.querySelector(
+              `.custom-sidebar-section[data-sidebar-name="${section}"]`
+            );
+            if (!existingContent) {
+              targetElement.appendChild(contentElement.cloneNode(true));
+            }
           }
         }
-      });
-
-      schedule("afterRender", () => {
-        this.addIconSections();
       });
     });
   }
@@ -168,6 +171,40 @@ export default class FixedSidebar extends Component {
 
       if (currentSection) {
         this.sidebarState.expandSection(currentSection.section);
+      }
+    });
+  }
+
+  @action
+  addIconsToContent(contentElement) {
+    const sections = contentElement.querySelectorAll("details");
+
+    sections.forEach((section) => {
+      const sectionName = section.querySelector("summary")?.textContent.trim();
+      const icon = this.iconSections[sectionName];
+
+      if (icon && !section.querySelector(`.d-icon-${icon}`)) {
+        section.classList.add(`mrf-sidebar-${icon}`);
+
+        const svg = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "svg"
+        );
+        svg.classList.add(
+          "fa",
+          "d-icon",
+          "svg-icon",
+          "prefix-icon",
+          "svg-string",
+          `d-icon-${icon}`
+        );
+        svg.setAttribute("viewBox", "0 0 512 512");
+
+        const path = document.querySelector(`symbol#${icon}`);
+        if (path) {
+          svg.innerHTML = path.innerHTML;
+          section.querySelector("summary").prepend(svg);
+        }
       }
     });
   }
