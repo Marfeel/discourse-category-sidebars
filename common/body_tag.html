@@ -85,40 +85,33 @@
   // Fix for sidebar sections not being collapsible on mobile
   // Fixed in: https://github.com/discourse/discourse/commit/0abc33c5a25a5ab3535c678e6c5e03412fdd8b8a (3.5.0-beta8)
   function fixMobileCollapsibleHeaders() {
-    // Only run on mobile view
     const isMobile = window.innerWidth <= 768 || document.body.classList.contains('mobile-view');
     if (!isMobile) return;
 
-    // Find all sidebar section headers
     const sidebarHeaders = document.querySelectorAll('.sidebar-section-header button, .sidebar-section-header');
     
     sidebarHeaders.forEach((header) => {
-      // Skip if already processed
       if (header.hasAttribute('data-mobile-collapsible-fixed')) return;
       
       const headerText = header.textContent || '';
       
-      // Check if this is one of our custom sections (product-guides, implementation-guides)
       const isCustomSection = headerText.toLowerCase().includes('product') || 
                              headerText.toLowerCase().includes('implementation') ||
-                             headerText.toLowerCase().includes('guides');
+                             headerText.toLowerCase().includes('guides') ||
+                             headerText.toLowerCase().includes('general');
       
       if (isCustomSection) {
-        // Mark as processed
         header.setAttribute('data-mobile-collapsible-fixed', 'true');
         
         if (header.tagName === 'BUTTON') {
-          // It's already a button, ensure it has proper behavior
           if (!header.hasAttribute('aria-expanded')) {
             header.setAttribute('aria-expanded', 'true');
           }
           
-          // Override existing behavior if needed
           header.addEventListener('click', (e) => {
             const isExpanded = header.getAttribute('aria-expanded') === 'true';
             header.setAttribute('aria-expanded', (!isExpanded).toString());
             
-            // Find and toggle associated content
             const parent = header.closest('.sidebar-section-wrapper, [class*="section"]');
             if (parent) {
               const content = parent.querySelector('.custom-sidebar-section, .sidebar-section-content');
@@ -128,7 +121,6 @@
             }
           });
         } else {
-          // Convert to interactive element
           header.setAttribute('role', 'button');
           header.setAttribute('aria-expanded', 'true');
           header.style.cursor = 'pointer';
@@ -138,7 +130,6 @@
             const isExpanded = header.getAttribute('aria-expanded') === 'true';
             header.setAttribute('aria-expanded', (!isExpanded).toString());
             
-            // Find and toggle associated content
             const parent = header.closest('.sidebar-section-wrapper, [class*="section"]');
             if (parent) {
               const content = parent.querySelector('.custom-sidebar-section, .sidebar-section-content');
