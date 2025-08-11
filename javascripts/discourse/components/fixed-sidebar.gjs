@@ -158,6 +158,16 @@ export default class FixedSidebar extends Component {
           );
 
           console.log(`Target element found for ${section}:`, !!targetElement);
+          
+          // Debug: Let's see what sidebar elements exist in mobile
+          if (!targetElement) {
+            console.log("All sidebar section wrappers:", document.querySelectorAll('.sidebar-section-wrapper'));
+            console.log("All elements with data-section-name:", document.querySelectorAll('[data-section-name]'));
+            console.log("All sidebar elements:", document.querySelectorAll('[class*="sidebar"]'));
+            console.log("Hamburger dropdown:", document.querySelector('.hamburger-dropdown'));
+            console.log("Mobile sidebar:", document.querySelector('.sidebar-wrapper.mobile'));
+            console.log("Sidebar sections:", document.querySelector('.sidebar-sections'));
+          }
 
           if (targetElement) {
             const existingContent = targetElement.querySelector(
