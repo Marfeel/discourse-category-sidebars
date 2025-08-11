@@ -1,6 +1,7 @@
 import { apiInitializer } from "discourse/lib/api";
 
-export default apiInitializer((api) => {
+export default apiInitializer("0.8", (api) => {
+  console.log("sidebar-fixes initializer loaded");
   function updateSidebarActiveLink() {
     const segments = window.location.pathname.split("/");
 
@@ -133,14 +134,30 @@ export default apiInitializer((api) => {
   }
 
   function handleDOMChanges() {
-    updateSidebarActiveLink();
-    updateCustomSidebar();
-    fixMobileCollapsibleHeaders();
+    try {
+      updateSidebarActiveLink();
+      updateCustomSidebar();
+      fixMobileCollapsibleHeaders();
+    } catch (error) {
+      console.error("Error in handleDOMChanges:", error);
+    }
   }
 
   // Set up observers and event listeners
-  const sideObserver = new MutationObserver(updateSidebarActiveLink);
-  const fixedObserver = new MutationObserver(handleDOMChanges);
+  const sideObserver = new MutationObserver(() => {
+    try {
+      updateSidebarActiveLink();
+    } catch (error) {
+      console.error("Error in updateSidebarActiveLink:", error);
+    }
+  });
+  const fixedObserver = new MutationObserver(() => {
+    try {
+      handleDOMChanges();
+    } catch (error) {
+      console.error("Error in handleDOMChanges:", error);
+    }
+  });
   
   const topicBody = document.querySelector("#main-outlet-wrapper");
   if (topicBody) {
@@ -157,7 +174,11 @@ export default apiInitializer((api) => {
 
   // Clean up on page changes
   api.onPageChange(() => {
-    handleDOMChanges();
+    try {
+      handleDOMChanges();
+    } catch (error) {
+      console.error("Error in onPageChange:", error);
+    }
   });
 
   // Clean up observers when leaving
@@ -165,4 +186,9 @@ export default apiInitializer((api) => {
     sideObserver?.disconnect();
     fixedObserver?.disconnect();
   });
+
+  // Expose functions globally for backward compatibility (if needed)
+  window.updateSidebarActiveLink = updateSidebarActiveLink;
+  window.updateCustomSidebar = updateCustomSidebar;
+  window.fixMobileCollapsibleHeaders = fixMobileCollapsibleHeaders;
 });
