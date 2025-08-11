@@ -4,17 +4,28 @@
       if (mut.type === "childList") {
         updateCustomSidebar?.();
         updateSidebarActiveLink?.();
-        addIconSections?.();
       }
     });
   }
 
-  waitForElement(".mobile-view .panel", (mobilePanel) => {
-    const observerSidebarMobile = new MutationObserver(observeHamburgerMobile);
+  function initMobileObserver() {
+    const mobilePanel = document.querySelector(".mobile-view .panel");
+    if (mobilePanel) {
+      const observerSidebarMobile = new MutationObserver(
+        observeHamburgerMobile
+      );
+      observerSidebarMobile.observe(mobilePanel, {
+        childList: true,
+        subtree: true,
+      });
+    } else {
+      setTimeout(initMobileObserver, 100);
+    }
+  }
 
-    observerSidebarMobile.observe(mobilePanel, {
-      childList: true,
-      subtree: true,
-    });
-  });
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMobileObserver);
+  } else {
+    initMobileObserver();
+  }
 </script>
