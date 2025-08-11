@@ -85,56 +85,69 @@
   // Fix for sidebar sections not being collapsible on mobile
   // Fixed in: https://github.com/discourse/discourse/commit/0abc33c5a25a5ab3535c678e6c5e03412fdd8b8a (3.5.0-beta8)
   function fixMobileCollapsibleHeaders() {
-    const isMobile = window.innerWidth <= 768 || document.body.classList.contains('mobile-view');
+    const isMobile =
+      window.innerWidth <= 768 ||
+      document.body.classList.contains("mobile-view");
     if (!isMobile) return;
 
-    const sidebarHeaders = document.querySelectorAll('.sidebar-section-header button, .sidebar-section-header');
-    
+    const sidebarHeaders = document.querySelectorAll(
+      ".sidebar-section-header button, .sidebar-section-header"
+    );
+
     sidebarHeaders.forEach((header) => {
-      if (header.hasAttribute('data-mobile-collapsible-fixed')) return;
-      
-      const headerText = header.textContent || '';
-      
-      const isCustomSection = headerText.toLowerCase().includes('product') || 
-                             headerText.toLowerCase().includes('implementation') ||
-                             headerText.toLowerCase().includes('guides') ||
-                             headerText.toLowerCase().includes('general');
-      
+      if (header.hasAttribute("data-mobile-collapsible-fixed")) return;
+
+      const headerText = header.textContent || "";
+
+      const isCustomSection =
+        headerText.toLowerCase().includes("product") ||
+        headerText.toLowerCase().includes("implementation") ||
+        headerText.toLowerCase().includes("guides") ||
+        headerText.toLowerCase().includes("general");
+
       if (isCustomSection) {
-        header.setAttribute('data-mobile-collapsible-fixed', 'true');
-        
-        if (header.tagName === 'BUTTON') {
-          if (!header.hasAttribute('aria-expanded')) {
-            header.setAttribute('aria-expanded', 'true');
+        header.setAttribute("data-mobile-collapsible-fixed", "true");
+
+        if (header.tagName === "BUTTON") {
+          if (!header.hasAttribute("aria-expanded")) {
+            header.setAttribute("aria-expanded", "true");
           }
-          
-          header.addEventListener('click', (e) => {
-            const isExpanded = header.getAttribute('aria-expanded') === 'true';
-            header.setAttribute('aria-expanded', (!isExpanded).toString());
-            
-            const parent = header.closest('.sidebar-section-wrapper, [class*="section"]');
+
+          header.addEventListener("click", (e) => {
+            const isExpanded = header.getAttribute("aria-expanded") === "true";
+            header.setAttribute("aria-expanded", (!isExpanded).toString());
+
+            const parent = header.closest(
+              '.sidebar-section-wrapper, [class*="section"]'
+            );
             if (parent) {
-              const content = parent.querySelector('.custom-sidebar-section, .sidebar-section-content');
+              const content = parent.querySelector(
+                ".custom-sidebar-section, .sidebar-section-content"
+              );
               if (content) {
-                content.style.display = isExpanded ? 'none' : '';
+                content.style.display = isExpanded ? "none" : "";
               }
             }
           });
         } else {
-          header.setAttribute('role', 'button');
-          header.setAttribute('aria-expanded', 'true');
-          header.style.cursor = 'pointer';
-          
-          header.addEventListener('click', (e) => {
+          header.setAttribute("role", "button");
+          header.setAttribute("aria-expanded", "true");
+          header.style.cursor = "pointer";
+
+          header.addEventListener("click", (e) => {
             e.preventDefault();
-            const isExpanded = header.getAttribute('aria-expanded') === 'true';
-            header.setAttribute('aria-expanded', (!isExpanded).toString());
-            
-            const parent = header.closest('.sidebar-section-wrapper, [class*="section"]');
+            const isExpanded = header.getAttribute("aria-expanded") === "true";
+            header.setAttribute("aria-expanded", (!isExpanded).toString());
+
+            const parent = header.closest(
+              '.sidebar-section-wrapper, [class*="section"]'
+            );
             if (parent) {
-              const content = parent.querySelector('.custom-sidebar-section, .sidebar-section-content');
+              const content = parent.querySelector(
+                ".custom-sidebar-section, .sidebar-section-content"
+              );
               if (content) {
-                content.style.display = isExpanded ? 'none' : '';
+                content.style.display = isExpanded ? "none" : "";
               }
             }
           });
