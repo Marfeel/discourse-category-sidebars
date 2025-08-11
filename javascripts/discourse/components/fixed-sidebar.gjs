@@ -153,32 +153,30 @@ export default class FixedSidebar extends Component {
         if (contentElement) {
           this.addIconsToContent(contentElement);
 
-          const targetElement = document.querySelector(
-            `.sidebar-section-wrapper[data-section-name="${section}"]`
-          );
-
-          console.log(`Target element found for ${section}:`, !!targetElement);
-          
-          // Debug: Let's see what sidebar elements exist in mobile
-          if (!targetElement) {
-            console.log("All sidebar section wrappers:", document.querySelectorAll('.sidebar-section-wrapper'));
-            console.log("All elements with data-section-name:", document.querySelectorAll('[data-section-name]'));
-            console.log("All sidebar elements:", document.querySelectorAll('[class*="sidebar"]'));
-            console.log("Hamburger dropdown:", document.querySelector('.hamburger-dropdown'));
-            console.log("Mobile sidebar:", document.querySelector('.sidebar-wrapper.mobile'));
-            console.log("Sidebar sections:", document.querySelector('.sidebar-sections'));
-          }
-
-          if (targetElement) {
-            const existingContent = targetElement.querySelector(
-              `.custom-sidebar-section[data-sidebar-name="${section}"]`
+          // Different behavior for mobile vs desktop
+          if (this.site.mobileView || this.site.narrowDesktopView) {
+            // In mobile, content is already rendered, just ensure collapsible behavior
+            console.log(`Mobile mode: applying collapsible behavior directly to content for ${section}`);
+            this.ensureCollapsibleBehavior(contentElement, section);
+          } else {
+            // Desktop behavior: move content to sidebar structure
+            const targetElement = document.querySelector(
+              `.sidebar-section-wrapper[data-section-name="${section}"]`
             );
-            if (!existingContent) {
-              targetElement.appendChild(contentElement.cloneNode(true));
-            }
 
-            // remove on Discourse 3.5.0
-            this.ensureCollapsibleBehavior(targetElement);
+            console.log(`Desktop mode - Target element found for ${section}:`, !!targetElement);
+
+            if (targetElement) {
+              const existingContent = targetElement.querySelector(
+                `.custom-sidebar-section[data-sidebar-name="${section}"]`
+              );
+              if (!existingContent) {
+                targetElement.appendChild(contentElement.cloneNode(true));
+              }
+
+              // remove on Discourse 3.5.0
+              this.ensureCollapsibleBehavior(targetElement, section);
+            }
           }
         }
       });
@@ -240,19 +238,52 @@ export default class FixedSidebar extends Component {
   }
 
   @action
-  ensureCollapsibleBehavior(targetElement) {
+  ensureCollapsibleBehavior(element, section) {
     // TODO: Remove when Discourse 3.5.0+
     // Temporal fix where sidebar sections are not collapsible on mobile
     // Fixed in: https://github.com/discourse/discourse/commit/0abc33c5a25a5ab3535c678e6c5e03412fdd8b8a (3.5.0-beta8)
 
     const isMobile = this.site.mobileView || this.site.narrowDesktopView;
 
-    console.log(this.site.mobileView, this.site.narrowDesktopView);
+    console.log(`ensureCollapsibleBehavior running for ${section}:`, {
+      mobileView: this.site.mobileView, 
+      narrowDesktopView: this.site.narrowDesktopView,
+      isMobile,
+      elementType: element?.classList?.toString() || 'unknown'
+    });
 
     if (isMobile) {
-      const headerButton = targetElement.querySelector(
-        ".sidebar-section-header button"
-      );
+      // In mobile, we're working directly with content elements (details elements)
+      const detailsElements = element.querySelectorAll('details');
+      
+      console.log(`Found ${detailsElements.length} details elements for ${section}`);
+      
+      detailsElements.forEach((details, index) => {
+        console.log(`Processing details element ${index} for ${section}`);
+        
+        // Make sure details elements are interactive
+        if (details.onclick === null) {
+          details.onclick = (e) => {
+            // Let the native details/summary behavior work
+            console.log(`Details element clicked for ${section}`);
+          };
+        }
+        
+        // Ensure proper accessibility
+        const summary = details.querySelector('summary');
+        if (summary && !summary.getAttribute('role')) {
+          summary.setAttribute('role', 'button');
+          summary.setAttribute('aria-expanded', details.hasAttribute('open') ? 'true' : 'false');
+          
+          // Update aria-expanded when details toggle
+          details.addEventListener('toggle', () => {
+            summary.setAttribute('aria-expanded', details.hasAttribute('open') ? 'true' : 'false');
+          });
+        }
+      });
+    } else {
+      // Desktop behavior - working with sidebar wrapper elements
+      const headerButton = element.querySelector(".sidebar-section-header button");
 
       if (headerButton) {
         if (!headerButton.hasAttribute("aria-expanded")) {
@@ -262,27 +293,22 @@ export default class FixedSidebar extends Component {
         if (!headerButton.onclick) {
           headerButton.onclick = (e) => {
             e.preventDefault();
-            const isExpanded =
-              headerButton.getAttribute("aria-expanded") === "true";
+            const isExpanded = headerButton.getAttribute("aria-expanded") === "true";
             headerButton.setAttribute("aria-expanded", !isExpanded);
 
-            const customContent = targetElement.querySelector(
-              ".custom-sidebar-section"
-            );
+            const customContent = element.querySelector(".custom-sidebar-section");
             if (customContent) {
               customContent.style.display = !isExpanded ? "none" : "";
             }
           };
         }
       } else {
-        const header = targetElement.querySelector(".sidebar-section-header");
+        const header = element.querySelector(".sidebar-section-header");
         if (header && !header.onclick) {
           header.style.cursor = "pointer";
           header.onclick = (e) => {
             e.preventDefault();
-            const customContent = targetElement.querySelector(
-              ".custom-sidebar-section"
-            );
+            const customContent = element.querySelector(".custom-sidebar-section");
             if (customContent) {
               const isVisible = customContent.style.display !== "none";
               customContent.style.display = isVisible ? "none" : "";
