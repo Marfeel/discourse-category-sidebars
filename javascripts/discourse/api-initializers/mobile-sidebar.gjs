@@ -2,17 +2,17 @@ import { apiInitializer } from "discourse/lib/api";
 import CustomCategorySidebar from "../components/category-sidebar";
 
 export default apiInitializer((api) => {
-    const site = api.container.lookup("service:site");
+  const site = api.container.lookup("service:site");
 
-    if (!site.mobileView) {
-        return;
-    }
+  if (!site.mobileView) {
+    return;
+  }
 
-    const MobileSidebar = <template>
-        <div class="sidebar-sections">
-            <CustomCategorySidebar />
-        </div>
-    </template>;
+  const MobileSidebar = <template>
+    <div class="sidebar-sections">
+      <CustomCategorySidebar />
+    </div>
+  </template>;
 
-    api.renderInOutlet("after-sidebar-sections", MobileSidebar);
+  api.renderInOutlet("after-sidebar-sections", MobileSidebar);
 });
