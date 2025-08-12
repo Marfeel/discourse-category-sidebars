@@ -31,7 +31,7 @@
 }
 .sidebar-sections {
   -webkit-antialiased: antialiased;
-  &:first-child {
+  .menu-panel &:first-child {
     padding-bottom: 0;
   }
   .sidebar-section-wrapper {
