@@ -8,5 +8,11 @@ export default apiInitializer((api) => {
         return;
     }
 
-    api.renderInOutlet("after-sidebar-sections", CustomCategorySidebar);
+    const MobileSidebar = <template>
+        <div class="sidebar-sections">
+            <CustomCategorySidebar />
+        </div>
+    </template>;
+
+    api.renderInOutlet("after-sidebar-sections", MobileSidebar);
 });
