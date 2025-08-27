@@ -9,24 +9,26 @@ import { htmlSafe } from "@ember/template";
 import ConditionalLoadingSpinner from "discourse/components/conditional-loading-spinner";
 import bodyClass from "discourse/helpers/body-class";
 import { ajax } from "discourse/lib/ajax";
+import { debounce } from "discourse/lib/decorators";
 import Category from "discourse/models/category";
+
+const ACTIVE_DEBOUNCE = 100;
 
 export default class CategorySidebar extends Component {
   @service router;
   @service siteSettings;
   @service site;
+  @service appEvents;
 
   @tracked sidebarContent;
   @tracked loading = true;
   @tracked lastFetchedCategory = null;
 
-  sidebarObserver = null;
+  sidebarElement = null;
 
   constructor() {
     super(...arguments);
-    this.router.on("routeDidChange", () => {
-      this.updateActiveLinks();
-    });
+    // this.appEvents.on("page:changed", this.updateActiveLinks);
   }
 
   <template>
@@ -42,7 +44,7 @@ export default class CategorySidebar extends Component {
           <div
             class="category-sidebar-contents"
             data-category-sidebar={{this.category.slug}}
-            {{didInsert this.setupObserver}}
+            {{didInsert this.storeSidebarElement}}
           >
             <div class="cooked">
               {{#unless this.loading}}
@@ -58,10 +60,7 @@ export default class CategorySidebar extends Component {
 
   willDestroy() {
     super.willDestroy();
-    if (this.sidebarObserver) {
-      this.sidebarObserver.disconnect();
-    }
-    this.router.off("routeDidChange", this.updateActiveLinks);
+    // this.appEvents.off("page:changed", this.updateActiveLinks);
   }
 
   get parsedSetting() {
@@ -182,27 +181,18 @@ export default class CategorySidebar extends Component {
   }
 
   @action
-  setupObserver(element) {
-    if (this.sidebarObserver) {
-      this.sidebarObserver.disconnect();
-    }
-    this.sidebarObserver = new MutationObserver(() => {
-      this.updateActiveLinks(element);
-    });
-
-    this.sidebarObserver.observe(element, {
-      childList: true,
-      subtree: true,
-    });
+  storeSidebarElement(element) {
+    this.sidebarElement = element;
+    // this.updateActiveLinks();
   }
 
-  @action
-  updateActiveLinks(element) {
-    if (!element) {
+  @debounce(ACTIVE_DEBOUNCE)
+  updateActiveLinks() {
+    if (!this.sidebarElement) {
       return;
     }
     const currentPath = window.location.pathname;
-    const links = element?.querySelectorAll(
+    const links = this.sidebarElement?.querySelectorAll(
       "li > a:not(.sidebar-section-link)"
     );
     links.forEach((link) => {
