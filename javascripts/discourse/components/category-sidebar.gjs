@@ -9,27 +9,16 @@ import { htmlSafe } from "@ember/template";
 import ConditionalLoadingSpinner from "discourse/components/conditional-loading-spinner";
 import bodyClass from "discourse/helpers/body-class";
 import { ajax } from "discourse/lib/ajax";
-import { debounce } from "discourse/lib/decorators";
 import Category from "discourse/models/category";
-
-const ACTIVE_DEBOUNCE = 100;
 
 export default class CategorySidebar extends Component {
   @service router;
   @service siteSettings;
   @service site;
-  @service appEvents;
 
   @tracked sidebarContent;
   @tracked loading = true;
   @tracked lastFetchedCategory = null;
-
-  sidebarElement = null;
-
-  constructor() {
-    super(...arguments);
-    // this.appEvents.on("page:changed", this.updateActiveLinks);
-  }
 
   <template>
     {{#if this.matchedSetting}}
@@ -44,7 +33,6 @@ export default class CategorySidebar extends Component {
           <div
             class="category-sidebar-contents"
             data-category-sidebar={{this.category.slug}}
-            {{didInsert this.storeSidebarElement}}
           >
             <div class="cooked">
               {{#unless this.loading}}
@@ -58,10 +46,6 @@ export default class CategorySidebar extends Component {
     {{/if}}
   </template>
 
-  willDestroy() {
-    super.willDestroy();
-    // this.appEvents.off("page:changed", this.updateActiveLinks);
-  }
 
   get parsedSetting() {
     return settings.setup.split("|").reduce((result, setting) => {
@@ -180,36 +164,4 @@ export default class CategorySidebar extends Component {
     return this.sidebarContent;
   }
 
-  @action
-  storeSidebarElement(element) {
-    this.sidebarElement = element;
-    // this.updateActiveLinks();
-  }
-
-  @debounce(ACTIVE_DEBOUNCE)
-  updateActiveLinks() {
-    if (!this.sidebarElement) {
-      return;
-    }
-    const currentPath = window.location.pathname;
-    const links = this.sidebarElement?.querySelectorAll(
-      "li > a:not(.sidebar-section-link)"
-    );
-    links.forEach((link) => {
-      const linkPath = new URL(link.href).pathname;
-      if (linkPath === currentPath) {
-        link.classList.add("active");
-        let detailsElement = link.closest("details");
-        while (detailsElement) {
-          if (detailsElement.tagName === "DETAILS") {
-            detailsElement.setAttribute("open", "");
-          }
-
-          detailsElement = detailsElement.parentElement.closest("details");
-        }
-      } else {
-        link.classList.remove("active");
-      }
-    });
-  }
 }
