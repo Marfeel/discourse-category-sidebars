@@ -46,7 +46,6 @@ export default class CategorySidebar extends Component {
     {{/if}}
   </template>
 
-
   get parsedSetting() {
     return settings.setup.split("|").reduce((result, setting) => {
       const [category, value] = setting
@@ -163,5 +162,4 @@ export default class CategorySidebar extends Component {
 
     return this.sidebarContent;
   }
-
 }
