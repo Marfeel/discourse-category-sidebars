@@ -41,12 +41,7 @@ export default {
         return null;
       }
 
-      function updateSidebarActiveLink() {
-        const topicId = getTopicIdFromRoute();
-        if (!topicId) {
-          return;
-        }
-
+      function clearActiveLinks() {
         const activeItem = document.querySelector(
           "li a.active:not(.sidebar-section-link)"
         );
@@ -61,6 +56,16 @@ export default {
             }
             parent = parent.parentElement.closest("details");
           }
+        }
+      }
+
+      function updateSidebarActiveLink() {
+        const topicId = getTopicIdFromRoute();
+
+        clearActiveLinks();
+
+        if (!topicId) {
+          return;
         }
 
         const currentSidebarItem = document.querySelector(
@@ -142,15 +147,28 @@ export default {
         }
       }
 
-      api.onPageChange(() => {
+      api.onPageChange((url) => {
         if (!router) {
           router = api.container.lookup("service:router");
         }
 
-        setTimeout(() => {
-          updateSidebarActiveLink();
-          initializeSidebarObserver();
-        }, 100);
+        const isTopicRoute = url && (url.includes('/t/') || /\/\d+$/.test(url));
+        const currentRoute = router.currentRoute;
+        const isCurrentTopicRoute = currentRoute &&
+          (currentRoute.name === 'topic' ||
+           currentRoute.name === 'topic.fromParams' ||
+           currentRoute.name === 'topic.fromParamsNear');
+
+        if (!isTopicRoute && !isCurrentTopicRoute) {
+          setTimeout(() => {
+            clearActiveLinks();
+          }, 50);
+        } else {
+          setTimeout(() => {
+            updateSidebarActiveLink();
+            initializeSidebarObserver();
+          }, 100);
+        }
       });
 
       router = api.container.lookup("service:router");
