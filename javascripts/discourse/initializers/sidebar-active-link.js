@@ -152,12 +152,13 @@ export default {
           router = api.container.lookup("service:router");
         }
 
-        const isTopicRoute = url && (url.includes('/t/') || /\/\d+$/.test(url));
+        const isTopicRoute = url && (url.includes("/t/") || /\/\d+$/.test(url));
         const currentRoute = router.currentRoute;
-        const isCurrentTopicRoute = currentRoute &&
-          (currentRoute.name === 'topic' ||
-           currentRoute.name === 'topic.fromParams' ||
-           currentRoute.name === 'topic.fromParamsNear');
+        const isCurrentTopicRoute =
+          currentRoute &&
+          (currentRoute.name === "topic" ||
+            currentRoute.name === "topic.fromParams" ||
+            currentRoute.name === "topic.fromParamsNear");
 
         if (!isTopicRoute && !isCurrentTopicRoute) {
           setTimeout(() => {
