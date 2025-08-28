@@ -139,7 +139,7 @@ export default class CategorySidebar extends Component {
       this.category ||
       Category.findById(this.topicCategory?.parent_category_id);
 
-    console.log("Current Category:", currentCategory, this.category, Category.findById(this.topicCategory?.parent_category_id));
+    console.log("Current Category:", currentCategory, this.category, Category.findById(this.topicCategory?.parent_category_id), this.lastFetchedCategory);
 
     // Check if the category has changed
     if (this.lastFetchedCategory === currentCategory?.id) {
