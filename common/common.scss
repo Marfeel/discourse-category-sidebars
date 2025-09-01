@@ -360,4 +360,8 @@
       }
     }
   }
+
+  li:has(a:hover) {
+    background: none;
+  }
 }
