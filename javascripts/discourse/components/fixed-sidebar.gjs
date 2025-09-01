@@ -200,9 +200,9 @@ export default class FixedSidebar extends Component {
     }
     html += `${categoryConfig.name}</h3>`;
 
-    // Add children categories if any
+    // Add children categories if any (only for parent categories)
     if (categoryConfig.children && categoryConfig.children.length > 0) {
-      html += '<div class="subcategories"><h4>Categories</h4><ul>';
+      html += '<div class="subcategories"><ul>';
       categoryConfig.children.forEach(childId => {
         const childConfig = this.parsedMultilevelConfig[childId];
         if (childConfig) {
@@ -218,9 +218,9 @@ export default class FixedSidebar extends Component {
       html += '</ul></div>';
     }
 
-    // Add category items if any
-    if (categoryConfig.items && categoryConfig.items.length > 0) {
-      html += '<div class="category-items"><h4>Topics</h4><ul>';
+    // Add category items if any (only for child categories without children)
+    if (categoryConfig.items && categoryConfig.items.length > 0 && (!categoryConfig.children || categoryConfig.children.length === 0)) {
+      html += '<div class="category-items"><ul>';
       categoryConfig.items.forEach(item => {
         html += `<li class="category-item">
           <a href="${item.url}" class="item-link">${item.title}</a>
