@@ -324,31 +324,6 @@
 
 // Multilevel sidebar styles
 .multilevel-sidebar {
-  .back-button {
-    margin-bottom: 15px;
-    
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      background: var(--primary-very-low);
-      border-radius: 6px;
-      color: var(--primary);
-      text-decoration: none;
-      font-size: 14px;
-      transition: background-color 0.2s ease;
-      
-      &:hover {
-        background: var(--primary-low);
-        text-decoration: none;
-      }
-      
-      i {
-        font-size: 12px;
-      }
-    }
-  }
   
   .category-title {
     margin: 0 0 20px 0;
@@ -362,6 +337,25 @@
     i {
       color: var(--primary-medium);
       font-size: var(--font-up-1-rem);
+    }
+    
+    &.with-back {
+      .back-link-inline {
+        color: var(--tertiary);
+        text-decoration: none;
+        margin-right: 8px;
+        transition: color 0.2s ease;
+        
+        &:hover {
+          color: var(--tertiary-hover);
+          text-decoration: none;
+        }
+        
+        i {
+          font-size: var(--font-up-1-rem);
+          color: inherit;
+        }
+      }
     }
   }
   
@@ -449,27 +443,6 @@
             }
           }
         }
-      }
-    }
-  }
-  
-  .category-items {
-    .item-link {
-      position: relative;
-      
-      &::before {
-        content: "→";
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        opacity: 0;
-        transition: opacity 0.2s ease;
-        color: var(--tertiary);
-      }
-      
-      &:hover::before {
-        opacity: 1;
       }
     }
   }

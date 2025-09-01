@@ -184,16 +184,14 @@ export default class FixedSidebar extends Component {
     // If this is a subcategory (has parent), show only this category with back button
     if (categoryConfig.parent) {
       const parentConfig = this.parsedMultilevelConfig[categoryConfig.parent];
-      if (parentConfig) {
-        html += `<div class="back-button">
-          <a href="/c/${parentConfig.name.toLowerCase().replace(/\\s+/g, '-')}/${categoryConfig.parent}" class="back-link">
-            <i class="fa fa-arrow-left"></i> Back to ${parentConfig.name}
-          </a>
-        </div>`;
-      }
       
-      // Add current subcategory title
-      html += `<h3 class="category-title">`;
+      // Add current subcategory title with inline back button
+      html += `<h3 class="category-title with-back">`;
+      if (parentConfig) {
+        html += `<a href="/c/${parentConfig.name.toLowerCase().replace(/\\s+/g, '-')}/${categoryConfig.parent}" class="back-link-inline">
+          <i class="fa fa-arrow-left"></i>
+        </a> `;
+      }
       if (categoryConfig.icon) {
         html += `<i class="fa fa-${categoryConfig.icon}"></i> `;
       }
@@ -356,9 +354,11 @@ export default class FixedSidebar extends Component {
             targetElement.appendChild(multilevelElement);
             
             console.log("FixedSidebar - Multilevel content inserted into:", targetSectionName);
-            return;
           }
         }
+        
+        // Early return to avoid executing original behavior
+        return;
       } else {
         // Show all sections normally
         this.showAllSections();
