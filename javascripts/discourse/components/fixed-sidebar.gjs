@@ -174,14 +174,14 @@ export default class FixedSidebar extends Component {
     }
   }
 
-  generateMultilevelContent(categoryConfig) {
+  generateMultilevelContent(categoryConfig, currentCategoryId) {
     if (!categoryConfig) {
       return null;
     }
 
     let html = '<div class="multilevel-sidebar">';
     
-    // Add back button if this is a subcategory
+    // If this is a subcategory (has parent), show only this category with back button
     if (categoryConfig.parent) {
       const parentConfig = this.parsedMultilevelConfig[categoryConfig.parent];
       if (parentConfig) {
@@ -191,46 +191,87 @@ export default class FixedSidebar extends Component {
           </a>
         </div>`;
       }
-    }
-
-    // Add current category title
-    html += `<h3 class="category-title">`;
-    if (categoryConfig.icon) {
-      html += `<i class="fa fa-${categoryConfig.icon}"></i> `;
-    }
-    html += `${categoryConfig.name}</h3>`;
-
-    // Add children categories if any (only for parent categories)
-    if (categoryConfig.children && categoryConfig.children.length > 0) {
-      html += '<div class="subcategories"><ul>';
-      categoryConfig.children.forEach(childId => {
-        const childConfig = this.parsedMultilevelConfig[childId];
-        if (childConfig) {
-          html += `<li class="subcategory-item">
-            <a href="/c/${childConfig.name.toLowerCase().replace(/\\s+/g, '-')}/${childId}" class="subcategory-link">`;
-          if (childConfig.icon) {
-            html += `<i class="fa fa-${childConfig.icon}"></i> `;
-          }
-          html += `${childConfig.name}</a>
+      
+      // Add current subcategory title
+      html += `<h3 class="category-title">`;
+      if (categoryConfig.icon) {
+        html += `<i class="fa fa-${categoryConfig.icon}"></i> `;
+      }
+      html += `${categoryConfig.name}</h3>`;
+      
+      // Add items for this subcategory
+      if (categoryConfig.items && categoryConfig.items.length > 0) {
+        html += '<div class="category-items"><ul>';
+        categoryConfig.items.forEach(item => {
+          html += `<li class="category-item">
+            <a href="${item.url}" class="item-link">${item.title}</a>
           </li>`;
-        }
-      });
-      html += '</ul></div>';
-    }
-
-    // Add category items if any (only for child categories without children)
-    if (categoryConfig.items && categoryConfig.items.length > 0 && (!categoryConfig.children || categoryConfig.children.length === 0)) {
-      html += '<div class="category-items"><ul>';
-      categoryConfig.items.forEach(item => {
-        html += `<li class="category-item">
-          <a href="${item.url}" class="item-link">${item.title}</a>
-        </li>`;
-      });
-      html += '</ul></div>';
+        });
+        html += '</ul></div>';
+      }
+    } else {
+      // This is a parent category, show it with all its children and their subitems
+      html += `<h3 class="category-title">`;
+      if (categoryConfig.icon) {
+        html += `<i class="fa fa-${categoryConfig.icon}"></i> `;
+      }
+      html += `${categoryConfig.name}</h3>`;
+      
+      // Show children with their subitems
+      if (categoryConfig.children && categoryConfig.children.length > 0) {
+        html += '<div class="subcategories"><ul>';
+        categoryConfig.children.forEach(childId => {
+          const childConfig = this.parsedMultilevelConfig[childId];
+          if (childConfig) {
+            html += `<li class="subcategory-item">
+              <div class="subcategory-header">
+                <a href="/c/${childConfig.name.toLowerCase().replace(/\\s+/g, '-')}/${childId}" class="subcategory-link">`;
+            if (childConfig.icon) {
+              html += `<i class="fa fa-${childConfig.icon}"></i> `;
+            }
+            html += `${childConfig.name}</a>
+              </div>`;
+            
+            // Show items for this child category
+            if (childConfig.items && childConfig.items.length > 0) {
+              html += '<ul class="subcategory-items">';
+              childConfig.items.forEach(item => {
+                html += `<li class="subcategory-item-link">
+                  <a href="${item.url}" class="item-link">${item.title}</a>
+                </li>`;
+              });
+              html += '</ul>';
+            }
+            html += '</li>';
+          }
+        });
+        html += '</ul></div>';
+      }
     }
 
     html += '</div>';
     return html;
+  }
+
+  hideOtherSections(keepSectionName) {
+    console.log("FixedSidebar - hiding other sections, keeping:", keepSectionName);
+    const allSections = document.querySelectorAll('.sidebar-section-wrapper[data-section-name]');
+    allSections.forEach(section => {
+      const sectionName = section.getAttribute('data-section-name');
+      if (sectionName !== keepSectionName) {
+        section.style.display = 'none';
+        section.classList.add('multilevel-hidden');
+      }
+    });
+  }
+
+  showAllSections() {
+    console.log("FixedSidebar - showing all sections");
+    const hiddenSections = document.querySelectorAll('.sidebar-section-wrapper.multilevel-hidden');
+    hiddenSections.forEach(section => {
+      section.style.display = '';
+      section.classList.remove('multilevel-hidden');
+    });
   }
 
   findTargetSection(categoryId) {
@@ -285,13 +326,16 @@ export default class FixedSidebar extends Component {
       if (categoryConfig) {
         // Use multilevel mode
         this.currentCategoryConfig = categoryConfig;
-        this.multilevelContent = this.generateMultilevelContent(categoryConfig);
+        this.multilevelContent = this.generateMultilevelContent(categoryConfig, currentCategoryId);
         
         // Find which section this category belongs to (product-guides or implementation-guides)
         const targetSectionName = this.findTargetSection(currentCategoryId);
         console.log("FixedSidebar - targetSectionName:", targetSectionName);
         
         if (targetSectionName) {
+          // Hide all other sidebar sections
+          this.hideOtherSections(targetSectionName);
+          
           const targetElement = document.querySelector(
             `.sidebar-section-wrapper[data-section-name="${targetSectionName}"]`
           );
@@ -315,6 +359,9 @@ export default class FixedSidebar extends Component {
             return;
           }
         }
+      } else {
+        // Show all sections normally
+        this.showAllSections();
       }
       
       // Use original behavior

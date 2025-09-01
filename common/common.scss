@@ -415,12 +415,40 @@
   }
   
   .subcategories {
-    .subcategory-link {
-      font-weight: 600;
-      background: var(--primary-very-low);
+    .subcategory-item {
+      margin-bottom: 15px;
       
-      &:hover {
-        background: var(--primary-low);
+      .subcategory-header {
+        margin-bottom: 8px;
+      }
+      
+      .subcategory-link {
+        font-weight: 600;
+        background: var(--primary-very-low);
+        
+        &:hover {
+          background: var(--primary-low);
+        }
+      }
+      
+      .subcategory-items {
+        margin-left: 20px;
+        margin-top: 8px;
+        
+        .subcategory-item-link {
+          margin-bottom: 4px;
+          
+          a {
+            font-weight: 400;
+            padding: 6px 8px;
+            font-size: 13px;
+            background: transparent;
+            
+            &:hover {
+              background: var(--primary-very-low);
+            }
+          }
+        }
       }
     }
   }
