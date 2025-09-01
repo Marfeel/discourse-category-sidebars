@@ -19,15 +19,18 @@ export default class CategorySidebar extends Component {
   @tracked sidebarContent;
   @tracked loading = true;
   @tracked lastFetchedCategory = null;
+  @tracked multilevelContent = null;
+  @tracked currentCategoryConfig = null;
+  @tracked navigationHistory = [];
 
   <template>
-    {{#if this.matchedSetting}}
+    {{#if this.shouldShowSidebar}}
       {{bodyClass "custom-sidebar"}}
       {{bodyClass (concat "sidebar-" settings.sidebar_side)}}
       <div
         class="category-sidebar"
-        {{didInsert this.fetchPostContent}}
-        {{didUpdate this.fetchPostContent this.category}}
+        {{didInsert this.initializeSidebar}}
+        {{didUpdate this.updateSidebar this.category}}
       >
         <div class="sticky-sidebar">
           <div
@@ -36,7 +39,11 @@ export default class CategorySidebar extends Component {
           >
             <div class="cooked">
               {{#unless this.loading}}
-                {{htmlSafe this.sidebarContent}}
+                {{#if this.isMultilevelMode}}
+                  {{htmlSafe this.multilevelContent}}
+                {{else}}
+                  {{htmlSafe this.sidebarContent}}
+                {{/if}}
               {{/unless}}
               <ConditionalLoadingSpinner @condition={{this.loading}} />
             </div>
@@ -163,6 +170,64 @@ export default class CategorySidebar extends Component {
       this.loading = false;
     }
 
-    return this.sidebarContent;
+  }
+
+  generateMultilevelContent() {
+    if (!this.currentCategoryConfig) {
+      return;
+    }
+
+    let html = '<div class="multilevel-sidebar">';
+    
+    // Add back button if this is a subcategory
+    if (this.currentCategoryConfig.parent) {
+      const parentConfig = this.parsedMultilevelConfig[this.currentCategoryConfig.parent];
+      if (parentConfig) {
+        html += `<div class="back-button">
+          <a href="/c/${parentConfig.name.toLowerCase().replace(/\\s+/g, '-')}/${this.currentCategoryConfig.parent}" class="back-link">
+            <i class="fa fa-arrow-left"></i> Back to ${parentConfig.name}
+          </a>
+        </div>`;
+      }
+    }
+
+    // Add current category title
+    html += `<h3 class="category-title">`;
+    if (this.currentCategoryConfig.icon) {
+      html += `<i class="fa fa-${this.currentCategoryConfig.icon}"></i> `;
+    }
+    html += `${this.currentCategoryConfig.name}</h3>`;
+
+    // Add children categories if any
+    if (this.currentCategoryConfig.children && this.currentCategoryConfig.children.length > 0) {
+      html += '<div class="subcategories"><h4>Categories</h4><ul>';
+      this.currentCategoryConfig.children.forEach(childId => {
+        const childConfig = this.parsedMultilevelConfig[childId];
+        if (childConfig) {
+          html += `<li class="subcategory-item">
+            <a href="/c/${childConfig.name.toLowerCase().replace(/\\s+/g, '-')}/${childId}" class="subcategory-link">`;
+          if (childConfig.icon) {
+            html += `<i class="fa fa-${childConfig.icon}"></i> `;
+          }
+          html += `${childConfig.name}</a>
+          </li>`;
+        }
+      });
+      html += '</ul></div>';
+    }
+
+    // Add category items if any
+    if (this.currentCategoryConfig.items && this.currentCategoryConfig.items.length > 0) {
+      html += '<div class="category-items"><h4>Topics</h4><ul>';
+      this.currentCategoryConfig.items.forEach(item => {
+        html += `<li class="category-item">
+          <a href="${item.url}" class="item-link">${item.title}</a>
+        </li>`;
+      });
+      html += '</ul></div>';
+    }
+
+    html += '</div>';
+    this.multilevelContent = html;
   }
 }
