@@ -241,24 +241,49 @@ export default class FixedSidebar extends Component {
     return html;
   }
 
-  markMultilevelMode(targetSectionName, categoryConfig) {
-    console.log("FixedSidebar - marking multilevel mode for:", targetSectionName);
-    
-    // Add a data attribute to body to indicate multilevel mode
-    document.body.setAttribute('data-multilevel-active', targetSectionName);
-    
-    // Add data attribute to indicate if this is a subcategory (has parent)
-    if (categoryConfig.parent) {
-      document.body.setAttribute('data-multilevel-type', 'subcategory');
-    } else {
-      document.body.setAttribute('data-multilevel-type', 'parent');
-    }
+  hideOtherSections(keepSectionName) {
+    console.log("FixedSidebar - hiding other sections, keeping:", keepSectionName);
+    const allSections = document.querySelectorAll('.sidebar-section-wrapper[data-section-name]');
+    allSections.forEach(section => {
+      const sectionName = section.getAttribute('data-section-name');
+      if (sectionName !== keepSectionName) {
+        section.style.display = 'none';
+        section.classList.add('multilevel-hidden');
+      }
+    });
   }
 
-  clearMultilevelMode() {
-    console.log("FixedSidebar - clearing multilevel mode");
-    document.body.removeAttribute('data-multilevel-active');
-    document.body.removeAttribute('data-multilevel-type');
+  showAllSections() {
+    console.log("FixedSidebar - showing all sections");
+    const hiddenSections = document.querySelectorAll('.sidebar-section-wrapper.multilevel-hidden');
+    hiddenSections.forEach(section => {
+      section.style.display = '';
+      section.classList.remove('multilevel-hidden');
+    });
+    
+    // Restore all hidden headers
+    const hiddenHeaders = document.querySelectorAll('.sidebar-section-header.multilevel-header-hidden');
+    hiddenHeaders.forEach(header => {
+      header.style.display = '';
+      header.classList.remove('multilevel-header-hidden');
+    });
+  }
+
+  handleSectionHeader(targetElement, categoryConfig) {
+    const sectionHeader = targetElement.querySelector('.sidebar-section-header');
+    if (sectionHeader) {
+      if (categoryConfig.parent) {
+        // This is a subcategory (like Platform), hide the original header completely
+        sectionHeader.style.display = 'none';
+        sectionHeader.classList.add('multilevel-header-hidden');
+        console.log("FixedSidebar - hiding header for subcategory");
+      } else {
+        // This is a parent category (like Product guides), keep header visible but mark it
+        sectionHeader.style.display = '';
+        sectionHeader.classList.remove('multilevel-header-hidden');
+        console.log("FixedSidebar - keeping header for parent category");
+      }
+    }
   }
 
   findTargetSection(categoryId) {
@@ -320,14 +345,17 @@ export default class FixedSidebar extends Component {
         console.log("FixedSidebar - targetSectionName:", targetSectionName);
         
         if (targetSectionName) {
-          // Mark multilevel mode with CSS data attributes
-          this.markMultilevelMode(targetSectionName, categoryConfig);
+          // Hide all other sidebar sections
+          this.hideOtherSections(targetSectionName);
           
           const targetElement = document.querySelector(
             `.sidebar-section-wrapper[data-section-name="${targetSectionName}"]`
           );
           
           if (targetElement) {
+            // Hide or show the section header based on category type
+            this.handleSectionHeader(targetElement, categoryConfig);
+            
             // Remove existing content
             const existingContent = targetElement.querySelector('.custom-sidebar-section');
             if (existingContent) {
@@ -349,8 +377,8 @@ export default class FixedSidebar extends Component {
         // Early return to avoid executing original behavior
         return;
       } else {
-        // Clear multilevel mode
-        this.clearMultilevelMode();
+        // Show all sections normally
+        this.showAllSections();
       }
       
       // Use original behavior
