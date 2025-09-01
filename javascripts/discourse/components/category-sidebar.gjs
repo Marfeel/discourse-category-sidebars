@@ -111,7 +111,8 @@ export default class CategorySidebar extends Component {
     console.log("- matchedSetting:", !!this.matchedSetting);
     console.log("- isMultilevelMode:", this.isMultilevelMode);
     
-    return this.matchedSetting || this.isMultilevelMode;
+    // If we have multilevel config for this category, show the sidebar
+    return this.matchedSetting || this.isMultilevelMode || hasMultilevelConfig;
   }
 
   get isTopRoute() {
