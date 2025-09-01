@@ -23,6 +23,11 @@ export default class CategorySidebar extends Component {
   @tracked currentCategoryConfig = null;
   @tracked navigationHistory = [];
 
+  constructor() {
+    super(...arguments);
+    console.log("CategorySidebar component created!");
+  }
+
   <template>
     {{#if this.shouldShowSidebar}}
       {{bodyClass "custom-sidebar"}}
@@ -61,6 +66,42 @@ export default class CategorySidebar extends Component {
       result[category] = { post: value };
       return result;
     }, {});
+  }
+
+  get parsedMultilevelConfig() {
+    console.log("parsedMultilevelConfig called");
+    if (!settings.multilevel_config) {
+      console.log("No multilevel_config setting found");
+      return {};
+    }
+    
+    console.log("multilevel_config raw:", settings.multilevel_config);
+    
+    const config = {};
+    settings.multilevel_config.split("|").forEach((line) => {
+      try {
+        console.log("Parsing JSON line:", line.trim());
+        const categoryConfig = JSON.parse(line.trim());
+        if (categoryConfig.id) {
+          config[categoryConfig.id] = categoryConfig;
+          console.log("Added config for category:", categoryConfig.id, categoryConfig);
+        }
+      } catch (error) {
+        console.warn("Invalid multilevel config JSON:", line, error);
+      }
+    });
+    
+    console.log("Final parsed config:", config);
+    return config;
+  }
+
+  get isMultilevelMode() {
+    return this.currentCategoryConfig !== null;
+  }
+
+  get shouldShowSidebar() {
+    console.log("shouldShowSidebar called - matchedSetting:", !!this.matchedSetting, "isMultilevelMode:", this.isMultilevelMode);
+    return this.matchedSetting || this.isMultilevelMode;
   }
 
   get isTopRoute() {
