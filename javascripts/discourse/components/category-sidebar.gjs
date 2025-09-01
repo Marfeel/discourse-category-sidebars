@@ -100,7 +100,17 @@ export default class CategorySidebar extends Component {
   }
 
   get shouldShowSidebar() {
-    console.log("shouldShowSidebar called - matchedSetting:", !!this.matchedSetting, "isMultilevelMode:", this.isMultilevelMode);
+    const currentCategoryId = this.getCurrentCategoryId();
+    const multilevelConfig = this.parsedMultilevelConfig;
+    const hasMultilevelConfig = currentCategoryId && multilevelConfig[currentCategoryId];
+    
+    console.log("shouldShowSidebar called:");
+    console.log("- currentCategoryId:", currentCategoryId);
+    console.log("- multilevelConfig keys:", Object.keys(multilevelConfig));
+    console.log("- hasMultilevelConfig:", hasMultilevelConfig);
+    console.log("- matchedSetting:", !!this.matchedSetting);
+    console.log("- isMultilevelMode:", this.isMultilevelMode);
+    
     return this.matchedSetting || this.isMultilevelMode;
   }
 
