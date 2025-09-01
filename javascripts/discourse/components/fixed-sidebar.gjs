@@ -7,6 +7,7 @@ import { service } from "@ember/service";
 import { htmlSafe } from "@ember/template";
 import { ajax } from "discourse/lib/ajax";
 import Category from "discourse/models/category";
+import { iconHTML } from "discourse-common/lib/icon-library";
 
 export default class FixedSidebar extends Component {
   @service siteSettings;
@@ -189,7 +190,7 @@ export default class FixedSidebar extends Component {
       html += `<h3 class="category-title with-back">`;
       if (parentConfig) {
         html += `<a href="/c/${parentConfig.name.toLowerCase().replace(/\\s+/g, '-')}/${categoryConfig.parent}" class="back-link-inline">
-          <i class="fa fa-arrow-left"></i>
+          ${iconHTML("arrow-left")}
         </a>`;
       }
       html += `${categoryConfig.name}</h3>`;

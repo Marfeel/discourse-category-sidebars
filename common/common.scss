@@ -349,8 +349,9 @@
           text-decoration: none;
         }
         
-        i {
-          font-size: var(--font-0-rem);
+        .d-icon {
+          width: 0.8em;
+          height: 0.8em;
           color: inherit;
         }
       }
