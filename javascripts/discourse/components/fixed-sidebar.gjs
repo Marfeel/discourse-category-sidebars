@@ -207,7 +207,7 @@ export default class FixedSidebar extends Component {
       }
     } else {
       // This is a parent category, show it with all its children and their subitems
-      html += `<h3 class="category-title">${categoryConfig.name}</h3>`;
+      // Don't add our own title since the original header will be visible
       
       // Show children with their subitems
       if (categoryConfig.children && categoryConfig.children.length > 0) {
@@ -260,6 +260,30 @@ export default class FixedSidebar extends Component {
       section.style.display = '';
       section.classList.remove('multilevel-hidden');
     });
+    
+    // Restore all hidden headers
+    const hiddenHeaders = document.querySelectorAll('.sidebar-section-header.multilevel-header-hidden');
+    hiddenHeaders.forEach(header => {
+      header.style.display = '';
+      header.classList.remove('multilevel-header-hidden');
+    });
+  }
+
+  handleSectionHeader(targetElement, categoryConfig) {
+    const sectionHeader = targetElement.querySelector('.sidebar-section-header');
+    if (sectionHeader) {
+      if (categoryConfig.parent) {
+        // This is a subcategory (like Platform), hide the original header completely
+        sectionHeader.style.display = 'none';
+        sectionHeader.classList.add('multilevel-header-hidden');
+        console.log("FixedSidebar - hiding header for subcategory");
+      } else {
+        // This is a parent category (like Product guides), keep header visible but mark it
+        sectionHeader.style.display = '';
+        sectionHeader.classList.remove('multilevel-header-hidden');
+        console.log("FixedSidebar - keeping header for parent category");
+      }
+    }
   }
 
   findTargetSection(categoryId) {
@@ -329,6 +353,9 @@ export default class FixedSidebar extends Component {
           );
           
           if (targetElement) {
+            // Hide or show the section header based on category type
+            this.handleSectionHeader(targetElement, categoryConfig);
+            
             // Remove existing content
             const existingContent = targetElement.querySelector('.custom-sidebar-section');
             if (existingContent) {
