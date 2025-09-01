@@ -140,8 +140,26 @@ export default class CategorySidebar extends Component {
     }
   }
 
+  getCurrentCategoryId() {
+    if (this.category) {
+      console.log("getCurrentCategoryId - category:", this.category.id);
+      return this.category.id.toString();
+    }
+    if (this.topicCategory) {
+      console.log("getCurrentCategoryId - topicCategory:", this.topicCategory.id);
+      return this.topicCategory.id.toString();
+    }
+    console.log("getCurrentCategoryId - no category found");
+    return null;
+  }
+
   @action
-  async fetchPostContent() {
+  async initializeSidebar() {
+    await this.updateSidebar();
+  }
+
+  @action
+  async updateSidebar() {
     const currentCategory =
       this.category ||
       Category.findById(this.topicCategory?.parent_category_id);
@@ -159,17 +177,43 @@ export default class CategorySidebar extends Component {
     this.lastFetchedCategory = currentCategory?.id;
 
     try {
-      if (this.matchedSetting) {
-        const response = await ajax(`/t/${this.matchedSetting.post}.json`);
-        this.sidebarContent = response.post_stream.posts[0].cooked;
+      const currentCategoryId = this.getCurrentCategoryId();
+      console.log("updateSidebar - currentCategoryId:", currentCategoryId);
+      console.log("updateSidebar - parsedMultilevelConfig:", this.parsedMultilevelConfig);
+      
+      const multilevelConfig = this.parsedMultilevelConfig[currentCategoryId];
+      console.log("updateSidebar - multilevelConfig:", multilevelConfig);
+      
+      if (multilevelConfig) {
+        this.currentCategoryConfig = multilevelConfig;
+        this.generateMultilevelContent();
+      } else {
+        this.currentCategoryConfig = null;
+        if (this.matchedSetting) {
+          await this.fetchOriginalPostContent();
+        }
       }
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error("Error fetching post for category sidebar:", error);
+      console.error("Error updating sidebar:", error);
     } finally {
       this.loading = false;
     }
+  }
 
+  async fetchOriginalPostContent() {
+    try {
+      const response = await ajax(`/t/${this.matchedSetting.post}.json`);
+      this.sidebarContent = response.post_stream.posts[0].cooked;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("Error fetching post for category sidebar:", error);
+    }
+  }
+
+  @action
+  async fetchPostContent() {
+    await this.updateSidebar();
   }
 
   generateMultilevelContent() {
