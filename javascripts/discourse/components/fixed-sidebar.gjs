@@ -15,6 +15,8 @@ export default class FixedSidebar extends Component {
 
   @tracked contents = [];
   @tracked loading = true;
+  @tracked multilevelContent = null;
+  @tracked currentCategoryConfig = null;
 
   constructor() {
     super(...arguments);
@@ -41,6 +43,52 @@ export default class FixedSidebar extends Component {
     });
 
     return result;
+  }
+
+  get parsedMultilevelConfig() {
+    console.log("FixedSidebar - parsedMultilevelConfig called");
+    if (!settings.multilevel_config) {
+      console.log("FixedSidebar - No multilevel_config setting found");
+      return {};
+    }
+    
+    console.log("FixedSidebar - multilevel_config raw:", settings.multilevel_config);
+    
+    const config = {};
+    settings.multilevel_config.split("|").forEach((line) => {
+      try {
+        console.log("FixedSidebar - Parsing JSON line:", line.trim());
+        const categoryConfig = JSON.parse(line.trim());
+        if (categoryConfig.id) {
+          config[categoryConfig.id] = categoryConfig;
+          console.log("FixedSidebar - Added config for category:", categoryConfig.id, categoryConfig);
+        }
+      } catch (error) {
+        console.warn("FixedSidebar - Invalid multilevel config JSON:", line, error);
+      }
+    });
+    
+    console.log("FixedSidebar - Final parsed config:", config);
+    return config;
+  }
+
+  getCurrentCategoryId() {
+    const categorySlugPathWithID = this.router?.currentRoute?.params?.category_slug_path_with_id;
+    if (categorySlugPathWithID) {
+      const category = Category.findBySlugPathWithID(categorySlugPathWithID);
+      if (category) {
+        console.log("FixedSidebar - getCurrentCategoryId - category:", category.id);
+        return category.id.toString();
+      }
+    }
+    
+    if (this.topicCategory) {
+      console.log("FixedSidebar - getCurrentCategoryId - topicCategory:", this.topicCategory.id);
+      return this.topicCategory.id.toString();
+    }
+    
+    console.log("FixedSidebar - getCurrentCategoryId - no category found");
+    return null;
   }
 
   async initialize() {
@@ -126,9 +174,150 @@ export default class FixedSidebar extends Component {
     }
   }
 
+  generateMultilevelContent(categoryConfig) {
+    if (!categoryConfig) {
+      return null;
+    }
+
+    let html = '<div class="multilevel-sidebar">';
+    
+    // Add back button if this is a subcategory
+    if (categoryConfig.parent) {
+      const parentConfig = this.parsedMultilevelConfig[categoryConfig.parent];
+      if (parentConfig) {
+        html += `<div class="back-button">
+          <a href="/c/${parentConfig.name.toLowerCase().replace(/\\s+/g, '-')}/${categoryConfig.parent}" class="back-link">
+            <i class="fa fa-arrow-left"></i> Back to ${parentConfig.name}
+          </a>
+        </div>`;
+      }
+    }
+
+    // Add current category title
+    html += `<h3 class="category-title">`;
+    if (categoryConfig.icon) {
+      html += `<i class="fa fa-${categoryConfig.icon}"></i> `;
+    }
+    html += `${categoryConfig.name}</h3>`;
+
+    // Add children categories if any
+    if (categoryConfig.children && categoryConfig.children.length > 0) {
+      html += '<div class="subcategories"><h4>Categories</h4><ul>';
+      categoryConfig.children.forEach(childId => {
+        const childConfig = this.parsedMultilevelConfig[childId];
+        if (childConfig) {
+          html += `<li class="subcategory-item">
+            <a href="/c/${childConfig.name.toLowerCase().replace(/\\s+/g, '-')}/${childId}" class="subcategory-link">`;
+          if (childConfig.icon) {
+            html += `<i class="fa fa-${childConfig.icon}"></i> `;
+          }
+          html += `${childConfig.name}</a>
+          </li>`;
+        }
+      });
+      html += '</ul></div>';
+    }
+
+    // Add category items if any
+    if (categoryConfig.items && categoryConfig.items.length > 0) {
+      html += '<div class="category-items"><h4>Topics</h4><ul>';
+      categoryConfig.items.forEach(item => {
+        html += `<li class="category-item">
+          <a href="${item.url}" class="item-link">${item.title}</a>
+        </li>`;
+      });
+      html += '</ul></div>';
+    }
+
+    html += '</div>';
+    return html;
+  }
+
+  findTargetSection(categoryId) {
+    // This method determines which sidebar section (product-guides or implementation-guides)
+    // should be used for the multilevel display
+    
+    // For now, we'll use a simple mapping - you can extend this logic
+    // based on your category hierarchy
+    const categoryConfig = this.parsedMultilevelConfig[categoryId];
+    if (!categoryConfig) {
+      return null;
+    }
+    
+    // Check if this category or its parent matches known sections
+    if (categoryConfig.name.toLowerCase().includes('product')) {
+      return 'product-guides';
+    }
+    
+    if (categoryConfig.name.toLowerCase().includes('implementation')) {
+      return 'implementation-guides';
+    }
+    
+    // Check parent category
+    if (categoryConfig.parent) {
+      const parentConfig = this.parsedMultilevelConfig[categoryConfig.parent];
+      if (parentConfig) {
+        if (parentConfig.name.toLowerCase().includes('product')) {
+          return 'product-guides';
+        }
+        if (parentConfig.name.toLowerCase().includes('implementation')) {
+          return 'implementation-guides';
+        }
+      }
+    }
+    
+    // Default fallback - you might want to make this configurable
+    return 'product-guides';
+  }
+
   @action
   setupContents() {
     schedule("afterRender", () => {
+      // Check if we should use multilevel mode
+      const currentCategoryId = this.getCurrentCategoryId();
+      const multilevelConfig = this.parsedMultilevelConfig;
+      const categoryConfig = currentCategoryId ? multilevelConfig[currentCategoryId] : null;
+      
+      console.log("FixedSidebar - setupContents:");
+      console.log("- currentCategoryId:", currentCategoryId);
+      console.log("- categoryConfig:", categoryConfig);
+      
+      if (categoryConfig) {
+        // Use multilevel mode
+        this.currentCategoryConfig = categoryConfig;
+        this.multilevelContent = this.generateMultilevelContent(categoryConfig);
+        
+        // Find which section this category belongs to (product-guides or implementation-guides)
+        const targetSectionName = this.findTargetSection(currentCategoryId);
+        console.log("FixedSidebar - targetSectionName:", targetSectionName);
+        
+        if (targetSectionName) {
+          const targetElement = document.querySelector(
+            `.sidebar-section-wrapper[data-section-name="${targetSectionName}"]`
+          );
+          
+          if (targetElement) {
+            // Remove existing content
+            const existingContent = targetElement.querySelector('.custom-sidebar-section');
+            if (existingContent) {
+              existingContent.remove();
+            }
+            
+            // Create new multilevel content element
+            const multilevelElement = document.createElement('div');
+            multilevelElement.className = 'custom-sidebar-section multilevel-section';
+            multilevelElement.setAttribute('data-sidebar-name', targetSectionName);
+            multilevelElement.innerHTML = this.multilevelContent;
+            
+            targetElement.appendChild(multilevelElement);
+            
+            console.log("FixedSidebar - Multilevel content inserted into:", targetSectionName);
+            return;
+          }
+        }
+      }
+      
+      // Use original behavior
       this.contents.forEach(({ section }) => {
         const contentElement = document.querySelector(
           `.custom-sidebar-section[data-sidebar-name="${section}"]`
