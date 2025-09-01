@@ -100,19 +100,8 @@ export default class CategorySidebar extends Component {
   }
 
   get shouldShowSidebar() {
-    const currentCategoryId = this.getCurrentCategoryId();
-    const multilevelConfig = this.parsedMultilevelConfig;
-    const hasMultilevelConfig = currentCategoryId && multilevelConfig[currentCategoryId];
-    
-    console.log("shouldShowSidebar called:");
-    console.log("- currentCategoryId:", currentCategoryId);
-    console.log("- multilevelConfig keys:", Object.keys(multilevelConfig));
-    console.log("- hasMultilevelConfig:", hasMultilevelConfig);
-    console.log("- matchedSetting:", !!this.matchedSetting);
-    console.log("- isMultilevelMode:", this.isMultilevelMode);
-    
-    // If we have multilevel config for this category, show the sidebar
-    return this.matchedSetting || this.isMultilevelMode || hasMultilevelConfig;
+    // Only show if we have a traditional matched setting, ignore multilevel
+    return !!this.matchedSetting;
   }
 
   get isTopRoute() {

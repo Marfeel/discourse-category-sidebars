@@ -330,21 +330,19 @@
     font-size: var(--font-up-2-rem);
     font-weight: 600;
     color: var(--primary);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    
-    i {
-      color: var(--primary-medium);
-      font-size: var(--font-up-1-rem);
-    }
     
     &.with-back {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      
       .back-link-inline {
         color: var(--tertiary);
         text-decoration: none;
-        margin-right: 8px;
+        margin-right: 10px;
         transition: color 0.2s ease;
+        display: inline-flex;
+        align-items: center;
         
         &:hover {
           color: var(--tertiary-hover);
@@ -352,7 +350,7 @@
         }
         
         i {
-          font-size: var(--font-up-1-rem);
+          font-size: var(--font-0-rem);
           color: inherit;
         }
       }

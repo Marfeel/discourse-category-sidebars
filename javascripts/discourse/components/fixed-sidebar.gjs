@@ -190,10 +190,7 @@ export default class FixedSidebar extends Component {
       if (parentConfig) {
         html += `<a href="/c/${parentConfig.name.toLowerCase().replace(/\\s+/g, '-')}/${categoryConfig.parent}" class="back-link-inline">
           <i class="fa fa-arrow-left"></i>
-        </a> `;
-      }
-      if (categoryConfig.icon) {
-        html += `<i class="fa fa-${categoryConfig.icon}"></i> `;
+        </a>`;
       }
       html += `${categoryConfig.name}</h3>`;
       
@@ -209,11 +206,7 @@ export default class FixedSidebar extends Component {
       }
     } else {
       // This is a parent category, show it with all its children and their subitems
-      html += `<h3 class="category-title">`;
-      if (categoryConfig.icon) {
-        html += `<i class="fa fa-${categoryConfig.icon}"></i> `;
-      }
-      html += `${categoryConfig.name}</h3>`;
+      html += `<h3 class="category-title">${categoryConfig.name}</h3>`;
       
       // Show children with their subitems
       if (categoryConfig.children && categoryConfig.children.length > 0) {
@@ -223,11 +216,7 @@ export default class FixedSidebar extends Component {
           if (childConfig) {
             html += `<li class="subcategory-item">
               <div class="subcategory-header">
-                <a href="/c/${childConfig.name.toLowerCase().replace(/\\s+/g, '-')}/${childId}" class="subcategory-link">`;
-            if (childConfig.icon) {
-              html += `<i class="fa fa-${childConfig.icon}"></i> `;
-            }
-            html += `${childConfig.name}</a>
+                <a href="/c/${childConfig.name.toLowerCase().replace(/\\s+/g, '-')}/${childId}" class="subcategory-link">${childConfig.name}</a>
               </div>`;
             
             // Show items for this child category
