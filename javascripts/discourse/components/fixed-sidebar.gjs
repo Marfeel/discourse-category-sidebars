@@ -47,29 +47,29 @@ export default class FixedSidebar extends Component {
   }
 
   get parsedMultilevelConfig() {
-    console.log("FixedSidebar - parsedMultilevelConfig called");
+    console.log("parsedMultilevelConfig called");
     if (!settings.multilevel_config) {
-      console.log("FixedSidebar - No multilevel_config setting found");
+      console.log("No multilevel_config setting found");
       return {};
     }
     
-    console.log("FixedSidebar - multilevel_config raw:", settings.multilevel_config);
+    console.log("multilevel_config raw:", settings.multilevel_config);
     
     const config = {};
     settings.multilevel_config.split("|").forEach((line) => {
       try {
-        console.log("FixedSidebar - Parsing JSON line:", line.trim());
+        console.log("Parsing JSON:", line.trim());
         const categoryConfig = JSON.parse(line.trim());
         if (categoryConfig.id) {
           config[categoryConfig.id] = categoryConfig;
-          console.log("FixedSidebar - Added config for category:", categoryConfig.id, categoryConfig);
+          console.log("Added config for category:", categoryConfig.id, categoryConfig);
         }
       } catch (error) {
-        console.warn("FixedSidebar - Invalid multilevel config JSON:", line, error);
+        console.warn("Invalid multilevel config JSON:", line, error);
       }
     });
     
-    console.log("FixedSidebar - Final parsed config:", config);
+    console.log("Final parsed config:", config);
     return config;
   }
 
@@ -78,17 +78,17 @@ export default class FixedSidebar extends Component {
     if (categorySlugPathWithID) {
       const category = Category.findBySlugPathWithID(categorySlugPathWithID);
       if (category) {
-        console.log("FixedSidebar - getCurrentCategoryId - category:", category.id);
+        console.log("getCurrentCategoryId - category:", category.id);
         return category.id.toString();
       }
     }
     
     if (this.topicCategory) {
-      console.log("FixedSidebar - getCurrentCategoryId - topicCategory:", this.topicCategory.id);
+      console.log("getCurrentCategoryId - topicCategory:", this.topicCategory.id);
       return this.topicCategory.id.toString();
     }
     
-    console.log("FixedSidebar - getCurrentCategoryId - no category found");
+    console.log("getCurrentCategoryId - no category found");
     return null;
   }
 
@@ -182,11 +182,9 @@ export default class FixedSidebar extends Component {
 
     let html = '<div class="multilevel-sidebar">';
     
-    // If this is a subcategory (has parent), show only this category with back button
     if (categoryConfig.parent) {
       const parentConfig = this.parsedMultilevelConfig[categoryConfig.parent];
       
-      // Add current subcategory title with inline back button
       html += `<h3 class="category-title with-back">`;
       if (parentConfig) {
         html += `<a href="/c/${parentConfig.name.toLowerCase().replace(/\\s+/g, '-')}/${categoryConfig.parent}" class="back-link-inline">
@@ -195,7 +193,6 @@ export default class FixedSidebar extends Component {
       }
       html += `${categoryConfig.name}</h3>`;
       
-      // Add items for this subcategory
       if (categoryConfig.items && categoryConfig.items.length > 0) {
         html += '<div class="category-items"><ul>';
         categoryConfig.items.forEach(item => {
@@ -206,10 +203,6 @@ export default class FixedSidebar extends Component {
         html += '</ul></div>';
       }
     } else {
-      // This is a parent category, show it with all its children and their subitems
-      // Don't add our own title since the original header will be visible
-      
-      // Show children with their subitems
       if (categoryConfig.children && categoryConfig.children.length > 0) {
         html += '<div class="subcategories"><ul>';
         categoryConfig.children.forEach(childId => {
@@ -220,7 +213,6 @@ export default class FixedSidebar extends Component {
                 <a href="/c/${childConfig.name.toLowerCase().replace(/\\s+/g, '-')}/${childId}" class="subcategory-link">${childConfig.name}</a>
               </div>`;
             
-            // Show items for this child category
             if (childConfig.items && childConfig.items.length > 0) {
               html += '<ul class="subcategory-items">';
               childConfig.items.forEach(item => {
@@ -242,7 +234,7 @@ export default class FixedSidebar extends Component {
   }
 
   hideOtherSections(keepSectionName) {
-    console.log("FixedSidebar - hiding other sections, keeping:", keepSectionName);
+    console.log(" hiding other sections, keeping:", keepSectionName);
     const allSections = document.querySelectorAll('.sidebar-section-wrapper[data-section-name]');
     allSections.forEach(section => {
       const sectionName = section.getAttribute('data-section-name');
@@ -254,14 +246,13 @@ export default class FixedSidebar extends Component {
   }
 
   showAllSections() {
-    console.log("FixedSidebar - showing all sections");
+    console.log(" showing all sections");
     const hiddenSections = document.querySelectorAll('.sidebar-section-wrapper.multilevel-hidden');
     hiddenSections.forEach(section => {
       section.style.display = '';
       section.classList.remove('multilevel-hidden');
     });
     
-    // Restore all hidden headers
     const hiddenHeaders = document.querySelectorAll('.sidebar-section-header.multilevel-header-hidden');
     hiddenHeaders.forEach(header => {
       header.style.display = '';
@@ -273,31 +264,25 @@ export default class FixedSidebar extends Component {
     const sectionHeader = targetElement.querySelector('.sidebar-section-header');
     if (sectionHeader) {
       if (categoryConfig.parent) {
-        // This is a subcategory (like Platform), hide the original header completely
+        // subcategory, hide the original header completely
         sectionHeader.style.display = 'none';
         sectionHeader.classList.add('multilevel-header-hidden');
-        console.log("FixedSidebar - hiding header for subcategory");
+        console.log("hiding header for subcategory");
       } else {
-        // This is a parent category (like Product guides), keep header visible but mark it
+        // parent category, keep header visible but mark it
         sectionHeader.style.display = '';
         sectionHeader.classList.remove('multilevel-header-hidden');
-        console.log("FixedSidebar - keeping header for parent category");
+        console.log("keeping header for parent category");
       }
     }
   }
 
   findTargetSection(categoryId) {
-    // This method determines which sidebar section (product-guides or implementation-guides)
-    // should be used for the multilevel display
-    
-    // For now, we'll use a simple mapping - you can extend this logic
-    // based on your category hierarchy
     const categoryConfig = this.parsedMultilevelConfig[categoryId];
     if (!categoryConfig) {
       return null;
     }
     
-    // Check if this category or its parent matches known sections
     if (categoryConfig.name.toLowerCase().includes('product')) {
       return 'product-guides';
     }
@@ -306,7 +291,6 @@ export default class FixedSidebar extends Component {
       return 'implementation-guides';
     }
     
-    // Check parent category
     if (categoryConfig.parent) {
       const parentConfig = this.parsedMultilevelConfig[categoryConfig.parent];
       if (parentConfig) {
@@ -319,33 +303,29 @@ export default class FixedSidebar extends Component {
       }
     }
     
-    // Default fallback - you might want to make this configurable
     return 'product-guides';
   }
 
   @action
   setupContents() {
     schedule("afterRender", () => {
-      // Check if we should use multilevel mode
       const currentCategoryId = this.getCurrentCategoryId();
       const multilevelConfig = this.parsedMultilevelConfig;
       const categoryConfig = currentCategoryId ? multilevelConfig[currentCategoryId] : null;
       
-      console.log("FixedSidebar - setupContents:");
+      console.log("setupContents:");
       console.log("- currentCategoryId:", currentCategoryId);
       console.log("- categoryConfig:", categoryConfig);
       
       if (categoryConfig) {
-        // Use multilevel mode
         this.currentCategoryConfig = categoryConfig;
         this.multilevelContent = this.generateMultilevelContent(categoryConfig, currentCategoryId);
         
         // Find which section this category belongs to (product-guides or implementation-guides)
         const targetSectionName = this.findTargetSection(currentCategoryId);
-        console.log("FixedSidebar - targetSectionName:", targetSectionName);
+        console.log("targetSectionName:", targetSectionName);
         
         if (targetSectionName) {
-          // Hide all other sidebar sections
           this.hideOtherSections(targetSectionName);
           
           const targetElement = document.querySelector(
@@ -353,16 +333,13 @@ export default class FixedSidebar extends Component {
           );
           
           if (targetElement) {
-            // Hide or show the section header based on category type
             this.handleSectionHeader(targetElement, categoryConfig);
             
-            // Remove existing content
             const existingContent = targetElement.querySelector('.custom-sidebar-section');
             if (existingContent) {
               existingContent.remove();
             }
             
-            // Create new multilevel content element
             const multilevelElement = document.createElement('div');
             multilevelElement.className = 'custom-sidebar-section multilevel-section';
             multilevelElement.setAttribute('data-sidebar-name', targetSectionName);
@@ -370,18 +347,15 @@ export default class FixedSidebar extends Component {
             
             targetElement.appendChild(multilevelElement);
             
-            console.log("FixedSidebar - Multilevel content inserted into:", targetSectionName);
+            console.log("Multilevel content inserted into:", targetSectionName);
           }
         }
         
-        // Early return to avoid executing original behavior
         return;
       } else {
-        // Show all sections normally
         this.showAllSections();
       }
       
-      // Use original behavior
       this.contents.forEach(({ section }) => {
         const contentElement = document.querySelector(
           `.custom-sidebar-section[data-sidebar-name="${section}"]`
