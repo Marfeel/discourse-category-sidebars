@@ -8,14 +8,64 @@
   [data-section-name="community"] {
     order: -3;
   }
-  [data-section-name="product-guides"],
-  [data-section-name="implementation-guides"] {
-    order: -2;
-  }
+  
   [data-section-name="general"],
   [data-section-name="marfeel"] {
+    order: 20;
+  }
+  
+  [data-section-name="getting-started"] {
+    order: -2;
+  }
+  
+  [data-section-name="implementation-guides"] {
     order: -1;
   }
+  
+  [data-section-name="product-guides"] {
+    order: 0;
+  }
+  
+  [data-section-name="platform"] {
+    order: 1;
+  }
+  
+  [data-section-name="copilot-ai"] {
+    order: 2;
+  }
+  
+  [data-section-name="engagement"] {
+    order: 3;
+  }
+  
+  [data-section-name="loyalty"] {
+    order: 4;
+  }
+  
+  [data-section-name="monitoring"] {
+    order: 5;
+  }
+  
+  [data-section-name="social"] {
+    order: 6;
+  }
+  
+  [data-section-name="multimedia"] {
+    order: 7;
+  }
+  
+  [data-section-name="experiences"] {
+    order: 8;
+  }
+  
+  [data-section-name="revenue-monetization"] {
+    order: 9;
+  }
+  
+  [data-section-name="site-technology"] {
+    order: 10;
+  }
+
   [data-section-name] .sidebar-section-header {
     text-transform: unset;
   }
