@@ -13,24 +13,20 @@
   [data-section-name="marfeel"] {
     order: 20;
   }
+
+  [data-section-name="support"] {
+    order: 25;
+  }
   
   [data-section-name="getting-started"] {
-    order: -2;
-  }
-  
-  [data-section-name="implementation-guides"] {
-    order: -1;
-  }
-  
-  [data-section-name="product-guides"] {
     order: 0;
   }
-  
+   
   [data-section-name="platform"] {
     order: 1;
   }
   
-  [data-section-name="copilot-ai"] {
+  [data-section-name="copilot"] {
     order: 2;
   }
   
@@ -66,6 +62,11 @@
     order: 10;
   }
 
+  [data-section-name="implementation-guides"],
+  [data-section-name="product-guides"] {
+    order: 21;
+  }
+  
   [data-section-name] .sidebar-section-header {
     text-transform: unset;
   }
