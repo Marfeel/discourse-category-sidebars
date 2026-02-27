@@ -203,6 +203,9 @@
         background: #dee6ea;
       }
     }
+    > ul:has(a > .d-icon)::before {
+      content: none;
+    }
     > details {
       padding-inline: 0;
       margin-bottom: 5px;
