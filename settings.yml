@@ -55,9 +55,10 @@ icon_mappings:
   type: list
   default: "Platform, mrf-apps|Editorial, mrf-editorial|Audience, mrf-users|Engagement, mrf-heart|Subscriptions, mrf-subscriptions|Advertisement, mrf-comments-lines|Social, mrf-comments|Affiliation, mrf-shopping-bag|User settings, mrf-user-settings|SDKs, mrf-apps|Editorial metadata, mrf-apps|Multimedia, mrf-play|Experiences, mrf-map-pin|Data Exports, mrf-shuffle|Marfeel API, mrf-bolt|Organization settings, mrf-user-settings|Debugging, mrf-apps|Recommender, mrf-recommender|Amplify, mrf-amplify"
   description: |
-    Each line should be in the format of "<code>Section Name, icon-identifier</code>".<br/> (e.g., Platform, mrf-apps)<br/>
+    Each line should be in the format of "<code>Section Name, icon-identifier[, sidebar-name]</code>".<br/> (e.g., Platform, mrf-apps or Platform, mrf-apps, product-guides)<br/>
     <ul>
     <li>The section name should match exactly as it appears in your content</li>
     <li>The icon identifier corresponds to the icon you want to display</li>
+    <li>The optional sidebar-name scopes the icon to a specific sidebar (matching <code>data-sidebar-name</code>). If omitted, the icon applies to all sidebars.</li>
     </ul>
   client: true

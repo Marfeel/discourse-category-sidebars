@@ -23,29 +23,47 @@ export default class FixedSidebar extends Component {
 
   willDestroy() {
     super.willDestroy(...arguments);
+    this.iconObserver?.disconnect();
     this.router.off("routeDidChange", this, this.toggleCurrentSection);
   }
 
-  get iconSections() {
+  get iconMappings() {
     const mappings = settings.icon_mappings || "";
-    const result = {};
 
-    mappings.split("|").forEach((mapping) => {
-      if (!mapping || !mapping.includes(",")) {
-        return;
-      }
-      const [sectionName, iconId] = mapping.split(",").map((s) => s.trim());
-      if (sectionName && iconId) {
-        result[sectionName] = iconId;
-      }
-    });
+    return mappings
+      .split("|")
+      .map((mapping) => {
+        if (!mapping || !mapping.includes(",")) {
+          return null;
+        }
+        const parts = mapping.split(",").map((s) => s.trim());
+        const [sectionName, iconId, sidebarName] = parts;
+        if (!sectionName || !iconId) {
+          return null;
+        }
+        return { sectionName, iconId, sidebarName: sidebarName || null };
+      })
+      .filter(Boolean);
+  }
 
-    return result;
+  findIcon(sectionName, sidebarName) {
+    const scoped = this.iconMappings.find(
+      (m) => m.sectionName === sectionName && m.sidebarName === sidebarName
+    );
+    if (scoped) {
+      return scoped.iconId;
+    }
+
+    const global = this.iconMappings.find(
+      (m) => m.sectionName === sectionName && !m.sidebarName
+    );
+    return global?.iconId ?? null;
   }
 
   async initialize() {
     await this.fetchContents();
     await this.setupContents();
+    this.initIconObserver();
     this.router.on("routeDidChange", this, this.toggleCurrentSection);
     this.toggleCurrentSection();
   }
@@ -95,25 +113,19 @@ export default class FixedSidebar extends Component {
   async fetchContents() {
     this.loading = true;
     try {
-      const successfulContents = [];
-
-      for (const setting of this.fixedSettings) {
-        try {
+      const results = await Promise.allSettled(
+        this.fixedSettings.map(async (setting) => {
           const response = await ajax(`/t/${setting.postId}.json`);
-          successfulContents.push({
+          return {
             section: setting.section,
             content: response.post_stream.posts[0].cooked,
-          });
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error(
-            `Error fetching content for section ${setting.section}, skipping:`,
-            error
-          );
-        }
-      }
+          };
+        })
+      );
 
-      this.contents = successfulContents;
+      this.contents = results
+        .filter((r) => r.status === "fulfilled")
+        .map((r) => r.value);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(
@@ -135,8 +147,6 @@ export default class FixedSidebar extends Component {
         );
 
         if (contentElement) {
-          this.addIconsToContent(contentElement);
-
           const targetElement = document.querySelector(
             `.sidebar-section-wrapper[data-section-name="${section}"]`
           );
@@ -173,37 +183,103 @@ export default class FixedSidebar extends Component {
     });
   }
 
-  @action
-  addIconsToContent(contentElement) {
-    const sections = contentElement.querySelectorAll("details");
+  createIconSvg(iconId) {
+    const symbolEl = document.querySelector(`symbol#${iconId}`);
+    if (!symbolEl) {
+      return null;
+    }
 
-    sections.forEach((section) => {
-      const sectionName = section.querySelector("summary")?.textContent.trim();
-      const icon = this.iconSections[sectionName];
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.classList.add(
+      "fa",
+      "d-icon",
+      "svg-icon",
+      "prefix-icon",
+      "svg-string",
+      `d-icon-${iconId}`
+    );
+    svg.setAttribute("viewBox", "0 0 512 512");
+    Array.from(symbolEl.childNodes).forEach((child) =>
+      svg.appendChild(child.cloneNode(true))
+    );
+    return svg;
+  }
 
-      if (icon && !section.querySelector(`.d-icon-${icon}`)) {
-        section.classList.add(`mrf-sidebar-${icon}`);
+  applyIconsToContainer(container) {
+    const sidebarName = container.dataset?.sidebarName ?? null;
 
-        const svg = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "svg"
-        );
-        svg.classList.add(
-          "fa",
-          "d-icon",
-          "svg-icon",
-          "prefix-icon",
-          "svg-string",
-          `d-icon-${icon}`
-        );
-        svg.setAttribute("viewBox", "0 0 512 512");
+    // Type 1: <details> > <summary>
+    container.querySelectorAll("details").forEach((detail) => {
+      const summary = detail.querySelector("summary");
+      if (!summary) {
+        return;
+      }
+      const sectionName = summary.textContent.trim();
+      const iconId = this.findIcon(sectionName, sidebarName);
 
-        const path = document.querySelector(`symbol#${icon}`);
-        if (path) {
-          svg.innerHTML = path.innerHTML;
-          section.querySelector("summary").prepend(svg);
+      if (iconId && !detail.querySelector(`.d-icon-${iconId}`)) {
+        const svg = this.createIconSvg(iconId);
+        if (svg) {
+          detail.classList.add(`mrf-sidebar-${iconId}`);
+          summary.prepend(svg);
         }
       }
     });
+
+    // Type 2: ul > li > a > i
+    container.querySelectorAll("ul > li > a > i").forEach((iElement) => {
+      const anchor = iElement.closest("a");
+      if (!anchor || anchor.querySelector(".d-icon")) {
+        return;
+      }
+      const linkText = Array.from(anchor.childNodes)
+        .filter((node) => node.nodeType === Node.TEXT_NODE)
+        .map((node) => node.textContent.trim())
+        .join("")
+        .trim();
+
+      const iconId = this.findIcon(linkText, sidebarName);
+      if (iconId) {
+        const svg = this.createIconSvg(iconId);
+        if (svg) {
+          iElement.replaceWith(svg);
+        }
+      }
+    });
+  }
+
+  initIconObserver() {
+    this.iconObserver?.disconnect();
+
+    this.iconObserver = new MutationObserver(() => {
+      const sections = document.querySelectorAll(
+        ".custom-sidebar-section[data-sidebar-name]"
+      );
+      if (!sections.length) {
+        return;
+      }
+
+      this.iconObserver.disconnect();
+      sections.forEach((section) => this.applyIconsToContainer(section));
+
+      if (document.body) {
+        this.iconObserver.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+      }
+    });
+
+    if (document.body) {
+      this.iconObserver.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
+    }
+
+    // Initial pass
+    document
+      .querySelectorAll(".custom-sidebar-section[data-sidebar-name]")
+      .forEach((section) => this.applyIconsToContainer(section));
   }
 }

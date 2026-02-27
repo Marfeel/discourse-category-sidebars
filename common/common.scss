@@ -8,7 +8,7 @@
   [data-section-name="community"] {
     order: -3;
   }
-  
+
   [data-section-name="general"],
   [data-section-name="marfeel"] {
     order: 20;
@@ -17,47 +17,47 @@
   [data-section-name="support"] {
     order: 25;
   }
-  
+
   [data-section-name="getting-started"] {
     order: 0;
   }
-   
+
   [data-section-name="platform"] {
     order: 1;
   }
-  
+
   [data-section-name="copilot"] {
     order: 2;
   }
-  
+
   [data-section-name="engagement"] {
     order: 3;
   }
-  
+
   [data-section-name="loyalty"] {
     order: 4;
   }
-  
+
   [data-section-name="monitoring"] {
     order: 5;
   }
-  
+
   [data-section-name="social"] {
     order: 6;
   }
-  
+
   [data-section-name="multimedia"] {
     order: 7;
   }
-  
+
   [data-section-name="experiences"] {
     order: 8;
   }
-  
+
   [data-section-name="revenue-monetization"] {
     order: 9;
   }
-  
+
   [data-section-name="site-technology"] {
     order: 10;
   }
@@ -66,7 +66,7 @@
   [data-section-name="product-guides"] {
     order: 21;
   }
-  
+
   [data-section-name] .sidebar-section-header {
     text-transform: unset;
   }
@@ -124,6 +124,17 @@
       }
       &.active {
         font-weight: 600;
+      }
+      &:has(> .d-icon) {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      > .d-icon {
+        width: 16px;
+        height: 16px;
+        color: #5d6c81;
+        flex-shrink: 0;
       }
     }
     li {
@@ -191,6 +202,9 @@
         width: 1px;
         background: #dee6ea;
       }
+    }
+    > ul:has(a > .d-icon)::before {
+      content: none;
     }
     > details {
       padding-inline: 0;
