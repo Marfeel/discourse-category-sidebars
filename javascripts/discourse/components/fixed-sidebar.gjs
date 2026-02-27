@@ -205,13 +205,14 @@ export default class FixedSidebar extends Component {
       `d-icon-${iconId}`
     );
     svg.setAttribute("viewBox", "0 0 512 512");
-    svg.innerHTML = symbolEl.innerHTML;
+    Array.from(symbolEl.childNodes).forEach((child) =>
+      svg.appendChild(child.cloneNode(true))
+    );
     return svg;
   }
 
   applyIconsToContainer(container) {
-    const sidebarName =
-      container.closest("[data-sidebar-name]")?.dataset.sidebarName ?? null;
+    const sidebarName = container.dataset?.sidebarName ?? null;
 
     // Type 1: <details> > <summary>
     container.querySelectorAll("details").forEach((detail) => {
@@ -257,14 +258,26 @@ export default class FixedSidebar extends Component {
     this.iconObserver?.disconnect();
 
     this.iconObserver = new MutationObserver(() => {
-      document
-        .querySelectorAll(".custom-sidebar-section[data-sidebar-name]")
-        .forEach((section) => this.applyIconsToContainer(section));
+      const sections = document.querySelectorAll(
+        ".custom-sidebar-section[data-sidebar-name]"
+      );
+      if (!sections.length) {
+        return;
+      }
+
+      this.iconObserver.disconnect();
+      sections.forEach((section) => this.applyIconsToContainer(section));
+
+      if (document.body) {
+        this.iconObserver.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+      }
     });
 
-    const body = document.querySelector("body");
-    if (body) {
-      this.iconObserver.observe(body, {
+    if (document.body) {
+      this.iconObserver.observe(document.body, {
         childList: true,
         subtree: true,
       });
