@@ -61,3 +61,20 @@ icon_mappings:
     <li>The icon identifier corresponds to the icon you want to display</li>
     </ul>
   client: true
+
+multilevel_config:
+  type: list
+  default: ""
+  description: |
+    Each line should be a JSON object defining a category and its structure:<br/>
+    <code>{"id": "177", "name": "Product guides", "icon": "mrf-guides", "children": ["242", "243"], "items": [{"title": "Overview", "url": "/t/overview/123"}]}</code><br/>
+    <ul>
+    <li><b>id</b>: Category ID (string)</li>
+    <li><b>name</b>: Display name for the category</li>
+    <li><b>icon</b>: Icon identifier (optional)</li>
+    <li><b>children</b>: Array of child category IDs (optional)</li>
+    <li><b>parent</b>: Parent category ID (optional, for subcategories)</li>
+    <li><b>items</b>: Array of sidebar items with title and url properties</li>
+    </ul>
+    <p>This configuration enables multilevel navigation where entering a parent category shows only its children and subcategory items.</p>
+  client: true
