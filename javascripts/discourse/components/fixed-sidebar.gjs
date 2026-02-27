@@ -26,21 +26,37 @@ export default class FixedSidebar extends Component {
     this.router.off("routeDidChange", this, this.toggleCurrentSection);
   }
 
-  get iconSections() {
+  get iconMappings() {
     const mappings = settings.icon_mappings || "";
-    const result = {};
 
-    mappings.split("|").forEach((mapping) => {
-      if (!mapping || !mapping.includes(",")) {
-        return;
-      }
-      const [sectionName, iconId] = mapping.split(",").map((s) => s.trim());
-      if (sectionName && iconId) {
-        result[sectionName] = iconId;
-      }
-    });
+    return mappings
+      .split("|")
+      .map((mapping) => {
+        if (!mapping || !mapping.includes(",")) {
+          return null;
+        }
+        const parts = mapping.split(",").map((s) => s.trim());
+        const [sectionName, iconId, sidebarName] = parts;
+        if (!sectionName || !iconId) {
+          return null;
+        }
+        return { sectionName, iconId, sidebarName: sidebarName || null };
+      })
+      .filter(Boolean);
+  }
 
-    return result;
+  findIcon(sectionName, sidebarName) {
+    const scoped = this.iconMappings.find(
+      (m) => m.sectionName === sectionName && m.sidebarName === sidebarName
+    );
+    if (scoped) {
+      return scoped.iconId;
+    }
+
+    const global = this.iconMappings.find(
+      (m) => m.sectionName === sectionName && !m.sidebarName
+    );
+    return global?.iconId ?? null;
   }
 
   async initialize() {
@@ -179,7 +195,7 @@ export default class FixedSidebar extends Component {
 
     sections.forEach((section) => {
       const sectionName = section.querySelector("summary")?.textContent.trim();
-      const icon = this.iconSections[sectionName];
+      const icon = this.findIcon(sectionName, null);
 
       if (icon && !section.querySelector(`.d-icon-${icon}`)) {
         section.classList.add(`mrf-sidebar-${icon}`);
