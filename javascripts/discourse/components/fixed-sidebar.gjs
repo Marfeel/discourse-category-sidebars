@@ -113,25 +113,19 @@ export default class FixedSidebar extends Component {
   async fetchContents() {
     this.loading = true;
     try {
-      const successfulContents = [];
-
-      for (const setting of this.fixedSettings) {
-        try {
+      const results = await Promise.allSettled(
+        this.fixedSettings.map(async (setting) => {
           const response = await ajax(`/t/${setting.postId}.json`);
-          successfulContents.push({
+          return {
             section: setting.section,
             content: response.post_stream.posts[0].cooked,
-          });
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error(
-            `Error fetching content for section ${setting.section}, skipping:`,
-            error
-          );
-        }
-      }
+          };
+        })
+      );
 
-      this.contents = successfulContents;
+      this.contents = results
+        .filter((r) => r.status === "fulfilled")
+        .map((r) => r.value);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(

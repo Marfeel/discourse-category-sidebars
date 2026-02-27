@@ -125,6 +125,17 @@
       &.active {
         font-weight: 600;
       }
+      &:has(> .d-icon) {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      > .d-icon {
+        width: 16px;
+        height: 16px;
+        color: #5d6c81;
+        flex-shrink: 0;
+      }
     }
     li {
       position: relative;
