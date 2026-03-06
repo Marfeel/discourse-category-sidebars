@@ -62,6 +62,10 @@
     order: 10;
   }
 
+  [data-section-name="platform"] {
+    order: 11;
+  }
+
   [data-section-name="implementation-guides"],
   [data-section-name="product-guides"] {
     order: 21;
