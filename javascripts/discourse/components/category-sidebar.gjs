@@ -1,6 +1,6 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
-import { and, concat } from "@ember/helper";
+import { concat } from "@ember/helper";
 import { action } from "@ember/object";
 import didInsert from "@ember/render-modifiers/modifiers/did-insert";
 import didUpdate from "@ember/render-modifiers/modifiers/did-update";
@@ -22,27 +22,27 @@ export default class CategorySidebar extends Component {
   @tracked lastFetchedCategory = null;
 
   <template>
-    {{#if (and this.currentUser this.matchedSetting)}}
-      {{bodyClass "custom-sidebar"}}
-      {{bodyClass (concat "sidebar-" settings.sidebar_side)}}
+    {{#if this.matchedSetting}}
       <div
         class="category-sidebar"
         {{didInsert this.fetchPostContent}}
         {{didUpdate this.fetchPostContent this.category}}
       >
-        <div class="sticky-sidebar">
-          <div
-            class="category-sidebar-contents"
-            data-category-sidebar={{this.category.slug}}
-          >
-            <div class="cooked">
-              {{#unless this.loading}}
+        <ConditionalLoadingSpinner @condition={{this.loading}} />
+        {{#if this.sidebarContent}}
+          {{bodyClass "custom-sidebar"}}
+          {{bodyClass (concat "sidebar-" settings.sidebar_side)}}
+          <div class="sticky-sidebar">
+            <div
+              class="category-sidebar-contents"
+              data-category-sidebar={{this.category.slug}}
+            >
+              <div class="cooked">
                 {{htmlSafe this.sidebarContent}}
-              {{/unless}}
-              <ConditionalLoadingSpinner @condition={{this.loading}} />
+              </div>
             </div>
           </div>
-        </div>
+        {{/if}}
       </div>
     {{/if}}
   </template>

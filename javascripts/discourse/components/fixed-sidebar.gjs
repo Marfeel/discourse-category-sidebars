@@ -62,6 +62,11 @@ export default class FixedSidebar extends Component {
   }
 
   async initialize() {
+    if (!this.currentUser) {
+      this.loading = false;
+      return;
+    }
+
     await this.fetchContents();
     await this.setupContents();
     this.initIconObserver();
@@ -112,11 +117,6 @@ export default class FixedSidebar extends Component {
 
   @action
   async fetchContents() {
-    if (!this.currentUser) {
-      this.loading = false;
-      return;
-    }
-
     this.loading = true;
     try {
       const results = await Promise.allSettled(
