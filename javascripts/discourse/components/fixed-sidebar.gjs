@@ -9,6 +9,7 @@ import { ajax } from "discourse/lib/ajax";
 import Category from "discourse/models/category";
 
 export default class FixedSidebar extends Component {
+  @service currentUser;
   @service siteSettings;
   @service router;
   @service sidebarState;
@@ -111,6 +112,11 @@ export default class FixedSidebar extends Component {
 
   @action
   async fetchContents() {
+    if (!this.currentUser) {
+      this.loading = false;
+      return;
+    }
+
     this.loading = true;
     try {
       const results = await Promise.allSettled(

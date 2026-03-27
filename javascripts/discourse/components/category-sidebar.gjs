@@ -1,6 +1,6 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
-import { concat } from "@ember/helper";
+import { and, concat } from "@ember/helper";
 import { action } from "@ember/object";
 import didInsert from "@ember/render-modifiers/modifiers/did-insert";
 import didUpdate from "@ember/render-modifiers/modifiers/did-update";
@@ -12,6 +12,7 @@ import { ajax } from "discourse/lib/ajax";
 import Category from "discourse/models/category";
 
 export default class CategorySidebar extends Component {
+  @service currentUser;
   @service router;
   @service siteSettings;
   @service site;
@@ -21,7 +22,7 @@ export default class CategorySidebar extends Component {
   @tracked lastFetchedCategory = null;
 
   <template>
-    {{#if this.matchedSetting}}
+    {{#if (and this.currentUser this.matchedSetting)}}
       {{bodyClass "custom-sidebar"}}
       {{bodyClass (concat "sidebar-" settings.sidebar_side)}}
       <div
@@ -135,6 +136,11 @@ export default class CategorySidebar extends Component {
 
   @action
   async fetchPostContent() {
+    if (!this.currentUser) {
+      this.loading = false;
+      return;
+    }
+
     const currentCategory =
       this.category ||
       Category.findById(this.topicCategory?.parent_category_id);
