@@ -64,6 +64,7 @@ export default class FixedSidebar extends Component {
   async initialize() {
     if (!this.currentUser) {
       this.loading = false;
+      this.hideFixedSections();
       return;
     }
 
@@ -72,6 +73,19 @@ export default class FixedSidebar extends Component {
     this.initIconObserver();
     this.router.on("routeDidChange", this, this.toggleCurrentSection);
     this.toggleCurrentSection();
+  }
+
+  hideFixedSections() {
+    schedule("afterRender", () => {
+      this.fixedSettings.forEach(({ section }) => {
+        const wrapper = document.querySelector(
+          `.sidebar-section-wrapper[data-section-name="${section}"]`
+        );
+        if (wrapper) {
+          wrapper.style.display = "none";
+        }
+      });
+    });
   }
 
   <template>
