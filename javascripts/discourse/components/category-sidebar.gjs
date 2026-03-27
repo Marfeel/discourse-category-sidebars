@@ -12,6 +12,7 @@ import { ajax } from "discourse/lib/ajax";
 import Category from "discourse/models/category";
 
 export default class CategorySidebar extends Component {
+  @service currentUser;
   @service router;
   @service siteSettings;
   @service site;
@@ -22,26 +23,26 @@ export default class CategorySidebar extends Component {
 
   <template>
     {{#if this.matchedSetting}}
-      {{bodyClass "custom-sidebar"}}
-      {{bodyClass (concat "sidebar-" settings.sidebar_side)}}
       <div
         class="category-sidebar"
         {{didInsert this.fetchPostContent}}
         {{didUpdate this.fetchPostContent this.category}}
       >
-        <div class="sticky-sidebar">
-          <div
-            class="category-sidebar-contents"
-            data-category-sidebar={{this.category.slug}}
-          >
-            <div class="cooked">
-              {{#unless this.loading}}
+        <ConditionalLoadingSpinner @condition={{this.loading}} />
+        {{#if this.sidebarContent}}
+          {{bodyClass "custom-sidebar"}}
+          {{bodyClass (concat "sidebar-" settings.sidebar_side)}}
+          <div class="sticky-sidebar">
+            <div
+              class="category-sidebar-contents"
+              data-category-sidebar={{this.category.slug}}
+            >
+              <div class="cooked">
                 {{htmlSafe this.sidebarContent}}
-              {{/unless}}
-              <ConditionalLoadingSpinner @condition={{this.loading}} />
+              </div>
             </div>
           </div>
-        </div>
+        {{/if}}
       </div>
     {{/if}}
   </template>
@@ -135,6 +136,11 @@ export default class CategorySidebar extends Component {
 
   @action
   async fetchPostContent() {
+    if (!this.currentUser) {
+      this.loading = false;
+      return;
+    }
+
     const currentCategory =
       this.category ||
       Category.findById(this.topicCategory?.parent_category_id);
