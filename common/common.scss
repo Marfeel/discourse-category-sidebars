@@ -3,6 +3,16 @@
   --mrf-hover-bgcolor: #ebf1fd;
 }
 
+body.no-fixed-sections .sidebar-custom-sections {
+  [data-section-name]:not(
+    [data-section-name="community"],
+    [data-section-name="general"],
+    [data-section-name="marfeel"]
+  ) {
+    display: none;
+  }
+}
+
 .sidebar-custom-sections {
   display: contents;
   [data-section-name="community"] {

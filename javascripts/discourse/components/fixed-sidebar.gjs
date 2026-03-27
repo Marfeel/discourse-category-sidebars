@@ -64,35 +64,26 @@ export default class FixedSidebar extends Component {
   async initialize() {
     if (!this.currentUser) {
       this.loading = false;
-      this.hideEmptySections();
       return;
     }
 
     await this.fetchContents();
-    this.hideEmptySections();
+    this.hideFailedSections();
     await this.setupContents();
     this.initIconObserver();
     this.router.on("routeDidChange", this, this.toggleCurrentSection);
     this.toggleCurrentSection();
   }
 
-  hideEmptySections() {
+  hideFailedSections() {
     const loadedSections = new Set(this.contents.map((c) => c.section));
+    const hasFailures = this.fixedSettings.some(
+      ({ section }) => !loadedSections.has(section)
+    );
 
-    schedule("afterRender", () => {
-      this.fixedSettings.forEach(({ section }) => {
-        if (loadedSections.has(section)) {
-          return;
-        }
-
-        const wrapper = document.querySelector(
-          `.sidebar-section-wrapper[data-section-name="${section}"]`
-        );
-        if (wrapper) {
-          wrapper.style.display = "none";
-        }
-      });
-    });
+    if (hasFailures) {
+      document.body.classList.add("no-fixed-sections");
+    }
   }
 
   <template>
