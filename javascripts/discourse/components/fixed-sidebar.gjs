@@ -8,6 +8,8 @@ import { htmlSafe } from "@ember/template";
 import { ajax } from "discourse/lib/ajax";
 import Category from "discourse/models/category";
 
+const FAILED_SECTIONS_STYLE_ID = "discourse-category-sidebars-failed-sections";
+
 export default class FixedSidebar extends Component {
   @service currentUser;
   @service siteSettings;
@@ -26,6 +28,7 @@ export default class FixedSidebar extends Component {
     super.willDestroy(...arguments);
     this.iconObserver?.disconnect();
     this.router.off("routeDidChange", this, this.toggleCurrentSection);
+    document.getElementById(FAILED_SECTIONS_STYLE_ID)?.remove();
   }
 
   get iconMappings() {
@@ -77,12 +80,29 @@ export default class FixedSidebar extends Component {
 
   hideFailedSections() {
     const loadedSections = new Set(this.contents.map((c) => c.section));
-    const hasFailures = this.fixedSettings.some(
-      ({ section }) => !loadedSections.has(section)
-    );
+    const failedSections = this.fixedSettings
+      .map(({ section }) => section)
+      .filter((section) => !loadedSections.has(section));
 
-    if (hasFailures) {
-      document.body.classList.add("no-fixed-sections");
+    const existing = document.getElementById(FAILED_SECTIONS_STYLE_ID);
+
+    if (failedSections.length === 0) {
+      existing?.remove();
+      return;
+    }
+
+    const selector = failedSections
+      .map(
+        (name) =>
+          `.sidebar-section-wrapper[data-section-name="${CSS.escape(name)}"]`
+      )
+      .join(", ");
+
+    const styleEl = existing ?? document.createElement("style");
+    styleEl.id = FAILED_SECTIONS_STYLE_ID;
+    styleEl.textContent = `${selector} { display: none; }`;
+    if (!existing) {
+      document.head.appendChild(styleEl);
     }
   }
 
