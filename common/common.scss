@@ -76,6 +76,19 @@ body.no-fixed-sections .sidebar-custom-sections {
     order: 11;
   }
 
+  [data-section-name="marketing-docs"] {
+    order: 12;
+  }
+
+  [data-section-name="cdp"] {
+    order: 13;
+  }
+
+  [data-section-name="subscription-management"] {
+    order: 14;
+  }
+  
+
   [data-section-name="implementation-guides"],
   [data-section-name="product-guides"] {
     order: 21;
